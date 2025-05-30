@@ -43,4 +43,4 @@ git clone https://github.com/Samuka-santosDEV/favote.git
 # Acesse a pasta do projeto
 cd favote
 
-# Abra o arquivo login.html no navegador
+### Abra o arquivo login.html no navegador
