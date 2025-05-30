@@ -126,8 +126,8 @@
             </div>
 
             <div class="ver-mais">
-                <a href="#" class="btn-ver-mais">Ver mais <i class="fas fa-chevron-down"
-                        style="margin-left: 5px;"></i></a>
+                 <label class="btn-ver-mais">Ver mais <i class="fas fa-chevron-down"
+                        style="margin-left: 5px;"></i></label>
             </div>
         </div>
 
@@ -190,8 +190,8 @@
             </div>
 
             <div class="ver-mais">
-                <a href="#" class="btn-ver-mais">Ver mais <i class="fas fa-chevron-down"
-                        style="margin-left: 5px;"></i></a>
+                 <label class="btn-ver-mais">Ver mais <i class="fas fa-chevron-down"
+                        style="margin-left: 5px;"></i></label>
             </div>
         </div>
 
@@ -259,8 +259,8 @@
             </div>
 
             <div class="ver-mais">
-                <a href="#" class="btn-ver-mais">Ver mais <i class="fas fa-chevron-down"
-                        style="margin-left: 5px;"></i></a>
+                <label class="btn-ver-mais">Ver mais <i class="fas fa-chevron-down"
+                        style="margin-left: 5px;"></i></label>
             </div>
 
 
@@ -386,7 +386,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="submit-btn">CRIAR ELEIÇÃO</button>
+                        <button class="submit-btn" onclick="criarEleicao()">CRIAR ELEIÇÃO</button>
                     </div>
                     <div class="modal-right">
                         <h2>CANDIDATOS</h2>
@@ -470,7 +470,7 @@
                         </p>
                     </div>
 
-                    <button class="submit-btn">SALVAR ALTERAÇÕES</button>
+                    <button class="submit-btn" onclick="salvarAlteracoes()">SALVAR ALTERAÇÕES</button>
                 </div>
 
                 <div class="modal-right">
@@ -686,36 +686,37 @@
                     "Letícia Mendes"
                 ];
 
+
                 function preencherCandidatos(containerId, marcarTodos = false) {
                     const container = document.getElementById(containerId);
                     container.innerHTML = "";
-
                     candidatos.forEach(nome => {
                         const partes = nome.trim().split(" ");
                         const iniciais = (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
-
                         const item = document.createElement("div");
                         item.className = "candidate-item";
-
                         const avatar = document.createElement("div");
                         avatar.className = "candidate-avatar";
                         avatar.textContent = iniciais;
-
                         const name = document.createElement("div");
                         name.className = "candidate-name";
                         name.textContent = nome;
-
                         const checkbox = document.createElement("input");
                         checkbox.type = "checkbox";
                         checkbox.className = "candidate-checkbox";
                         checkbox.checked = marcarTodos;
-
+                        item.addEventListener("click", function () {
+                            checkbox.checked = !checkbox.checked;
+                        });
                         item.appendChild(avatar);
                         item.appendChild(name);
                         item.appendChild(checkbox);
                         container.appendChild(item);
                     });
                 }
+
+
+
 
 
                 function configurarSelecionarTodos(checkboxId, containerId) {
@@ -768,6 +769,20 @@
 
                 configurarSelecionarTodos("selectAllEditar", "candidatos-editar-container");
             });
+
+            function salvarAlteracoes() {
+                alert('Dados salvos com sucesso');
+                const modalEditarOverlay = document.getElementById('modalEditarOverlay');
+                modalEditarOverlay.style.display = 'none';
+            }
+            function criarEleicao() {
+                alert('Eleição criada com sucesso');
+                const modalOverlay = document.getElementById('modalOverlay');
+                modalOverlay.style.display = 'none';
+            }
+
+
+
         </script>
     </main>
 

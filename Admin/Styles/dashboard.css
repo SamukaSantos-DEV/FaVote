@@ -379,6 +379,8 @@ body {
 }
 
 .btn-ver-mais {
+    
+    cursor: pointer;    
     display: flex;
     align-items: center;
     color: #333;
@@ -777,6 +779,7 @@ td {
 }
 
 .candidate-item {
+    user-select: none;
     display: flex;
     align-items: center;
     padding: 10px 0;
