@@ -276,13 +276,13 @@ body {
 
 
 .finalizar-container {
-    text-align: center;
-    margin: 20px 0;
+    text-align: center;    
+    margin: 20px 0px 0px 0px;
 }
 
 .botao-finalizar {
     padding: 10px 10%;
-    background: #5f0000;
+    background: #727272;
     color: white;
     font-size: 1.2em;
     border: none;
@@ -293,7 +293,7 @@ body {
 }
 
 .botao-finalizar:hover {
-    background-color: #920101;
+    background-color: #949393;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
 }
 
