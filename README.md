@@ -38,7 +38,7 @@ CSS3 (com uso de media queries para responsividade)
 🚀 Como Visualizar Localmente
 
 # Clone o repositório
-git clone https://github.com/Samuka-santosDEV/favote.git
+git clone https://github.com/Samuka-santosDEV/favote
 
 # Acesse a pasta do projeto
 cd favote
