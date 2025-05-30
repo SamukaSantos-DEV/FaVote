@@ -48,7 +48,6 @@ O FaVote busca **centralizar as eleições escolares** em um único ambiente dig
 1. **Clone o repositório:**
    
 ````markdown
-```bash
    git clone https://github.com/SamukaSantos-DEV/FaVote
 ````
 
