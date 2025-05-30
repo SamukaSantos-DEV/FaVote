@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login/Cadastro</title>
+    <link rel="stylesheet" href="Styles/login.css">
+
+    <link rel="icon" href="Images/iconlogoFaVote.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+</head>
+
+<body>
+    <div class="container" id="container">
+        <div class="background"></div>
+
+        <div class="form-container">
+
+            <form class="form-box login" id="loginForm">
+                <h2>Fazer login</h2>
+                <label>Nome de usuário:</label>
+                <input type="text" placeholder="Digite seu nome de usuário" />
+                <label>Senha:</label>
+                <input type="password" placeholder="Digite sua senha" />
+                <div class="checkbox">
+                    <input type="checkbox" id="keepLogged" />
+                    <label for="keepLogged">Mantenha-me conectado</label>
+                </div>
+                <div style=" height: 40%;"></div>
+                <div class="link">
+                    <span>Não possui cadastro? <a href="#" onclick="toggleForm()">Faça cadastro</a></span>
+                </div>
+                <button type="submit">FAZER LOGIN</button>
+            </form>
+
+            <form class="form-box register" id="registerForm">
+                <h2>Cadastre-se</h2>
+                <label>Nome de usuário:</label>
+                <input type="text" placeholder="Digite seu nome" />
+                <label>E-Mail Institucional (apenas FATEC):</label>
+                <input type="email" placeholder="email@fatec.sp.gov.br" />
+                <div style="display: flex; gap: 10px;">
+                    <div style="flex: 2;">
+                        <label>RA:</label>
+                        <input type="text" maxlength="13" placeholder="0000000000000"
+                            title="Digite exatamente 13 números" />
+                    </div>
+                    <div style="flex: 2;">
+                        <label>CPF:</label>
+                        <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="11" />
+                    </div>
+
+                </div>
+
+                <div style="display: flex; gap: 0px;">
+                    <div style="flex: 2; position: relative; z-index: 1;">
+                        <label style="color: #848484;">Curso:</label>
+                        <input
+                            style="background-color: #E8E8E8; border: 2px solid #b2b2b2; color: #848484; width: 100%;"
+                            type="text" readonly value="DSM (N)" />
+                    </div>
+                    <div style="flex: 1; position: relative; z-index: 2; margin-left: -20px;">
+                        <label style="color: #848484;">Semestre:</label>
+                        <input
+                            style="background-color: #E8E8E8; border: 2px solid #b2b2b2; color: #848484; width: 100%;"
+                            type="text" readonly value="1°" />
+                    </div>
+                </div>
+
+
+               
+                <label>Senha:</label>
+                <input type="password" placeholder="Crie uma senha" />
+                <div class="checkbox">
+                    <input type="checkbox" id="terms" />
+                    <label for="terms">Li e aceito os <a href="Pages/termos.html"
+                            style="text-decoration: none; color: rgb(112, 0, 0);">Termos de Contrato</a></label>
+                </div>
+                <div class="link">
+                    <span>Já possui cadastro? <a href="#" onclick="toggleForm()">Faça login</a></span>
+                </div>
+                <button type="submit">FINALIZAR CADASTRO</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        const container = document.getElementById('container');
+
+        function toggleForm() {
+            container.classList.add('hide-background');
+            setTimeout(() => {
+                container.classList.toggle('active');
+                document.title = container.classList.contains('active') ? 'FaVote | Cadastro' : 'FaVote | Login';
+            }, 100);
+            setTimeout(() => {
+                container.classList.remove('hide-background');
+            }, 500);
+        }
+
+        document.title = 'Fazer login';
+
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const username = this.querySelector('input[type="text"]').value.trim();
+            const password = this.querySelector('input[type="password"]').value.trim();
+
+            if (!username || !password) {
+                alert('Por favor, preencha todos os campos.');
+                return;
+            }
+
+            window.location.href = 'Pages/home.html';
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const inputs = this.querySelectorAll('input, select');
+            const username = inputs[0].value.trim();
+            const email = inputs[1].value.trim();
+            const cpf = document.getElementById('cpf').value.trim();
+            const password = inputs[5].value.trim();
+            const termsAccepted = document.getElementById('terms').checked;
+
+            const emailValido = /^[a-zA-Z0-9._%+-]+@fatec\.sp\.gov\.br$/.test(email);
+            const cpfValido = /^\d{11}$/.test(cpf);
+
+
+            if (!username || !email || !cpf || !password) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+
+            if (!emailValido) {
+                alert('O email deve ser institucional (@fatec.sp.gov.br).');
+                return;
+            }
+
+            if (!cpfValido) {
+                alert('CPF inválido. Use 11 dígitos.');
+                return;
+            }
+
+            if (!termsAccepted) {
+                alert('Você deve aceitar os Termos de Contrato.');
+                return;
+            }
+            window.location.href = 'Pages/verificacao.html';
+        });
+
+
+    </script>
+
+
+</body>
+
+</html>
