@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | FaVote</title>
+    <link rel="stylesheet" href="../Styles/dashboard.css">
+    <link rel="icon" href="../Images/logoFaVote.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
+</head>
+
+
+<body>
+    <header class="header">
+        <div class="logo"><img src="../Images/logofatec.png" width="190"></div>
+
+
+        <nav class="nav">
+            <a href="home.html">Home</a>
+            <a href="eleAtive.html">Eleições Ativas</a>
+            <a href="news.html">Notícias</a>
+            <a href="elePassa.html">Eleições Passadas</a>
+            <a href="dashboard.html"
+                style="background-color: white; color: brown; padding: 4px 8px; border-radius: 4px; text-decoration: none; transition: background-color 0.6s ease;"
+                onmouseover="this.style.backgroundColor='#ccc'" onmouseout="this.style.backgroundColor='white'">
+                DASHBOARD
+            </a>
+        </nav>
+        <div class="user-icon">
+            <img src="../Images/user.png" width="50" alt="user" />
+            <div class="user-popup">
+                <strong>Usuário Administrador</strong>
+                <p>FATEC “Dr. Ogari de Castro Pacheco”</p>
+                <strong>
+                    <p>DSM (N)</p>
+                </strong>
+                <p>1º Semestre</p>
+
+                <div class="editar">
+                    <a href="editardados.html">Editar dados</a>
+                </div>
+
+
+
+                <div class="sair">
+                    <a href="../login.html">Sair ➜</a>
+                </div>
+            </div>
+        </div>
+
+    </header>
+
+<script>
+    window.addEventListener('scroll', function () {
+        const btn = document.querySelector('.btn-close');
+        if (window.scrollY > 50) {
+            btn.classList.add('scrolled');
+        } else {
+            btn.classList.remove('scrolled');
+        }
+    });
+</script>
+
+    <button class="btn-close" onclick="history.back()">➜</button>
+
+    <div class="container" style="margin-top: 5%;">
+
+
+        <div class="table-header">
+            <h2>Usuários</h2>
+
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>RA</th>
+                        <th>Nome</th>
+                        <th>E-Mail</th>
+                        <th>CPF</th>
+                        <th>Curso</th>
+                        <th>Período</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="usuarios-tbody">
+                </tbody>
+            </table>
+        </div>
+
+
+
+    </div>
+
+    <div class="container">
+        <div class="table-header">
+            <h2>Turmas</h2>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome do Curso</th>
+                        <th>Qtd de Alunos Relacionados</th>
+                        <th>Semestre</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="turmas-tbody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    <script defer>
+        const usuarios = [
+            {
+                ra: "2025113456789",
+                nome: "Ana Silva Santos",
+                email: "ana.silva@fatec.sp.gov.br",
+                cpf: "123.456.789-01",
+                curso: "Desenvolvimento de Software Multiplataforma",
+                periodo: "3º Semestre"
+            },
+            {
+                ra: "2025129876543",
+                nome: "Carlos Oliveira",
+                email: "carlos.oliveira@fatec.sp.gov.br",
+                cpf: "234.567.890-12",
+                curso: "Gestão Empresarial",
+                periodo: "2º Semestre"
+            },
+            {
+                ra: "2025132468101",
+                nome: "Maria João Costa",
+                email: "maria.costa@fatec.sp.gov.br",
+                cpf: "345.678.901-23",
+                curso: "Desenvolvimento de Software Multiplataforma",
+                periodo: "4º Semestre"
+            },
+            {
+                ra: "2025141357913",
+                nome: "Pedro Santos Lima",
+                email: "pedro.lima@fatec.sp.gov.br",
+                cpf: "456.789.012-34",
+                curso: "Desenvolvimento de Software Multiplataforma",
+                periodo: "1º Semestre"
+            },
+            {
+                ra: "2025151122334",
+                nome: "Juliana Ferreira",
+                email: "juliana.ferreira@fatec.sp.gov.br",
+                cpf: "567.890.123-45",
+                curso: "Gestão de Produção Industrial",
+                periodo: "2º Semestre"
+            },
+            {
+                ra: "2025169988776",
+                nome: "Roberto Almeida",
+                email: "roberto.almeida@fatec.sp.gov.br",
+                cpf: "678.901.234-56",
+                curso: "Gestão Empresarial",
+                periodo: "3º Semestre"
+            },
+            {
+                ra: "2025175544332",
+                nome: "Fernanda Rodrigues",
+                email: "fernanda.rodrigues@fatec.sp.gov.br",
+                cpf: "789.012.345-67",
+                curso: "Gestão de Produção Industrial",
+                periodo: "4º Semestre"
+            },
+            // --------- Adicionados ----------
+            {
+                ra: "2025186655443",
+                nome: "Lucas Martins Souza",
+                email: "lucas.martins@fatec.sp.gov.br",
+                cpf: "890.123.456-78",
+                curso: "Desenvolvimento de Software Multiplataforma",
+                periodo: "5º Semestre"
+            },
+            {
+                ra: "2025193322110",
+                nome: "Bianca Costa Silva",
+                email: "bianca.costa@fatec.sp.gov.br",
+                cpf: "901.234.567-89",
+                curso: "Gestão Empresarial",
+                periodo: "6º Semestre"
+            },
+            {
+                ra: "2025209988776",
+                nome: "Mateus Pereira Ramos",
+                email: "mateus.ramos@fatec.sp.gov.br",
+                cpf: "012.345.678-90",
+                curso: "Gestão de Produção Industrial",
+                periodo: "3º Semestre"
+            },
+            {
+                ra: "2025215566778",
+                nome: "Larissa Mendes",
+                email: "larissa.mendes@fatec.sp.gov.br",
+                cpf: "123.987.654-32",
+                curso: "Desenvolvimento de Software Multiplataforma",
+                periodo: "2º Semestre"
+            },
+            {
+                ra: "2025224455667",
+                nome: "Gabriel Lima Rocha",
+                email: "gabriel.rocha@fatec.sp.gov.br",
+                cpf: "234.876.543-21",
+                curso: "Gestão Empresarial",
+                periodo: "1º Semestre"
+            },
+            {
+                ra: "2025239988445",
+                nome: "Amanda Torres",
+                email: "amanda.torres@fatec.sp.gov.br",
+                cpf: "345.765.432-10",
+                curso: "Gestão de Produção Industrial",
+                periodo: "5º Semestre"
+            },
+            {
+                ra: "2025242233445",
+                nome: "Thiago Almeida Souza",
+                email: "thiago.almeida@fatec.sp.gov.br",
+                cpf: "456.654.321-09",
+                curso: "Desenvolvimento de Software Multiplataforma",
+                periodo: "6º Semestre"
+            },
+            {
+                ra: "2025255544332",
+                nome: "Isabela Ferreira Lima",
+                email: "isabela.ferreira@fatec.sp.gov.br",
+                cpf: "567.543.210-98",
+                curso: "Gestão Empresarial",
+                periodo: "4º Semestre"
+            },
+            {
+                ra: "2025268877665",
+                nome: "Vinícius Barbosa",
+                email: "vinicius.barbosa@fatec.sp.gov.br",
+                cpf: "678.432.109-87",
+                curso: "Gestão de Produção Industrial",
+                periodo: "6º Semestre"
+            },
+            {
+                ra: "2025276655884",
+                nome: "Bruna Carvalho",
+                email: "bruna.carvalho@fatec.sp.gov.br",
+                cpf: "789.321.098-76",
+                curso: "Desenvolvimento de Software Multiplataforma",
+                periodo: "1º Semestre"
+            }
+        ];
+
+
+
+        const turmas = [
+
+            {
+                id: "DSM-1",
+                curso: "Desenvolvimento de Software Multiplataforma",
+                qtdAlunos: 30,
+                semestre: "1º Semestre"
+            },
+            {
+                id: "DSM-2",
+                curso: "Desenvolvimento de Software Multiplataforma",
+                qtdAlunos: 28,
+                semestre: "2º Semestre"
+            },
+            {
+                id: "DSM-3",
+                curso: "Desenvolvimento de Software Multiplataforma",
+                qtdAlunos: 32,
+                semestre: "3º Semestre"
+            },
+            {
+                id: "DSM-4",
+                curso: "Desenvolvimento de Software Multiplataforma",
+                qtdAlunos: 26,
+                semestre: "4º Semestre"
+            },
+            {
+                id: "DSM-5",
+                curso: "Desenvolvimento de Software Multiplataforma",
+                qtdAlunos: 25,
+                semestre: "5º Semestre"
+            },
+            {
+                id: "DSM-6",
+                curso: "Desenvolvimento de Software Multiplataforma",
+                qtdAlunos: 24,
+                semestre: "6º Semestre"
+            },
+
+
+            {
+                id: "GE-1",
+                curso: "Gestão Empresarial",
+                qtdAlunos: 27,
+                semestre: "1º Semestre"
+            },
+            {
+                id: "GE-2",
+                curso: "Gestão Empresarial",
+                qtdAlunos: 26,
+                semestre: "2º Semestre"
+            },
+            {
+                id: "GE-3",
+                curso: "Gestão Empresarial",
+                qtdAlunos: 25,
+                semestre: "3º Semestre"
+            },
+            {
+                id: "GE-4",
+                curso: "Gestão Empresarial",
+                qtdAlunos: 24,
+                semestre: "4º Semestre"
+            },
+            {
+                id: "GE-5",
+                curso: "Gestão Empresarial",
+                qtdAlunos: 23,
+                semestre: "5º Semestre"
+            },
+            {
+                id: "GE-6",
+                curso: "Gestão Empresarial",
+                qtdAlunos: 22,
+                semestre: "6º Semestre"
+            },
+
+
+            {
+                id: "GPI-1",
+                curso: "Gestão de Produção Industrial",
+                qtdAlunos: 29,
+                semestre: "1º Semestre"
+            },
+            {
+                id: "GPI-2",
+                curso: "Gestão de Produção Industrial",
+                qtdAlunos: 28,
+                semestre: "2º Semestre"
+            },
+            {
+                id: "GPI-3",
+                curso: "Gestão de Produção Industrial",
+                qtdAlunos: 30,
+                semestre: "3º Semestre"
+            },
+            {
+                id: "GPI-4",
+                curso: "Gestão de Produção Industrial",
+                qtdAlunos: 27,
+                semestre: "4º Semestre"
+            },
+            {
+                id: "GPI-5",
+                curso: "Gestão de Produção Industrial",
+                qtdAlunos: 26,
+                semestre: "5º Semestre"
+            },
+            {
+                id: "GPI-6",
+                curso: "Gestão de Produção Industrial",
+                qtdAlunos: 25,
+                semestre: "6º Semestre"
+            }
+        ];
+
+
+
+        function criarLinhasTabela() {
+            const tbody = document.getElementById('usuarios-tbody');
+
+            usuarios.forEach(usuario => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${usuario.ra}</td>
+                    <td>${usuario.nome}</td>
+                    <td>${usuario.email}</td>
+                    <td>${usuario.cpf}</td>
+                    <td>${usuario.curso}</td>
+                    <td>${usuario.periodo}</td>
+                    <td>
+                        <div class="actions">
+                            <button class="action-btn tableEdit-btn" title="Editar" onclick="abrirEditar('${usuario.nome}')">✎</button>
+                            <button class="action-btn tabledelete-btn" title="Excluir" onclick="excluirUsuario('${usuario.ra}')">🗑</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function criarLinhasTurmas() {
+            const tbody = document.getElementById('turmas-tbody');
+
+            turmas.forEach(turma => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+            <td>${turma.id}</td>
+            <td>${turma.curso}</td>
+            <td>${turma.qtdAlunos}</td>
+            <td>${turma.semestre}</td>
+            <td>
+                <div class="actions">
+                    <button class="action-btn tableEdit-btn" title="Editar" onclick="editarTurma('${turma.id}')">✎</button>
+                    <button class="action-btn tabledelete-btn" title="Excluir" onclick="excluirTurma('${turma.id}')">🗑</button>
+                </div>
+            </td>
+        `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            criarLinhasTabela();
+            criarLinhasTurmas();
+        });
+    </script>
+
+
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="footer-logo">
+                <img src="../Images/logoFaVote.png" width="70">
+            </div>
+            <div class="footer-links">
+                <div>
+                    <h4>PÁGINAS</h4>
+                    <ul>
+                        <li><a href="home.html">Home</a></li>
+                        <li><a href="eleAtive.html">Eleições Ativas</a></li>
+                        <li><a href="news.html">Notícias</a></li>
+                        <li><a href="elepassa.html">Eleições Passadas</a></li>
+                        <li><a href="termos.html">Termos de Contrato</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>REDES</h4>
+                    <ul>
+                        <li><a href="https://www.instagram.com/fatecdeitapira?igsh=MWUzNXMzcWNhZzB4Ng=="
+                                target="_blank">Instagram</a></li>
+                        <li><a href="https://www.facebook.com/share/16Y3jKo71m/" target="_blank">Facebook</a></li>
+                        <li><a href="https://www.youtube.com/@fatecdeitapiraogaridecastr2131"
+                                target="_blank">Youtube</a></li>
+                        <li><a href="https://www.linkedin.com/school/faculdade-estadual-de-tecnologia-de-itapira-ogari-de-castro-pacheco/about/"
+                                target="_blank">Linkedin</a></li>
+                        <li><a href="https://fatecitapira.cps.sp.gov.br/" target="_blank">Site Fatec</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>INTEGRANTES</h4>
+                    <ul>
+                        <li>Graziela Dilany da Silva</li>
+                        <li>João Pedro Baradeli Pavan</li>
+                        <li>Pedro Henrique Cavenaghi dos Santos</li>
+                        <li>Samara Stefani da Silva</li>
+                        <li>Samuel Santos Oliveira</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            FaVote - Todos os direitos reservados | 2025
+        </div>
+    </footer>
+
+
+
+</body>
+
+</html>

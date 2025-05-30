@@ -91,14 +91,14 @@
             container.classList.add('hide-background');
             setTimeout(() => {
                 container.classList.toggle('active');
-                document.title = container.classList.contains('active') ? 'FaVote | Cadastro' : 'FaVote | Login';
+                document.title = container.classList.contains('active') ? 'FaVote | Cadastro Admin' : 'FaVote | Login Admin';
             }, 100);
             setTimeout(() => {
                 container.classList.remove('hide-background');
             }, 500);
         }
 
-        document.title = 'Fazer login';
+        document.title = 'FaVote | Login Admin';
 
         document.getElementById('loginForm').addEventListener('submit', function (e) {
             e.preventDefault();
