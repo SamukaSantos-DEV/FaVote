@@ -45,12 +45,10 @@ O FaVote busca **centralizar as eleições escolares** em um único ambiente dig
 ## 🚀 Como Visualizar Localmente
 
 
-Claro! Aqui está a seção corrigida e formatada corretamente:
-
-````markdown
-
 1. **Clone o repositório:**
-   ```bash
+   
+````markdown
+```bash
    git clone https://github.com/SamukaSantos-DEV/FaVote
 ````
 
@@ -62,8 +60,5 @@ Claro! Aqui está a seção corrigida e formatada corretamente:
 
 3. **Abra o arquivo `login.html` no seu navegador.**
 
-```
 
-Se quiser, posso atualizar o `README.md` completo com essa correção. Deseja isso?
-```
 
