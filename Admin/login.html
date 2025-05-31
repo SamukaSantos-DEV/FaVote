@@ -9,16 +9,20 @@
 
     <link rel="icon" href="Images/iconlogoFaVote.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
+
+    <button class="btn-close" onclick="window.location.href = '../login.html';">➜</button>
     <div class="container" id="container">
         <div class="background"></div>
 
         <div class="form-container">
 
             <form class="form-box login" id="loginForm">
-                <h2>Fazer login</h2>
+                <h2>Fazer login Administrador</h2>
                 <label>Nome de usuário:</label>
                 <input type="text" placeholder="Digite seu nome de usuário" />
                 <label>Senha:</label>
@@ -27,7 +31,7 @@
                     <input type="checkbox" id="keepLogged" />
                     <label for="keepLogged">Mantenha-me conectado</label>
                 </div>
-                <div style=" height: 40%;"></div>
+                <div style=" height: 28%;"></div>
                 <div class="link">
                     <span>Não possui cadastro? <a href="#" onclick="toggleForm()">Faça cadastro</a></span>
                 </div>
@@ -35,7 +39,7 @@
             </form>
 
             <form class="form-box register" id="registerForm">
-                <h2>Cadastre-se</h2>
+                <h2>Cadastrar Administrador</h2>
                 <label>Nome de usuário:</label>
                 <input type="text" placeholder="Digite seu nome" />
                 <label>E-Mail Institucional (apenas FATEC):</label>
@@ -53,23 +57,6 @@
 
                 </div>
 
-                <div style="display: flex; gap: 0px;">
-                    <div style="flex: 2; position: relative; z-index: 1;">
-                        <label style="color: #848484;">Curso:</label>
-                        <input
-                            style="background-color: #E8E8E8; border: 2px solid #b2b2b2; color: #848484; width: 100%;"
-                            type="text" readonly value="DSM (N)" />
-                    </div>
-                    <div style="flex: 1; position: relative; z-index: 2; margin-left: -20px;">
-                        <label style="color: #848484;">Semestre:</label>
-                        <input
-                            style="background-color: #E8E8E8; border: 2px solid #b2b2b2; color: #848484; width: 100%;"
-                            type="text" readonly value="1°" />
-                    </div>
-                </div>
-
-
-               
                 <label>Senha:</label>
                 <input type="password" placeholder="Crie uma senha" />
                 <div class="checkbox">

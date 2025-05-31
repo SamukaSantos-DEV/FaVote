@@ -21,16 +21,16 @@ body {
 .container {
     position: relative;
     width: 600px;
-    height: 880px;
+    height: 680px;
     overflow: hidden;
     border-radius: 30px;
 }
 
 .background {
     position: absolute;
-    width: 200px;
+    width: 160px;
     height: 60%;
-    margin-top: 30%;
+    margin-top: 23%;
     background-color: #D60E0E;
     border-radius: 30px;
     z-index: 1;

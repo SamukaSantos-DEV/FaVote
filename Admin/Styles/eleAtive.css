@@ -38,8 +38,9 @@ body {
     font-weight: bold;
     font-size: 18px;
 }
+
 .nav a:hover {
-    text-decoration: underline dotted #D60E0E 2px;    
+    text-decoration: underline dotted #D60E0E 2px;
     text-underline-offset: 3px;
 }
 
@@ -99,6 +100,7 @@ body {
     background-color: #e0e0e0;
     transform: scale(1.05);
 }
+
 .sair a {
     text-decoration: none;
     color: #b10707;
@@ -110,6 +112,7 @@ body {
     text-decoration: underline dotted;
     text-underline-offset: 4px;
 }
+
 .editar {
     margin-top: 20px;
     padding: 10px;
@@ -125,6 +128,7 @@ body {
     background-color: #e0e0e0;
     transform: scale(1.05);
 }
+
 .editar a {
     text-decoration: none;
     color: #505050;
@@ -142,6 +146,7 @@ body {
     width: 60%;
     margin: 2% 20%;
 }
+
 .main-content h2 {
     font-size: 24px;
     border-bottom: 3px solid #D60E0E;
@@ -153,19 +158,20 @@ body {
     display: flex;
     background: #D60E0E;
     color: white;
-    border-top-left-radius: 30px;   
-    border-top-right-radius: 150px;    
-    border-bottom-left-radius: 30px ;
-    border-bottom-right-radius: 150px ;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 150px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 150px;
     padding: 30px;
     margin-bottom: 40px;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.7);
-        transition: 0.3s;
+    transition: 0.3s;
 }
+
 .main-vote:hover {
-    
+
     background-color: #b10707;
 }
 
@@ -183,7 +189,7 @@ body {
 .vote-img {
     position: absolute;
     left: 67%;
-    top: 18.5%;
+    top: 19.4%;
 
 }
 
@@ -191,10 +197,10 @@ body {
     display: flex;
     background: #acacac;
     color: white;
-    border-top-left-radius: 30px;   
-    border-top-right-radius: 150px;    
-    border-bottom-left-radius: 30px ;
-    border-bottom-right-radius: 150px ;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 150px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 150px;
     padding: 30px;
     margin-bottom: 40px;
     justify-content: space-between;
@@ -205,13 +211,14 @@ body {
 .vote-img2 {
     position: absolute;
     left: 67%;
-    top: 56.2%;
+    top: 57.1%;
 
 }
+
 .vote-img3 {
     position: absolute;
     left: 67%;
-    top: 87.7%;
+    top: 88.6%;
 
 }
 
@@ -259,12 +266,14 @@ body {
 .footer-links li {
     margin-bottom: 5px;
 }
-.footer-links a{
+
+.footer-links a {
     text-decoration: none;
     color: #880000;
     transition: 1s;
 }
-.footer-links a:hover{        
+
+.footer-links a:hover {
     text-decoration: underline dotted;
     text-underline-offset: 4px;
     color: #222;

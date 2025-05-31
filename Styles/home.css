@@ -110,35 +110,6 @@ body {
     text-decoration: underline dotted;
     text-underline-offset: 4px;
 }
-.editar {
-    margin-top: 20px;
-    padding: 10px;
-    width: 100%;
-    background: white;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
-    text-align: center;
-}
-
-.editar:hover {
-    background-color: #e0e0e0;
-    transform: scale(1.05);
-}
-.editar a {
-    text-decoration: none;
-    color: #505050;
-    border: none;
-    font-weight: bold;
-}
-
-.editar a:hover {
-    text-decoration: underline dotted;
-    text-underline-offset: 4px;
-}
-
-
-
 
 
 
@@ -193,7 +164,7 @@ body {
 .vote-img {
     position: absolute;
     left: 66%;
-    top: 12.4%;
+    top: 13.1%;
 
 }
 
@@ -269,19 +240,19 @@ body {
 
 .taca1 {
     left: 76%;
-    top: 55.3%;
+    top: 56%;
     position: absolute;
 }
 
 .taca2 {
     left: 76%;
-    top: 72%;
+    top: 72.8%;
     position: absolute;
 }
 
 .taca3 {
     left: 76%;
-    top: 88.7%;
+    top: 89.5%;
     position: absolute;
 }
 
