@@ -31,10 +31,15 @@
                 </div>
                 <div style=" height: 20%;"></div>
                 <div class="link">
-                    <span>É Administrador? <a href="Admin/login.html" onclick="toggleForm()">Faça Login de ADM</a></span>
-                    
+
+
                     <!--<span>É Administrador? <a href="Admin/login.html" onclick="toggleForm()">Faça Login de ADM</a></span>-->
-                    
+
+                    <!--<span>É Administrador? <a href="Admin/login.html" onclick="toggleForm()">Faça Login de ADM</a></span>-->
+                    <div class="checkbox">
+                        <label for="terms">Ao fazer login, os <a href="Pages/termos.html"
+                                style="text-decoration: none; color: rgb(112, 0, 0);">Termos de Contrato</a> foram aceitos</label>
+                    </div>
                 </div>
                 <button type="submit">FAZER LOGIN</button>
             </form>
@@ -74,7 +79,7 @@
                 </div>
 
 
-               
+
                 <label>Senha:</label>
                 <input type="password" placeholder="Crie uma senha" />
                 <div class="checkbox">
@@ -115,8 +120,15 @@
                 alert('Por favor, preencha todos os campos.');
                 return;
             }
+            if(username === "admin"){
+                window.location.href = 'Admin/Pages/home.html';
+            }
+            else{
+                window.location.href = 'Pages/home.html';
+            }
+            
 
-            window.location.href = 'Pages/home.html';
+            
         });
 
         document.getElementById('registerForm').addEventListener('submit', function (e) {

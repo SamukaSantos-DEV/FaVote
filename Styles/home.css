@@ -99,6 +99,7 @@ body {
     background-color: #e0e0e0;
     transform: scale(1.05);
 }
+
 .sair a {
     text-decoration: none;
     color: #b10707;
@@ -205,6 +206,24 @@ body {
     font-size: 27px;
     padding-bottom: 20px;
     text-align: center;
+}
+
+.btncandidatar {
+    background: white;
+    color: #D60E0E;
+    padding: 5px 12px;
+    font-size: 14px;
+    margin-left: 120px;
+    cursor: pointer;
+    border-radius: 20px;
+    border: none;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 10px;
+    transition: 0.3s;
+}
+.btncandidatar:hover{
+    transform: scale(1.05);
 }
 
 .vote-result {
