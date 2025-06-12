@@ -21,8 +21,8 @@
 
             <form class="form-box login" id="loginForm">
                 <h2>Fazer login</h2>
-                <label>Nome de usuário:</label>
-                <input type="text" placeholder="Digite seu nome de usuário" />
+                <label>E-Mail:</label>
+                <input type="email" placeholder="Ex: joao.silva@fatec.sp.gov.br" />
                 <label>Senha:</label>
                 <input type="password" placeholder="Digite sua senha" />
                 <div class="checkbox">
@@ -113,14 +113,14 @@
         document.getElementById('loginForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
-            const username = this.querySelector('input[type="text"]').value.trim();
+            const username = this.querySelector('input[type="email"]').value.trim();
             const password = this.querySelector('input[type="password"]').value.trim();
 
             if (!username || !password) {
                 alert('Por favor, preencha todos os campos.');
                 return;
             }
-            if(username === "admin"){
+            if(username === "admin@fatec.sp.gov.br"){
                 window.location.href = 'Admin/Pages/home.html';
             }
             else{
