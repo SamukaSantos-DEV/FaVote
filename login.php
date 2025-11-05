@@ -16,80 +16,67 @@
 <body>
     <div class="container" id="container">
         <div class="background"></div>
-
-        <div class="form-container">
-
+        <div class="form-container">            
             <form class="form-box login" id="loginForm">
                 <h2>Fazer login</h2>
+
                 <label>E-Mail:</label>
                 <input type="email" placeholder="Ex: joao.silva@fatec.sp.gov.br" />
+
                 <label>Senha:</label>
                 <input type="password" placeholder="Digite sua senha" />
+
                 <div class="checkbox">
                     <input type="checkbox" id="keepLogged" />
                     <label for="keepLogged">Mantenha-me conectado</label>
                 </div>
+
                 <div style=" height: 20%;"></div>
+
                 <div class="link">
 
+                 <label style="font-size: 13px" for="terms">Ao fazer login, os <a href="Pages/termos.php"
+                            style="text-decoration: none; color: rgb(112, 0, 0);">Termos de
+                            Contrato</a> foram
+                        aceitos.</label>                   
 
-                    <!--<span>É Administrador? <a href="Admin/login.php" onclick="toggleForm()">Faça Login de ADM</a></span>-->
+                    <div style=" height: 18px;"></div>
 
-                    <!--<span>É Administrador? <a href="Admin/login.php" onclick="toggleForm()">Faça Login de ADM</a></span>-->
-                    <div class="checkbox">
-                        <label for="terms">Ao fazer login, os <a href="Pages/termos.php"
-                                style="text-decoration: none; color: rgb(112, 0, 0);">Termos de Contrato</a> foram aceitos</label>
-                    </div>
+                    <span>Não tem Login? <a href="#" style="text-decoration: none; color: rgba(161, 0, 0, 1);"
+                            onclick="toggleForm()">Faça um cadastro.</a></span>
+
                 </div>
+
                 <button type="submit">FAZER LOGIN</button>
             </form>
 
             <form class="form-box register" id="registerForm">
                 <h2>Cadastre-se</h2>
+
                 <label>Nome de usuário:</label>
                 <input type="text" placeholder="Digite seu nome" />
+
                 <label>E-Mail Institucional (apenas FATEC):</label>
                 <input type="email" placeholder="email@fatec.sp.gov.br" />
-                <div style="display: flex; gap: 10px;">
-                    <div style="flex: 2;">
-                        <label>RA:</label>
-                        <input type="text" maxlength="13" placeholder="0000000000000"
-                            title="Digite exatamente 13 números" />
-                    </div>
-                    <div style="flex: 2;">
-                        <label>CPF:</label>
-                        <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="11" />
-                    </div>
 
-                </div>
-
-                <div style="display: flex; gap: 0px;">
-                    <div style="flex: 2; position: relative; z-index: 1;">
-                        <label style="color: #848484;">Curso:</label>
-                        <input
-                            style="background-color: #E8E8E8; border: 2px solid #b2b2b2; color: #848484; width: 100%;"
-                            type="text" readonly value="DSM (N)" />
-                    </div>
-                    <div style="flex: 1; position: relative; z-index: 2; margin-left: -20px;">
-                        <label style="color: #848484;">Semestre:</label>
-                        <input
-                            style="background-color: #E8E8E8; border: 2px solid #b2b2b2; color: #848484; width: 100%;"
-                            type="text" readonly value="1°" />
-                    </div>
-                </div>
-
-
+                <label>RA:</label>
+                <input type="text" maxlength="13" placeholder="0000000000000" title="Digite exatamente 13 números" />
 
                 <label>Senha:</label>
                 <input type="password" placeholder="Crie uma senha" />
-                <div class="checkbox">
-                    <input type="checkbox" id="terms" />
-                    <label for="terms">Li e aceito os <a href="Pages/termos.php"
-                            style="text-decoration: none; color: rgb(112, 0, 0);">Termos de Contrato</a></label>
-                </div>
+
+                <label for="terms" style="font-size: 12px">Ao fazer cadastro, os <a href="Pages/termos.php"
+                        style="text-decoration: none; margin-top:20px;color: rgb(112, 0, 0);">Termos de
+                        Contrato</a> foram
+                    aceitos.</label>
+
+                    <div style=" height: 10px;"></div>
+
                 <div class="link">
-                    <span>Já possui cadastro? <a href="#" onclick="toggleForm()">Faça login</a></span>
+                    <span>Já possui cadastro?<a href="#" style="text-decoration: none; color: rgba(161, 0, 0, 1);"
+                            onclick="toggleForm()"> Faça Login.</a></span>                    
                 </div>
+
                 <button type="submit">FINALIZAR CADASTRO</button>
             </form>
         </div>
@@ -120,15 +107,15 @@
                 alert('Por favor, preencha todos os campos.');
                 return;
             }
-            if(username === "admin@fatec.sp.gov.br"){
+            if (username === "admin@fatec.sp.gov.br") {
                 window.location.href = 'Admin/Pages/home.php';
             }
-            else{
+            else {
                 window.location.href = 'Pages/home.php';
             }
-            
 
-            
+
+
         });
 
         document.getElementById('registerForm').addEventListener('submit', function (e) {
@@ -139,7 +126,6 @@
             const email = inputs[1].value.trim();
             const cpf = document.getElementById('cpf').value.trim();
             const password = inputs[5].value.trim();
-            const termsAccepted = document.getElementById('terms').checked;
 
             const emailValido = /^[a-zA-Z0-9._%+-]+@fatec\.sp\.gov\.br$/.test(email);
             const cpfValido = /^\d{11}$/.test(cpf);
