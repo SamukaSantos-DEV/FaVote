@@ -23,11 +23,11 @@
 
 
         <nav class="nav">
-            <a href="home.html">Home</a>
-            <a href="eleAtive.html">Eleições Ativas</a>
-            <a href="news.html">Notícias</a>
-            <a href="elePassa.html">Eleições Passadas</a>
-            <a href="dashboard.html"
+            <a href="home.php">Home</a>
+            <a href="eleAtive.php">Eleições Ativas</a>
+            <a href="news.php">Notícias</a>
+            <a href="elePassa.php">Eleições Passadas</a>
+            <a href="dashboard.php"
                 style="background-color: white; color: brown; padding: 4px 8px; border-radius: 4px; text-decoration: none; transition: background-color 0.6s ease;"
                 onmouseover="this.style.backgroundColor='#ccc'" onmouseout="this.style.backgroundColor='white'">
                 DASHBOARD
@@ -44,11 +44,11 @@
                 <p>1º Semestre</p>
 
                 <div class="editar">
-                    <a href="editardados.html">Editar dados<i class="fa-solid fa-pen-to-square"
+                    <a href="editardados.php">Editar dados<i class="fa-solid fa-pen-to-square"
                             style="margin-left: 7px;"></i></a>
                 </div>
                 <div class="sair">
-                    <a href="../../login.html">Sair<i style="margin-left: 5px;"
+                    <a href="../../login.php">Sair<i style="margin-left: 5px;"
                             class="fa-solid fa-right-from-bracket"></i></a>
                 </div>
             </div>
@@ -88,7 +88,7 @@
                             <i class="fas fa-edit" style="margin-right: 5px;"></i> EDITAR
                         </button>
 
-                        <a href="dashboard.html" class="btn-cancel" id="btnCancelar1"
+                        <a href="dashboard.php" class="btn-cancel" id="btnCancelar1"
                             onclick="return confirm('AVISO: Você está prestes a cancelar/excluir “ELEIÇÃO de Representante de Turma 1º DSM”, criada em 05/05/2025 - 12:38') ">
                             <i class="fas fa-times" style="margin-right: 5px;"></i> Excluir
                         </a>
@@ -118,7 +118,7 @@
                         </button>
 
 
-                        <a href="dashboard.html" class="btn-cancel" id="btnCancelar2"
+                        <a href="dashboard.php" class="btn-cancel" id="btnCancelar2"
                             onclick="return confirm('AVISO: Você está prestes a cancelar/excluir “ELEIÇÃO de Representante de Turma 1º DSM”, criada em 05/05/2025 - 12:38') ">
                             <i class="fas fa-times" style="margin-right: 5px;"></i> Excluir
                         </a>
@@ -155,7 +155,7 @@
 
                             <i class="fa-solid fa-download" style="margin-right: 5px;"></i> Ata
                         </a>
-                        <a href="dashboard.html" class="btn-delete" id="btnExcluir1"
+                        <a href="dashboard.php" class="btn-delete" id="btnExcluir1"
                             onclick="return confirm('AVISO: Você está prestes a cancelar/excluir “ELEIÇÃO de Representante de Turma 1º DSM”, criada em 05/05/2025 - 12:38') ">
                             <i class="fas fa-trash" style="margin-right: 5px;"></i> Excluir
                         </a>
@@ -183,7 +183,7 @@
                             <i class="fa-solid fa-download" style="margin-right: 5px;"></i> Ata
                         </a>
 
-                        <a href="dashboard.html" class="btn-delete" id="btnExcluir2"
+                        <a href="dashboard.php" class="btn-delete" id="btnExcluir2"
                             onclick="return confirm('AVISO: Você está prestes a cancelar/excluir “ELEIÇÃO de Representante de Turma 1º DSM”, criada em 05/05/2025 - 12:38') ">
                             <i class="fas fa-trash" style="margin-right: 5px;"></i> Excluir
                         </a>
@@ -202,7 +202,7 @@
         <div class="news-section">
             <div class="news-header">
                 <h2>Notícias</h2>
-                <a href="criarNoticia.html" id="criarMais2" class="create-btn">Criar Nova +</a>
+                <a href="criarNoticia.php" id="criarMais2" class="create-btn">Criar Nova +</a>
 
             </div>
 
@@ -272,7 +272,7 @@
             <div class="container" style="margin-top: 5%;">
                 <div class="table-header">
                     <h2>Usuários</h2>
-                    <a href="turmausuario.html" class="ver-todos-btn">
+                    <a href="turmausuario.php" class="ver-todos-btn">
                         Ver todos ➜
                     </a>
 
@@ -303,7 +303,7 @@
             <div class="container">
                 <div class="table-header">
                     <h2>Turmas</h2>
-                    <a href="turmausuario.html" class="ver-todos-btn">
+                    <a href="turmausuario.php" class="ver-todos-btn">
                         Ver todos ➜
                     </a>
 
@@ -803,11 +803,11 @@
                 <div>
                     <h4>PÁGINAS</h4>
                     <ul>
-                        <li><a href="home.html">Home</a></li>
-                        <li><a href="eleAtive.html">Eleições Ativas</a></li>
-                        <li><a href="news.html">Notícias</a></li>
-                        <li><a href="elepassa.html">Eleições Passadas</a></li>
-                        <li><a href="termos.html">Termos de Contrato</a></li>
+                        <li><a href="home.php">Home</a></li>
+                        <li><a href="eleAtive.php">Eleições Ativas</a></li>
+                        <li><a href="news.php">Notícias</a></li>
+                        <li><a href="elepassa.php">Eleições Passadas</a></li>
+                        <li><a href="termos.php">Termos de Contrato</a></li>
                     </ul>
                 </div>
                 <div>

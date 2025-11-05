@@ -17,10 +17,10 @@
     <header class="header">
         <div class="logo"><img src="../Images/logofatec.png" width="190"></div>
         <nav class="nav">
-            <a href="home.html">Home</a>
-            <a href="eleAtive.html">Eleições Ativas</a>
-            <a href="news.html" class="active">Notícias</a>
-            <a href="elePassa.html">Eleições Passadas</a>
+            <a href="home.php">Home</a>
+            <a href="eleAtive.php">Eleições Ativas</a>
+            <a href="news.php" class="active">Notícias</a>
+            <a href="elePassa.php">Eleições Passadas</a>
         </nav>
         <div class="user-icon">
             <img src="../Images/user.png" width="50" alt="user" />
@@ -33,7 +33,7 @@
                 <p>1º Semestre</p>
                 
                 <div class="sair">
-                    <a href="../login.html">Sair<i style="margin-left: 5px;" class="fa-solid fa-right-from-bracket"></i></a>
+                    <a href="../login.php">Sair<i style="margin-left: 5px;" class="fa-solid fa-right-from-bracket"></i></a>
                 </div>
             </div>
         </div>
@@ -128,11 +128,11 @@
                 <div>
                     <h4>PÁGINAS</h4>
                     <ul>
-                        <li><a href="home.html">Home</a></li>
-                        <li><a href="eleAtive.html">Eleições Ativas</a></li>
-                        <li><a href="news.html">Notícias</a></li>
-                        <li><a href="elepassa.html">Eleições Passadas</a></li>
-                        <li><a href="termos.html">Termos de Contrato</a></li>
+                        <li><a href="home.php">Home</a></li>
+                        <li><a href="eleAtive.php">Eleições Ativas</a></li>
+                        <li><a href="news.php">Notícias</a></li>
+                        <li><a href="elepassa.php">Eleições Passadas</a></li>
+                        <li><a href="termos.php">Termos de Contrato</a></li>
                     </ul>
                 </div>
                 <div>
@@ -164,5 +164,7 @@
             FaVote - Todos os direitos reservados | 2025
         </div>
     </footer>
-
+<?php
+    include '../php/config.php';
+?>
 </body>

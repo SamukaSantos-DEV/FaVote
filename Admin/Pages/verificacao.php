@@ -28,7 +28,7 @@
       <input type="text" maxlength="1">
     </div>
 
-    <a href="home.html"><button class="validate-btn">VALIDAR</button></a>
+    <a href="home.php"><button class="validate-btn">VALIDAR</button></a>
   </div>
 </body>
 

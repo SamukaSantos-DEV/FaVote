@@ -21,10 +21,10 @@
 
 
         <nav class="nav">
-            <a href="home.html">Home</a>
-            <a href="eleAtive.html" class="active">Eleições Ativas</a>
-            <a href="news.html">Notícias</a>
-            <a href="elePassa.html">Eleições Passadas</a>
+            <a href="home.php">Home</a>
+            <a href="eleAtive.php" class="active">Eleições Ativas</a>
+            <a href="news.php">Notícias</a>
+            <a href="elePassa.php">Eleições Passadas</a>
         </nav>
         <div class="user-icon">
             <img src="../Images/user.png" width="50" alt="user" />
@@ -39,7 +39,7 @@
 
                 
                 <div class="sair">
-                    <a href="../login.html">Sair<i style="margin-left: 5px;" class="fa-solid fa-right-from-bracket"></i></a>
+                    <a href="../login.php">Sair<i style="margin-left: 5px;" class="fa-solid fa-right-from-bracket"></i></a>
                 </div>
             </div>
         </div>
@@ -48,7 +48,7 @@
 
     <main class="main-content">
         <h2>Eleições ativas para seu usuário</h2>
-        <a href="votacao.html" style="text-decoration: none;">
+        <a href="votacao.php" style="text-decoration: none;">
             <section class="main-vote">
                 <div class="vote-box">
                     <h1>REPRESENTANTE DE SALA<br>1º DSM (N)</h1>
@@ -105,11 +105,11 @@
                 <div>
                     <h4>PÁGINAS</h4>
                     <ul>
-                        <li><a href="home.html">Home</a></li>
-                        <li><a href="eleAtive.html">Eleições Ativas</a></li>
-                        <li><a href="news.html">Notícias</a></li>
-                        <li><a href="elepassa.html">Eleições Passadas</a></li>
-                        <li><a href="termos.html">Termos de Contrato</a></li>
+                        <li><a href="home.php">Home</a></li>
+                        <li><a href="eleAtive.php">Eleições Ativas</a></li>
+                        <li><a href="news.php">Notícias</a></li>
+                        <li><a href="elepassa.php">Eleições Passadas</a></li>
+                        <li><a href="termos.php">Termos de Contrato</a></li>
                     </ul>
                 </div>
                 <div>

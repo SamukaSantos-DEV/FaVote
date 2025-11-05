@@ -57,7 +57,7 @@ O FaVote busca **centralizar as eleições escolares** em um único ambiente dig
    cd favote
    ```
 
-3. **Abra o arquivo `login.html` no seu navegador.**
+3. **Abra o arquivo `login.php` no seu navegador.**
 
 
 

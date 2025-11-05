@@ -159,10 +159,10 @@
                 if (window.history.length > 1) {
                     history.back();
                 } else {
-                    window.location.href = "../login.html";
+                    window.location.href = "../login.php";
                 }
             } catch (e) {
-                window.location.href = "../login.html";
+                window.location.href = "../login.php";
             }
         }
 
@@ -183,10 +183,10 @@
                 if (window.history.length > 1) {
                     history.back();
                 } else {
-                    window.location.href = "../login.html";
+                    window.location.href = "../login.php";
                 }
             } catch (e) {
-                window.location.href = "../login.html";
+                window.location.href = "../login.php";
             }
         }
     </script>

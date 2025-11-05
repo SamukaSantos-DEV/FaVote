@@ -23,11 +23,11 @@
 
 
         <nav class="nav">
-            <a href="home.html">Home</a>
-            <a href="eleAtive.html">Eleições Ativas</a>
-            <a href="news.html">Notícias</a>
-            <a href="elePassa.html">Eleições Passadas</a>
-            <a href="dashboard.html"
+            <a href="home.php">Home</a>
+            <a href="eleAtive.php">Eleições Ativas</a>
+            <a href="news.php">Notícias</a>
+            <a href="elePassa.php">Eleições Passadas</a>
+            <a href="dashboard.php"
                 style="background-color: white; color: brown; padding: 4px 8px; border-radius: 4px; text-decoration: none; transition: background-color 0.6s ease;"
                 onmouseover="this.style.backgroundColor='#ccc'" onmouseout="this.style.backgroundColor='white'">
                 DASHBOARD
@@ -44,14 +44,14 @@
                 <p>1º Semestre</p>
 
                     <div class="editar">
-                    <a href="editardados.html">Editar dados<i class="fa-solid fa-pen-to-square" style="margin-left: 7px;"></i></a>
+                    <a href="editardados.php">Editar dados<i class="fa-solid fa-pen-to-square" style="margin-left: 7px;"></i></a>
                 </div>
 
 
 
                 
                 <div class="sair">
-                    <a href="../../login.html">Sair<i style="margin-left: 5px;" class="fa-solid fa-right-from-bracket"></i></a>
+                    <a href="../../login.php">Sair<i style="margin-left: 5px;" class="fa-solid fa-right-from-bracket"></i></a>
                 </div>
             </div>
         </div>
@@ -445,11 +445,11 @@
                 <div>
                     <h4>PÁGINAS</h4>
                     <ul>
-                        <li><a href="home.html">Home</a></li>
-                        <li><a href="eleAtive.html">Eleições Ativas</a></li>
-                        <li><a href="news.html">Notícias</a></li>
-                        <li><a href="elepassa.html">Eleições Passadas</a></li>
-                        <li><a href="termos.html">Termos de Contrato</a></li>
+                        <li><a href="home.php">Home</a></li>
+                        <li><a href="eleAtive.php">Eleições Ativas</a></li>
+                        <li><a href="news.php">Notícias</a></li>
+                        <li><a href="elepassa.php">Eleições Passadas</a></li>
+                        <li><a href="termos.php">Termos de Contrato</a></li>
                     </ul>
                 </div>
                 <div>

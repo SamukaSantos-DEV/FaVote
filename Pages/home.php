@@ -22,10 +22,10 @@
 
 
         <nav class="nav">
-            <a href="home.html" class="active">Home</a>
-            <a href="eleAtive.html">Eleições Ativas</a>
-            <a href="news.html">Notícias</a>
-            <a href="elePassa.html">Eleições Passadas</a>
+            <a href="home.php" class="active">Home</a>
+            <a href="eleAtive.php">Eleições Ativas</a>
+            <a href="news.php">Notícias</a>
+            <a href="elePassa.php">Eleições Passadas</a>
         </nav>
         <div class="user-icon">
             <img src="../Images/user.png" width="50" alt="user" />
@@ -38,7 +38,7 @@
                 <p>1º Semestre</p>
 
                 <div class="sair">
-                    <a href="../login.html">Sair<i style="margin-left: 5px;"
+                    <a href="../login.php">Sair<i style="margin-left: 5px;"
                             class="fa-solid fa-right-from-bracket"></i></a>
                 </div>
             </div>
@@ -47,7 +47,7 @@
     </header>
 
     <main class="main-content">
-        <a href="eleAtive.html" style="text-decoration: none;">
+        <a href="eleAtive.php" style="text-decoration: none;">
             <section class="main-vote">
                 <div class="vote-box">
                     <span class="badge">PRINCIPAL VOTAÇÃO EM ANDAMENTO</span>
@@ -65,7 +65,7 @@
             <div class="news">
                 <div style="display: flex; justify-content: space-between;">
                     <h2>Notícias</h2>
-                    <a href="news.html">Ver mais ➜</a>
+                    <a href="news.php">Ver mais ➜</a>
                 </div>
                 
                     <div class="news-card">
@@ -74,7 +74,7 @@
                             12/05/2025.
                         </p><br>
                         <small><strong>Publicado em:</strong> 10/05/2025 às 13:42</small>
-                        <button class="btncandidatar"  onclick="window.location.href='querocandidatar.html'" ">CANDIDATAR-ME</button>
+                        <button class="btncandidatar"  onclick="window.location.href='querocandidatar.php'" ">CANDIDATAR-ME</button>
                     </div>
                 
 
@@ -92,7 +92,7 @@
             <div class="votes">
                 <div style="display: flex; justify-content: space-between;">
                     <h2>Últimas votações</h2>
-                    <a href="elePassa.html">Ver mais ➜</a>
+                    <a href="elePassa.php">Ver mais ➜</a>
                 </div>
                 <div class="vote-result">
                     <h3>VICTOR LUIZ RODRIGUES</h3><br>
@@ -129,11 +129,11 @@
                 <div>
                     <h4>PÁGINAS</h4>
                     <ul>
-                        <li><a href="home.html">Home</a></li>
-                        <li><a href="eleAtive.html">Eleições Ativas</a></li>
-                        <li><a href="news.html">Notícias</a></li>
-                        <li><a href="elepassa.html">Eleições Passadas</a></li>
-                        <li><a href="termos.html">Termos de Contrato</a></li>
+                        <li><a href="home.php">Home</a></li>
+                        <li><a href="eleAtive.php">Eleições Ativas</a></li>
+                        <li><a href="news.php">Notícias</a></li>
+                        <li><a href="elepassa.php">Eleições Passadas</a></li>
+                        <li><a href="termos.php">Termos de Contrato</a></li>
                     </ul>
                 </div>
                 <div>

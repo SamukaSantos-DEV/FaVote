@@ -14,38 +14,32 @@
 </head>
 
 <body>
+
+    <button class="btn-close" onclick="window.location.href = '../login.php';">➜</button>
     <div class="container" id="container">
         <div class="background"></div>
 
         <div class="form-container">
 
             <form class="form-box login" id="loginForm">
-                <h2>Fazer login</h2>
-                <label>E-Mail:</label>
-                <input type="email" placeholder="Ex: joao.silva@fatec.sp.gov.br" />
+                <h2>Fazer login Administrador</h2>
+                <label>Nome de usuário:</label>
+                <input type="text" placeholder="Digite seu nome de usuário" />
                 <label>Senha:</label>
                 <input type="password" placeholder="Digite sua senha" />
                 <div class="checkbox">
                     <input type="checkbox" id="keepLogged" />
                     <label for="keepLogged">Mantenha-me conectado</label>
                 </div>
-                <div style=" height: 20%;"></div>
+                <div style=" height: 28%;"></div>
                 <div class="link">
-
-
-                    <!--<span>É Administrador? <a href="Admin/login.html" onclick="toggleForm()">Faça Login de ADM</a></span>-->
-
-                    <!--<span>É Administrador? <a href="Admin/login.html" onclick="toggleForm()">Faça Login de ADM</a></span>-->
-                    <div class="checkbox">
-                        <label for="terms">Ao fazer login, os <a href="Pages/termos.html"
-                                style="text-decoration: none; color: rgb(112, 0, 0);">Termos de Contrato</a> foram aceitos</label>
-                    </div>
+                    <span>Não possui cadastro? <a href="#" onclick="toggleForm()">Faça cadastro</a></span>
                 </div>
                 <button type="submit">FAZER LOGIN</button>
             </form>
 
             <form class="form-box register" id="registerForm">
-                <h2>Cadastre-se</h2>
+                <h2>Cadastrar Administrador</h2>
                 <label>Nome de usuário:</label>
                 <input type="text" placeholder="Digite seu nome" />
                 <label>E-Mail Institucional (apenas FATEC):</label>
@@ -63,28 +57,11 @@
 
                 </div>
 
-                <div style="display: flex; gap: 0px;">
-                    <div style="flex: 2; position: relative; z-index: 1;">
-                        <label style="color: #848484;">Curso:</label>
-                        <input
-                            style="background-color: #E8E8E8; border: 2px solid #b2b2b2; color: #848484; width: 100%;"
-                            type="text" readonly value="DSM (N)" />
-                    </div>
-                    <div style="flex: 1; position: relative; z-index: 2; margin-left: -20px;">
-                        <label style="color: #848484;">Semestre:</label>
-                        <input
-                            style="background-color: #E8E8E8; border: 2px solid #b2b2b2; color: #848484; width: 100%;"
-                            type="text" readonly value="1°" />
-                    </div>
-                </div>
-
-
-
                 <label>Senha:</label>
                 <input type="password" placeholder="Crie uma senha" />
                 <div class="checkbox">
                     <input type="checkbox" id="terms" />
-                    <label for="terms">Li e aceito os <a href="Pages/termos.html"
+                    <label for="terms">Li e aceito os <a href="Pages/termos.php"
                             style="text-decoration: none; color: rgb(112, 0, 0);">Termos de Contrato</a></label>
                 </div>
                 <div class="link">
@@ -101,34 +78,27 @@
             container.classList.add('hide-background');
             setTimeout(() => {
                 container.classList.toggle('active');
-                document.title = container.classList.contains('active') ? 'FaVote | Cadastro' : 'FaVote | Login';
+                document.title = container.classList.contains('active') ? 'FaVote | Cadastro Admin' : 'FaVote | Login Admin';
             }, 100);
             setTimeout(() => {
                 container.classList.remove('hide-background');
             }, 500);
         }
 
-        document.title = 'Fazer login';
+        document.title = 'FaVote | Login Admin';
 
         document.getElementById('loginForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
-            const username = this.querySelector('input[type="email"]').value.trim();
+            const username = this.querySelector('input[type="text"]').value.trim();
             const password = this.querySelector('input[type="password"]').value.trim();
 
             if (!username || !password) {
                 alert('Por favor, preencha todos os campos.');
                 return;
             }
-            if(username === "admin@fatec.sp.gov.br"){
-                window.location.href = 'Admin/Pages/home.html';
-            }
-            else{
-                window.location.href = 'Pages/home.html';
-            }
-            
 
-            
+            window.location.href = 'Pages/home.php';
         });
 
         document.getElementById('registerForm').addEventListener('submit', function (e) {
@@ -164,7 +134,7 @@
                 alert('Você deve aceitar os Termos de Contrato.');
                 return;
             }
-            window.location.href = 'Pages/verificacao.html';
+            window.location.href = 'Pages/verificacao.php';
         });
 
 

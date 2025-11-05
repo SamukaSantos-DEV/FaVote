@@ -16,10 +16,10 @@
     <header class="header">
         <div class="logo"><img src="../Images/logofatec.png" width="190"></div>
         <nav class="nav">
-            <a href="home.html">Home</a>
-            <a href="eleAtive.html" class="active">Eleições Ativas</a>
-            <a href="news.html">Notícias</a>
-            <a href="elePassa.html">Eleições Passadas</a>
+            <a href="home.php">Home</a>
+            <a href="eleAtive.php" class="active">Eleições Ativas</a>
+            <a href="news.php">Notícias</a>
+            <a href="elePassa.php">Eleições Passadas</a>
         </nav>
         <div class="user-icon">
             <img src="../Images/user.png" width="50" alt="user" />
@@ -33,7 +33,7 @@
 
                 
                 <div class="sair">
-                    <a href="../login.html">Sair<i style="margin-left: 5px;" class="fa-solid fa-right-from-bracket"></i></a>
+                    <a href="../login.php">Sair<i style="margin-left: 5px;" class="fa-solid fa-right-from-bracket"></i></a>
                 </div>
             </div>
         </div>
@@ -79,7 +79,7 @@
                 </div>
             </div>
         </section>
-        <p class="termos">Ao finalizar esse processo eleitoral, você concorda com os <a href="termos.html"
+        <p class="termos">Ao finalizar esse processo eleitoral, você concorda com os <a href="termos.php"
                 class="link-termos">Termos e
                 Condições</a>.</p>
 
@@ -98,11 +98,11 @@
                 <div>
                     <h4>PÁGINAS</h4>
                     <ul>
-                        <li><a href="home.html">Home</a></li>
-                        <li><a href="eleAtive.html">Eleições Ativas</a></li>
-                        <li><a href="news.html">Notícias</a></li>
-                        <li><a href="elepassa.html">Eleições Passadas</a></li>
-                        <li><a href="termos.html">Termos de Contrato</a></li>
+                        <li><a href="home.php">Home</a></li>
+                        <li><a href="eleAtive.php">Eleições Ativas</a></li>
+                        <li><a href="news.php">Notícias</a></li>
+                        <li><a href="elepassa.php">Eleições Passadas</a></li>
+                        <li><a href="termos.php">Termos de Contrato</a></li>
                     </ul>
                 </div>
                 <div>
@@ -138,7 +138,7 @@
 
         document.querySelector('.botao-finalizar').addEventListener('click', function () {
             alert('Votação concluída com sucesso');
-            window.location.href = 'home.html';
+            window.location.href = 'home.php';
         });
     </script>
 
