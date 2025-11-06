@@ -1,0 +1,385 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Tempo de geração: 06/11/2025 às 01:40
+-- Versão do servidor: 10.4.28-MariaDB
+-- Versão do PHP: 8.2.4
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Banco de dados: `favotedb`
+--
+CREATE DATABASE IF NOT EXISTS `favotedb` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `favotedb`;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `admin`
+--
+
+CREATE TABLE `admin` (
+  `id` int(11) NOT NULL,
+  `nome_usuario` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `ra` varchar(20) DEFAULT NULL,
+  `cpf` varchar(11) NOT NULL,
+  `senha` varchar(255) NOT NULL,
+  `criado_data` timestamp NOT NULL DEFAULT current_timestamp(),
+  `atualizado_data` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `alunos`
+--
+
+CREATE TABLE `alunos` (
+  `id` int(11) NOT NULL,
+  `ra` varchar(20) NOT NULL,
+  `nome` varchar(100) NOT NULL,
+  `email_institucional` varchar(100) NOT NULL,
+  `cpf` varchar(11) NOT NULL,
+  `senha` varchar(255) NOT NULL,
+  `turma_id` int(11) DEFAULT NULL,
+  `criado_data` timestamp NOT NULL DEFAULT current_timestamp(),
+  `atualizado_data` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `alunos`
+--
+
+INSERT INTO `alunos` (`id`, `ra`, `nome`, `email_institucional`, `cpf`, `senha`, `turma_id`, `criado_data`, `atualizado_data`) VALUES
+(1, '2025342343243', 'João Pedro', 'joao.pavan01@fatec.sp.gov.br', '1111', 'escolaestadual10', 2, '2025-11-05 23:32:30', '2025-11-05 23:32:30');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `candidatos`
+--
+
+CREATE TABLE `candidatos` (
+  `id` int(11) NOT NULL,
+  `eleicao_id` int(11) NOT NULL,
+  `aluno_ra` varchar(20) NOT NULL,
+  `proposta` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `cursos`
+--
+
+CREATE TABLE `cursos` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `cursos`
+--
+
+INSERT INTO `cursos` (`id`, `nome`) VALUES
+(1, 'Desenvolvimento de Software Multiplataforma'),
+(3, 'Gestão de Produção Industrial'),
+(2, 'Gestão Empresarial');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `eleicoes`
+--
+
+CREATE TABLE `eleicoes` (
+  `id` int(11) NOT NULL,
+  `titulo` varchar(100) NOT NULL,
+  `descricao` text DEFAULT NULL,
+  `dataPostagem` datetime NOT NULL DEFAULT current_timestamp(),
+  `data_inicio` datetime NOT NULL,
+  `data_fim` datetime NOT NULL,
+  `ativa` tinyint(1) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `eleicoes`
+--
+
+INSERT INTO `eleicoes` (`id`, `titulo`, `descricao`, `dataPostagem`, `data_inicio`, `data_fim`, `ativa`) VALUES
+(4, 'ELEIÇÃO 1', 'Eleição feita para teste', '2025-11-05 21:09:40', '2025-11-05 21:09:24', '2025-11-28 21:09:24', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `noticias`
+--
+
+CREATE TABLE `noticias` (
+  `id` int(11) NOT NULL,
+  `titulo` varchar(250) NOT NULL,
+  `descricao` varchar(250) NOT NULL,
+  `dataPublicacao` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `noticias`
+--
+
+INSERT INTO `noticias` (`id`, `titulo`, `descricao`, `dataPublicacao`) VALUES
+(1, 'VESTIBULAR 2026', 'Inscrições abertas!', '2025-11-05 21:10:12');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `semestres`
+--
+
+CREATE TABLE `semestres` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `semestres`
+--
+
+INSERT INTO `semestres` (`id`, `nome`) VALUES
+(1, '1° Semestre'),
+(2, '2° Semestre'),
+(3, '3° Semestre'),
+(4, '4° Semestre'),
+(5, '5° Semestre'),
+(6, '6° Semestre');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `turmas`
+--
+
+CREATE TABLE `turmas` (
+  `id` int(11) NOT NULL,
+  `curso_id` int(11) NOT NULL,
+  `semestre_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `turmas`
+--
+
+INSERT INTO `turmas` (`id`, `curso_id`, `semestre_id`) VALUES
+(1, 1, 1),
+(2, 1, 2),
+(3, 1, 3),
+(4, 1, 4),
+(5, 1, 5),
+(6, 1, 6),
+(7, 2, 1),
+(8, 2, 2),
+(9, 2, 3),
+(10, 2, 4),
+(11, 2, 5),
+(12, 2, 6),
+(13, 3, 1),
+(14, 3, 2),
+(15, 3, 3),
+(16, 3, 4),
+(17, 3, 5),
+(18, 3, 6);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `votos`
+--
+
+CREATE TABLE `votos` (
+  `id` int(11) NOT NULL,
+  `eleicao_id` int(11) NOT NULL,
+  `aluno_ra` varchar(20) NOT NULL,
+  `candidato_id` int(11) NOT NULL,
+  `data_voto` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Índices para tabelas despejadas
+--
+
+--
+-- Índices de tabela `admin`
+--
+ALTER TABLE `admin`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nome_usuario` (`nome_usuario`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `cpf` (`cpf`),
+  ADD UNIQUE KEY `ra` (`ra`);
+
+--
+-- Índices de tabela `alunos`
+--
+ALTER TABLE `alunos`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `ra` (`ra`),
+  ADD UNIQUE KEY `email_institucional` (`email_institucional`),
+  ADD UNIQUE KEY `cpf` (`cpf`),
+  ADD KEY `turma_id` (`turma_id`);
+
+--
+-- Índices de tabela `candidatos`
+--
+ALTER TABLE `candidatos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `eleicao_id` (`eleicao_id`),
+  ADD KEY `aluno_ra` (`aluno_ra`);
+
+--
+-- Índices de tabela `cursos`
+--
+ALTER TABLE `cursos`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nome` (`nome`);
+
+--
+-- Índices de tabela `eleicoes`
+--
+ALTER TABLE `eleicoes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `noticias`
+--
+ALTER TABLE `noticias`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `semestres`
+--
+ALTER TABLE `semestres`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nome` (`nome`);
+
+--
+-- Índices de tabela `turmas`
+--
+ALTER TABLE `turmas`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `curso_semestre` (`curso_id`,`semestre_id`),
+  ADD KEY `semestre_id` (`semestre_id`);
+
+--
+-- Índices de tabela `votos`
+--
+ALTER TABLE `votos`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `eleicao_id` (`eleicao_id`,`aluno_ra`),
+  ADD KEY `aluno_ra` (`aluno_ra`),
+  ADD KEY `candidato_id` (`candidato_id`);
+
+--
+-- AUTO_INCREMENT para tabelas despejadas
+--
+
+--
+-- AUTO_INCREMENT de tabela `admin`
+--
+ALTER TABLE `admin`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `alunos`
+--
+ALTER TABLE `alunos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de tabela `candidatos`
+--
+ALTER TABLE `candidatos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `cursos`
+--
+ALTER TABLE `cursos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de tabela `eleicoes`
+--
+ALTER TABLE `eleicoes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de tabela `noticias`
+--
+ALTER TABLE `noticias`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de tabela `semestres`
+--
+ALTER TABLE `semestres`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT de tabela `turmas`
+--
+ALTER TABLE `turmas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- AUTO_INCREMENT de tabela `votos`
+--
+ALTER TABLE `votos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Restrições para tabelas despejadas
+--
+
+--
+-- Restrições para tabelas `alunos`
+--
+ALTER TABLE `alunos`
+  ADD CONSTRAINT `alunos_ibfk_1` FOREIGN KEY (`turma_id`) REFERENCES `turmas` (`id`);
+
+--
+-- Restrições para tabelas `candidatos`
+--
+ALTER TABLE `candidatos`
+  ADD CONSTRAINT `candidatos_ibfk_1` FOREIGN KEY (`eleicao_id`) REFERENCES `eleicoes` (`id`),
+  ADD CONSTRAINT `candidatos_ibfk_2` FOREIGN KEY (`aluno_ra`) REFERENCES `alunos` (`ra`);
+
+--
+-- Restrições para tabelas `turmas`
+--
+ALTER TABLE `turmas`
+  ADD CONSTRAINT `turmas_ibfk_1` FOREIGN KEY (`curso_id`) REFERENCES `cursos` (`id`),
+  ADD CONSTRAINT `turmas_ibfk_2` FOREIGN KEY (`semestre_id`) REFERENCES `semestres` (`id`);
+
+--
+-- Restrições para tabelas `votos`
+--
+ALTER TABLE `votos`
+  ADD CONSTRAINT `votos_ibfk_1` FOREIGN KEY (`eleicao_id`) REFERENCES `eleicoes` (`id`),
+  ADD CONSTRAINT `votos_ibfk_2` FOREIGN KEY (`aluno_ra`) REFERENCES `alunos` (`ra`),
+  ADD CONSTRAINT `votos_ibfk_3` FOREIGN KEY (`candidato_id`) REFERENCES `candidatos` (`id`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
