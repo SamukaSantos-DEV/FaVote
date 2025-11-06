@@ -379,18 +379,13 @@ body {
 }
 
 .btn-ver-mais {
-    
-    cursor: pointer;    
+    cursor: pointer;
     display: flex;
     align-items: center;
     color: #333;
     text-decoration: none;
     font-weight: bold;
 }
-
-
-
-
 
 .news-section {
     margin-top: 80px;
@@ -437,7 +432,9 @@ body {
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 20px;
     margin-bottom: 2%;
+    justify-content: start;
 }
+
 
 .news-card {
     border-radius: 20px;

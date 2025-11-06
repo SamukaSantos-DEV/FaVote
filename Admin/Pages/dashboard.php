@@ -238,9 +238,6 @@ $resultTurmas = $conexao->query($sqlTurmas);
 
             <div class="news-cards">
                 <?php if ($resultNoticias && $resultNoticias->num_rows > 0): ?>
-                    <div class="news-filter">
-                        <p class="filter-active">Mais recentes</p>
-                    </div>
                     <?php foreach ($resultNoticias as $noticia): ?>
                         <div class="news-card">
                             <div class="card-content">
