@@ -108,7 +108,9 @@
                 return;
             }
             if (username === "admin@fatec.sp.gov.br") {
+                if(password === "admin"){
                 window.location.href = 'Admin/Pages/home.php';
+                }
             }
             else {
                 window.location.href = 'Pages/home.php';

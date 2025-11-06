@@ -1,3 +1,53 @@
+<?php
+
+include '../../php/config.php';
+
+$sqlEleicoesAtivas = "SELECT * FROM eleicoes WHERE ativa != 0";
+$resultAtivas = $conexao->query($sqlEleicoesAtivas);
+
+$sqlEleicoesPassadas = "SELECT * FROM eleicoes WHERE ativa = 0";
+$resultPassadas = $conexao->query($sqlEleicoesPassadas);
+
+$sqlNoticias = "SELECT * FROM noticias ORDER BY dataPublicacao DESC";
+$resultNoticias = $conexao->query($sqlNoticias);
+
+$sqlUsuarios = "
+    SELECT 
+        a.id AS aluno_id,
+        a.ra,
+        a.nome,
+        a.email_institucional,
+        a.cpf,
+        c.nome AS curso_nome,
+        s.nome AS semestre_nome
+    FROM alunos a
+    LEFT JOIN turmas t ON a.turma_id = t.id
+    LEFT JOIN cursos c ON t.curso_id = c.id
+    LEFT JOIN semestres s ON t.semestre_id = s.id
+    LIMIT 15
+";
+
+$resultUsuarios = $conexao->query($sqlUsuarios);
+
+$sqlTurmas = "
+    SELECT 
+        t.id AS turma_id,
+        c.id AS curso_id,
+        c.nome AS curso_nome,
+        s.nome AS semestre_nome,
+        COUNT(a.id) AS qtd_alunos
+    FROM turmas t
+    LEFT JOIN cursos c ON t.curso_id = c.id
+    LEFT JOIN semestres s ON t.semestre_id = s.id
+    LEFT JOIN alunos a ON a.turma_id = t.id
+    GROUP BY t.id
+    LIMIT 7
+";
+
+$resultTurmas = $conexao->query($sqlTurmas);
+
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -64,350 +114,365 @@
             <h1>Eleições</h1>
             <button id="criarMais" class="create-btn">Criar Nova +</button>
         </div>
-
-
         <div class="elections-active">
-            <div class="election-card">
-                <div class="election-id">
-                    <span>ID</span>
-                    <span>3</span>
+            <?php if ($resultAtivas && $resultAtivas->num_rows > 0): ?>
+                <?php foreach ($resultAtivas as $row): ?>
+                    <div class="election-card">
+                        <div class="election-id">
+                            <span>ID</span>
+                            <span><?= htmlspecialchars($row['id']) ?></span>
+                        </div>
 
+                        <div class="election-details">
+                            <div class="election-info">
+                                <div class="election-title">
+                                    <?= htmlspecialchars($row['titulo']) ?>
+                                </div>
+                                <div class="election-description">
+                                    <?= htmlspecialchars($row['descricao']) ?>
+                                </div>
+                            </div>
+
+                            <div class="election-dates">
+                                <div class="election-date">
+                                    Publicada em: <?= date('d/m/Y H:i', strtotime($row['dataPostagem'])) ?>
+                                </div>
+                                <div class="election-date">
+                                    Começou em: <?= date('d/m/Y H:i', strtotime($row['data_inicio'])) ?>
+                                </div>
+                                <div class="election-date">
+                                    Termina em: <?= date('d/m/Y H:i', strtotime($row['data_fim'])) ?>
+                                </div>
+                            </div>
+
+                            <div class="election-actions">
+                                <button type="button" id="btnEditar<?= $row['id'] ?>" class="btn-edit">
+                                    <i class="fas fa-edit" style="margin-right: 5px;"></i> EDITAR
+                                </button>
+
+                                <a href="dashboard.php?id=<?= $row['id'] ?>"
+                                    class="btn-cancel"
+                                    id="btnCancelar<?= $row['id'] ?>"
+                                    onclick="return confirm('AVISO: Você está prestes a cancelar/excluir “<?= htmlspecialchars($row['titulo']) ?>”, criada em <?= date('d/m/Y H:i', strtotime($row['dataPostagem'])) ?>')">
+                                    <i class="fas fa-times" style="margin-right: 5px;"></i> Excluir
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+                <div class="ver-mais">
+                    <label class="btn-ver-mais">Ver mais <i class="fas fa-chevron-down"
+                            style="margin-left: 5px;"></i></label>
                 </div>
-                <div class="election-details">
-                    <div class="election-info">
-                        <div class="election-title">ELEIÇÃO de Representante de Turma 1° DSM</div>
-                    </div>
-                    <div class="election-dates">
-                        <div class="election-date">Publicada em: 05/05/2025 às 12:38</div>
-                        <div class="election-date">Começou em: 05/05/2025 às 14:00</div>
-                        <div class="election-date">Termina em: 05/05/2025 às 14:00</div>
-                    </div>
-                    <div class="election-actions">
-
-                        <button type="button" id="btnEditar1" class="btn-edit">
-                            <i class="fas fa-edit" style="margin-right: 5px;"></i> EDITAR
-                        </button>
-
-                        <a href="dashboard.php" class="btn-cancel" id="btnCancelar1"
-                            onclick="return confirm('AVISO: Você está prestes a cancelar/excluir “ELEIÇÃO de Representante de Turma 1º DSM”, criada em 05/05/2025 - 12:38') ">
-                            <i class="fas fa-times" style="margin-right: 5px;"></i> Excluir
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="election-card">
-                <div class="election-id">
-                    <span>ID</span>
-                    <span>4</span>
-
-                </div>
-                <div class="election-details">
-                    <div class="election-info">
-                        <div class="election-title">ELEIÇÃO de Representante de Turma 2° DSM</div>
-                    </div>
-                    <div class="election-dates">
-                        <div class="election-date">Publicada em: 04/05/2025 às 13:38</div>
-                        <div class="election-date">Começou em: 05/05/2025 às 14:00</div>
-                        <div class="election-date">Termina em: 05/05/2025 às 14:00</div>
-                    </div>
-                    <div class="election-actions">
-                        <button type="button" id="btnEditar2" class="btn-edit">
-                            <i class="fas fa-edit" style="margin-right: 5px;"></i> EDITAR
-                        </button>
-
-
-                        <a href="dashboard.php" class="btn-cancel" id="btnCancelar2"
-                            onclick="return confirm('AVISO: Você está prestes a cancelar/excluir “ELEIÇÃO de Representante de Turma 1º DSM”, criada em 05/05/2025 - 12:38') ">
-                            <i class="fas fa-times" style="margin-right: 5px;"></i> Excluir
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ver-mais">
-                <label class="btn-ver-mais">Ver mais <i class="fas fa-chevron-down"
-                        style="margin-left: 5px;"></i></label>
-            </div>
+            <?php else: ?>
+                <p>Nenhuma eleição ativa encontrada.</p>
+            <?php endif; ?>
         </div>
 
 
         <h2 class="section-title">Eleições Passadas</h2>
         <div class="elections-past">
-            <div class="election-card election-past">
-                <div class="election-id">
-                    <span>ID</span>
-                    <span>1</span>
+            <?php if ($resultPassadas && $resultPassadas->num_rows > 0): ?>
+                <?php foreach ($resultPassadas as $row): ?>
+                    <div class="election-card election-past">
+                        <div class="election-id">
+                            <span>ID</span>
+                            <span><?= htmlspecialchars($row['id']) ?></span>
+                        </div>
 
+                        <div class="election-details">
+                            <div class="election-info">
+                                <div class="election-title">
+                                    <?= htmlspecialchars($row['titulo']) ?>
+                                </div>
+                                <div class="election-description">
+                                    <?= htmlspecialchars($row['descricao']) ?>
+                                </div>
+                            </div>
+
+                            <div class="election-dates">
+                                <div class="election-date">
+                                    Publicada em: <?= date('d/m/Y H:i', strtotime($row['dataPostagem'])) ?>
+                                </div>
+                                <div class="election-date">
+                                    Começou em: <?= date('d/m/Y H:i', strtotime($row['data_inicio'])) ?>
+                                </div>
+                                <div class="election-date">
+                                    Termina em: <?= date('d/m/Y H:i', strtotime($row['data_fim'])) ?>
+                                </div>
+                            </div>
+
+                            <div class="election-actions">
+                                <a href="../Docs/Ata.docx"
+                                    target="_blank"
+                                    class="btn-pdf"
+                                    id="btnPdf<?= $row['id'] ?>">
+                                    <i class="fa-solid fa-download" style="margin-right: 5px;"></i> Ata
+                                </a>
+
+                                <a href="dashboard.php?id=<?= $row['id'] ?>"
+                                    class="btn-delete"
+                                    id="btnExcluir<?= $row['id'] ?>"
+                                    onclick="return confirm('AVISO: Você está prestes a cancelar/excluir “<?= htmlspecialchars($row['titulo']) ?>”, criada em <?= date('d/m/Y H:i', strtotime($row['dataPostagem'])) ?>')">
+                                    <i class="fas fa-trash" style="margin-right: 5px;"></i> Excluir
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+                <div class="ver-mais">
+                    <label class="btn-ver-mais">Ver mais <i class="fas fa-chevron-down"
+                            style="margin-left: 5px;"></i></label>
                 </div>
-                <div class="election-details">
-                    <div class="election-info">
-                        <div class="election-title">ELEIÇÃO de Representante de Turma 1° DSM</div>
-                    </div>
-                    <div class="election-dates">
-                        <div class="election-date">Publicada em: 05/05/2024 às 12:38</div>
-                        <div class="election-date">Começou em: 05/05/2024 às 14:00</div>
-                        <div class="election-date">Termina em: 05/05/2024 às 14:00</div>
-                    </div>
-                    <div class="election-actions">
-                        <a href="../Docs/Ata.docx" target="_blank" class="btn-pdf" id="btnPdf1">
-
-                            <i class="fa-solid fa-download" style="margin-right: 5px;"></i> Ata
-                        </a>
-                        <a href="dashboard.php" class="btn-delete" id="btnExcluir1"
-                            onclick="return confirm('AVISO: Você está prestes a cancelar/excluir “ELEIÇÃO de Representante de Turma 1º DSM”, criada em 05/05/2025 - 12:38') ">
-                            <i class="fas fa-trash" style="margin-right: 5px;"></i> Excluir
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="election-card election-past">
-                <div class="election-id">
-                    <span>ID</span>
-                    <span>2</span>
-
-                </div>
-                <div class="election-details">
-                    <div class="election-info">
-                        <div class="election-title">ELEIÇÃO de Representante de Turma 2° DSM</div>
-                    </div>
-                    <div class="election-dates">
-                        <div class="election-date">Publicada em: 05/05/2024 às 12:38</div>
-                        <div class="election-date">Começou em: 05/05/2024 às 14:00</div>
-                        <div class="election-date">Termina em: 05/05/2024 às 14:00</div>
-                    </div>
-                    <div class="election-actions">
-                        <a href="../Docs/Ata.docx" target="_blank" class="btn-pdf" id="btnPdf1">
-                            <i class="fa-solid fa-download" style="margin-right: 5px;"></i> Ata
-                        </a>
-
-                        <a href="dashboard.php" class="btn-delete" id="btnExcluir2"
-                            onclick="return confirm('AVISO: Você está prestes a cancelar/excluir “ELEIÇÃO de Representante de Turma 1º DSM”, criada em 05/05/2025 - 12:38') ">
-                            <i class="fas fa-trash" style="margin-right: 5px;"></i> Excluir
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ver-mais">
-                <label class="btn-ver-mais">Ver mais <i class="fas fa-chevron-down"
-                        style="margin-left: 5px;"></i></label>
-            </div>
+            <?php else: ?>
+                <p>Nenhuma eleição passada encontrada.</p>
+            <?php endif; ?>
         </div>
-
 
 
         <div class="news-section">
             <div class="news-header">
                 <h2>Notícias</h2>
                 <a href="criarNoticia.php" id="criarMais2" class="create-btn">Criar Nova +</a>
-
-            </div>
-
-            <div class="news-filter">
-                <p class="filter-active">Mais recentes</p>
             </div>
 
             <div class="news-cards">
-                <div class="news-card">
-                    <div class="card-content">
-                        <h3>NOVO LABORATÓRIO DE REDES É INAUGURADO NA FATEC</h3>
-                        <p>Foi inaugurado nesta segunda-feira o novo Laboratório de Redes da FATEC Itapira.
-                            O espaço conta com roteadores, switches gerenciáveis e infraestrutura moderna para as aulas
-                            práticas dos cursos de Tecnologia.</p>
-                        <p class="publication-date">Publicado em: 02/06/2025 às 09:00</p>
+                <?php if ($resultNoticias && $resultNoticias->num_rows > 0): ?>
+                    <div class="news-filter">
+                        <p class="filter-active">Mais recentes</p>
                     </div>
-                    <div class="card-actions">
-                        <a href="#" class="delete-btn"
-                            onclick="return confirm('AVISO: Você está prestes a excluir a notícia de “Novo Laboratório de Redes”, criada em 02/06/2025 - 09:00') ">
-                            EXCLUIR
-                        </a>
-                    </div>
-                </div>
+                    <?php foreach ($resultNoticias as $noticia): ?>
+                        <div class="news-card">
+                            <div class="card-content">
+                                <h3><?= htmlspecialchars($noticia['titulo']) ?></h3>
+                                <p><?= nl2br(htmlspecialchars($noticia['descricao'])) ?></p>
+                                <p class="publication-date">
+                                    Publicado em: <?= date('d/m/Y H:i', strtotime($noticia['dataPublicacao'])) ?>
+                                </p>
+                            </div>
 
-
-                <div class="news-card">
-                    <div class="card-content">
-                        <h3>SEMANA DE TECNOLOGIA DA FATEC SERÁ REALIZADA EM JUNHO</h3>
-                        <p>A tradicional Semana de Tecnologia da FATEC acontecerá entre os dias 17 e 21 de junho, com
-                            palestras, workshops e hackathons. O evento é aberto aos alunos de todos os cursos e também
-                            ao público externo.</p>
-                        <p class="publication-date">Publicado em: 28/05/2025 às 16:45</p>
-                    </div>
-                    <div class="card-actions">
-                        <a href="#" class="delete-btn"
-                            onclick="return confirm('AVISO: Você está prestes a excluir a notícia de “Semana de Tecnologia Confirmada”, criada em 28/05/2025 - 16:45') ">
-                            EXCLUIR
-                        </a>
-                    </div>
-                </div>
-
-
-                <div class="news-card">
-                    <div class="card-content">
-                        <h3>PROJETO SOCIAL DE ALUNOS DA FATEC É DESTAQUE NA REGIÃO</h3>
-                        <p>Alunos do curso de Gestão Empresarial da FATEC desenvolveram um projeto para apoio a pequenas
-                            empresas locais, oferecendo consultoria gratuita. A iniciativa foi destaque em jornais da
-                            região.</p>
-                        <p class="publication-date">Publicado em: 27/05/2025 às 11:20</p>
-                    </div>
-                    <div class="card-actions">
-                        <a href="#" class="delete-btn"
-                            onclick="return confirm('AVISO: Você está prestes a excluir a notícia de “Projeto Social em Destaque”, criada em 27/05/2025 - 11:20') ">
-                            EXCLUIR
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="ver-mais">
-                <label class="btn-ver-mais">Ver mais <i class="fas fa-chevron-down"
-                        style="margin-left: 5px;"></i></label>
-            </div>
-
-
-            <div class="container" style="margin-top: 5%;">
-                <div class="table-header">
-                    <h2>Usuários</h2>
-                    <a href="turmausuario.php" class="ver-todos-btn">
-                        Ver todos ➜
-                    </a>
-
-                </div>
-
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>RA</th>
-                                <th>Nome</th>
-                                <th>E-Mail</th>
-                                <th>CPF</th>
-                                <th>Curso</th>
-                                <th>Período</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="usuarios-tbody">
-                        </tbody>
-                    </table>
-                </div>
-
-
-
-            </div>
-
-            <div class="container">
-                <div class="table-header">
-                    <h2>Turmas</h2>
-                    <a href="turmausuario.php" class="ver-todos-btn">
-                        Ver todos ➜
-                    </a>
-
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nome do Curso</th>
-                                <th>Qtd de Alunos Relacionados</th>
-                                <th>Semestre</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="turmas-tbody">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-
-            <!-- Modal do + Criar Nova Eleicao -->
-
-            <div id="modalOverlay" class="modal-overlay">
-                <div class="modal">
-
-                    <div class="modal-left">
-                        <div class="election-title">
-                            <h2>CRIAR ELEIÇÃO</h2>
-                        </div>
-                        <div class="form-group">
-                            <label for="nome">Nome:</label>
-                            <input type="text" id="nome" value="ELEIÇÃO de Representante de Turma 1° DSM"
-                                class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="descricao">Descrição:</label>
-                            <textarea id="descricao" class="form-control"
-                                rows="5">Votação para eleição do primeiro representante de sala da turma de 1º DSM Noturno</textarea>
-
-                        </div>
-                        <div class="form-group">
-                            <label>Curso e Semestre:</label>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <select class="form-control">
-                                        <option value="">DSM (N)</option>
-                                        <option value="">GE (N)</option>
-                                        <option value="">GPI (N)</option>
-
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <select class="form-control">
-                                        <option value="">1° Semestre</option>
-                                        <option value="">2° Semestre</option>
-                                        <option value="">3° Semestre</option>
-                                        <option value="">4° Semestre</option>
-                                        <option value="">5° Semestre</option>
-                                        <option value="">6° Semestre</option>
-                                    </select>
-                                </div>
+                            <div class="card-actions">
+                                <a href="dashboard.php?id=<?= $noticia['id'] ?>"
+                                    class="delete-btn"
+                                    onclick="return confirm('AVISO: Você está prestes a excluir a notícia “<?= htmlspecialchars($noticia['titulo']) ?>”, criada em <?= date('d/m/Y H:i', strtotime($noticia['dataPublicacao'])) ?>')">
+                                    EXCLUIR
+                                </a>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label>Início:</label>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <input type="date" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <input type="time" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Fim:</label>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <input type="date" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <input type="time" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                        <button class="submit-btn" onclick="criarEleicao()">CRIAR ELEIÇÃO</button>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>Nenhuma notícia publicada ainda.</p>
+                <?php endif; ?>
+            </div>
+
+            <?php if ($resultNoticias && $resultNoticias->num_rows > 0): ?>
+                <div class="ver-mais">
+                    <label class="btn-ver-mais">
+                        Ver mais <i class="fas fa-chevron-down" style="margin-left: 5px;"></i>
+                    </label>
+                </div>
+            <?php endif; ?>
+        </div>
+
+
+        <div class="container" style="margin-top: 5%;">
+            <div class="table-header">
+                <h2>Usuários</h2>
+                <a href="turmausuario.php" class="ver-todos-btn">
+                    Ver todos ➜
+                </a>
+
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>RA</th>
+                            <th>Nome</th>
+                            <th>E-Mail</th>
+                            <th>CPF</th>
+                            <th>Curso</th>
+                            <th>Período</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usuarios-tbody">
+                        <?php
+                        if ($resultUsuarios && $resultUsuarios->num_rows > 0) {
+                            while ($usuario = $resultUsuarios->fetch_assoc()) {
+                                echo '<tr>';
+                                echo '  <td>' . htmlspecialchars($usuario['ra']) . '</td>';
+                                echo '  <td>' . htmlspecialchars($usuario['nome']) . '</td>';
+                                echo '  <td>' . htmlspecialchars($usuario['email_institucional']) . '</td>';
+                                echo '  <td>' . htmlspecialchars($usuario['cpf']) . '</td>';
+                                echo '  <td>' . htmlspecialchars($usuario['curso_nome'] ?? '-') . '</td>';
+                                echo '  <td>' . htmlspecialchars($usuario['semestre_nome'] ?? '-') . '</td>';
+                                echo '  <td>';
+                                echo '      <div class="actions">';
+                                echo '          <button class="action-btn tableEdit-btn" title="Editar" onclick="abrirEditar(\'' . addslashes($usuario['nome']) . '\')">✎</button>';
+                                echo '          <button class="action-btn tabledelete-btn" title="Excluir" onclick="excluirUsuario(\'' . addslashes($usuario['ra']) . '\')">🗑</button>';
+                                echo '      </div>';
+                                echo '  </td>';
+                                echo '</tr>';
+                            }
+                        } else {
+                            echo '<tr><td colspan="7">Nenhum usuário encontrado.</td></tr>';
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+
+
+
+        </div>
+
+        <div class="container">
+            <div class="table-header">
+                <h2>Turmas</h2>
+                <a href="turmausuario.php" class="ver-todos-btn">
+                    Ver todos ➜
+                </a>
+
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome do Curso</th>
+                            <th>Qtd de Alunos Relacionados</th>
+                            <th>Semestre</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="turmas-tbody">
+                        <?php
+                        if ($resultTurmas && $resultTurmas->num_rows > 0) {
+                            while ($turma = $resultTurmas->fetch_assoc()) {
+                                // Definir sigla conforme ID do curso
+                                $siglaCurso = '';
+                                switch ($turma['curso_id']) {
+                                    case 1:
+                                        $siglaCurso = 'DSM';
+                                        break;
+                                    case 2:
+                                        $siglaCurso = 'GE';
+                                        break;
+                                    case 3:
+                                        $siglaCurso = 'GPI';
+                                        break;
+                                }
+
+                                // Exemplo: DSM-1, GE-2 etc.
+                                $idFormatado = $siglaCurso . '-' . preg_replace('/[^0-9]/', '', $turma['semestre_nome']);
+
+                                echo '<tr>';
+                                echo '  <td>' . $idFormatado . '</td>';
+                                echo '  <td>' . htmlspecialchars($turma['curso_nome']) . '</td>';
+                                echo '  <td>' . $turma['qtd_alunos'] . '</td>';
+                                echo '  <td>' . htmlspecialchars($turma['semestre_nome']) . '</td>';
+                                echo '  <td>';
+                                echo '      <div class="actions">';
+                                echo '          <button class="action-btn tableEdit-btn" title="Editar" onclick="editarTurma(\'' . $turma['turma_id'] . '\')">✎</button>';
+                                echo '          <button class="action-btn tabledelete-btn" title="Excluir" onclick="excluirTurma(\'' . $turma['turma_id'] . '\')">🗑</button>';
+                                echo '      </div>';
+                                echo '  </td>';
+                                echo '</tr>';
+                            }
+                        } else {
+                            echo '<tr><td colspan="5">Nenhuma turma encontrada.</td></tr>';
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <!-- Modal do + Criar Nova Eleicao -->
+
+        <div id="modalOverlay" class="modal-overlay">
+            <div class="modal">
+
+                <div class="modal-left">
+                    <div class="election-title">
+                        <h2>CRIAR ELEIÇÃO</h2>
                     </div>
-                    <div class="modal-right">
-                        <h2>CANDIDATOS</h2>
-                        <div class="search-candidate">
-                            <input type="text" placeholder="Pesquisar candidato...">
-                        </div>
-                        <h3>Listagem</h3>
-                        <div class="candidate-header">
-                            <label for="selectAll">Selecionar Todos</label>
-                            <input type="checkbox" id="selectAll" class="candidate-checkbox select-all">
-                        </div>
-                        <div id="candidatos-container" class="candidate-list"></div>
+                    <div class="form-group">
+                        <label for="nome">Nome:</label>
+                        <input type="text" id="nome" value="ELEIÇÃO de Representante de Turma 1° DSM"
+                            class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="descricao">Descrição:</label>
+                        <textarea id="descricao" class="form-control"
+                            rows="5">Votação para eleição do primeiro representante de sala da turma de 1º DSM Noturno</textarea>
 
                     </div>
+                    <div class="form-group">
+                        <label>Curso e Semestre:</label>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <select class="form-control">
+                                    <option value="">DSM (N)</option>
+                                    <option value="">GE (N)</option>
+                                    <option value="">GPI (N)</option>
+
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control">
+                                    <option value="">1° Semestre</option>
+                                    <option value="">2° Semestre</option>
+                                    <option value="">3° Semestre</option>
+                                    <option value="">4° Semestre</option>
+                                    <option value="">5° Semestre</option>
+                                    <option value="">6° Semestre</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Início:</label>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <input type="date" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <input type="time" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Fim:</label>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <input type="date" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <input type="time" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="submit-btn" onclick="criarEleicao()">CRIAR ELEIÇÃO</button>
+                </div>
+                <div class="modal-right">
+                    <h2>CANDIDATOS</h2>
+                    <div class="search-candidate">
+                        <input type="text" placeholder="Pesquisar candidato...">
+                    </div>
+                    <h3>Listagem</h3>
+                    <div class="candidate-header">
+                        <label for="selectAll">Selecionar Todos</label>
+                        <input type="checkbox" id="selectAll" class="candidate-checkbox select-all">
+                    </div>
+                    <div id="candidatos-container" class="candidate-list"></div>
+
                 </div>
             </div>
+        </div>
         </div>
 
 
@@ -493,172 +558,6 @@
 
 
         <script defer>
-            const usuarios = [
-                {
-                    ra: "2025113456789",
-                    nome: "Ana Silva Santos",
-                    email: "ana.silva@fatec.sp.gov.br",
-                    cpf: "123.456.789-01",
-                    curso: "Desenvolvimento de Software Multiplataforma",
-                    periodo: "3º Semestre"
-                },
-                {
-                    ra: "2025129876543",
-                    nome: "Carlos Oliveira",
-                    email: "carlos.oliveira@fatec.sp.gov.br",
-                    cpf: "234.567.890-12",
-                    curso: "Gestão Empresarial",
-                    periodo: "2º Semestre"
-                },
-                {
-                    ra: "2025132468101",
-                    nome: "Maria João Costa",
-                    email: "maria.costa@fatec.sp.gov.br",
-                    cpf: "345.678.901-23",
-                    curso: "Desenvolvimento de Software Multiplataforma",
-                    periodo: "4º Semestre"
-                },
-                {
-                    ra: "2025141357913",
-                    nome: "Pedro Santos Lima",
-                    email: "pedro.lima@fatec.sp.gov.br",
-                    cpf: "456.789.012-34",
-                    curso: "Desenvolvimento de Software Multiplataforma",
-                    periodo: "1º Semestre"
-                },
-                {
-                    ra: "2025151122334",
-                    nome: "Juliana Ferreira",
-                    email: "juliana.ferreira@fatec.sp.gov.br",
-                    cpf: "567.890.123-45",
-                    curso: "Gestão de Produção Industrial",
-                    periodo: "2º Semestre"
-                },
-                {
-                    ra: "2025169988776",
-                    nome: "Roberto Almeida",
-                    email: "roberto.almeida@fatec.sp.gov.br",
-                    cpf: "678.901.234-56",
-                    curso: "Gestão Empresarial",
-                    periodo: "3º Semestre"
-                },
-                {
-                    ra: "2025175544332",
-                    nome: "Fernanda Rodrigues",
-                    email: "fernanda.rodrigues@fatec.sp.gov.br",
-                    cpf: "789.012.345-67",
-                    curso: "Gestão de Produção Industrial",
-                    periodo: "4º Semestre"
-                }
-            ];
-
-
-
-            const turmas = [
-
-                {
-                    id: "DSM-1",
-                    curso: "Desenvolvimento de Software Multiplataforma",
-                    qtdAlunos: 30,
-                    semestre: "1º Semestre"
-                },
-                {
-                    id: "DSM-2",
-                    curso: "Desenvolvimento de Software Multiplataforma",
-                    qtdAlunos: 28,
-                    semestre: "2º Semestre"
-                },
-
-
-                {
-                    id: "GE-1",
-                    curso: "Gestão Empresarial",
-                    qtdAlunos: 27,
-                    semestre: "1º Semestre"
-                },
-
-                {
-                    id: "GE-4",
-                    curso: "Gestão Empresarial",
-                    qtdAlunos: 24,
-                    semestre: "4º Semestre"
-                },
-                {
-                    id: "GE-5",
-                    curso: "Gestão Empresarial",
-                    qtdAlunos: 23,
-                    semestre: "5º Semestre"
-                },
-                {
-                    id: "GE-6",
-                    curso: "Gestão Empresarial",
-                    qtdAlunos: 22,
-                    semestre: "6º Semestre"
-                },
-
-
-                {
-                    id: "GPI-1",
-                    curso: "Gestão de Produção Industrial",
-                    qtdAlunos: 29,
-                    semestre: "1º Semestre"
-                },
-                {
-                    id: "GPI-2",
-                    curso: "Gestão de Produção Industrial",
-                    qtdAlunos: 28,
-                    semestre: "2º Semestre"
-                }
-            ];
-
-
-
-
-            function criarLinhasTabela() {
-                const tbody = document.getElementById('usuarios-tbody');
-
-                usuarios.forEach(usuario => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                    <td>${usuario.ra}</td>
-                    <td>${usuario.nome}</td>
-                    <td>${usuario.email}</td>
-                    <td>${usuario.cpf}</td>
-                    <td>${usuario.curso}</td>
-                    <td>${usuario.periodo}</td>
-                    <td>
-                        <div class="actions">
-                            <button class="action-btn tableEdit-btn" title="Editar" onclick="abrirEditar('${usuario.nome}')">✎</button>
-                            <button class="action-btn tabledelete-btn" title="Excluir" onclick="excluirUsuario('${usuario.ra}')">🗑</button>
-                        </div>
-                    </td>
-                `;
-                    tbody.appendChild(tr);
-                });
-            }
-
-            function criarLinhasTurmas() {
-                const tbody = document.getElementById('turmas-tbody');
-
-                turmas.forEach(turma => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-            <td>${turma.id}</td>
-            <td>${turma.curso}</td>
-            <td>${turma.qtdAlunos}</td>
-            <td>${turma.semestre}</td>
-            <td>
-                <div class="actions">
-                    <button class="action-btn tableEdit-btn" title="Editar" onclick="editarTurma('${turma.id}')">✎</button>
-                    <button class="action-btn tabledelete-btn" title="Excluir" onclick="excluirTurma('${turma.id}')">🗑</button>
-                </div>
-            </td>
-        `;
-                    tbody.appendChild(tr);
-                });
-            }
-
-
             function abrirEditar(nome) {
                 alert(`Editando Usuário: ${nome}`);
             }
@@ -710,7 +609,7 @@
                         checkbox.type = "checkbox";
                         checkbox.className = "candidate-checkbox";
                         checkbox.checked = marcarTodos;
-                        item.addEventListener("click", function () {
+                        item.addEventListener("click", function() {
                             checkbox.checked = !checkbox.checked;
                         });
                         item.appendChild(avatar);
@@ -720,14 +619,10 @@
                     });
                 }
 
-
-
-
-
                 function configurarSelecionarTodos(checkboxId, containerId) {
                     const selectAll = document.getElementById(checkboxId);
                     const container = document.getElementById(containerId);
-                    selectAll.addEventListener("change", function () {
+                    selectAll.addEventListener("change", function() {
                         const checkboxes = container.querySelectorAll(".candidate-checkbox");
                         checkboxes.forEach(cb => cb.checked = this.checked);
                     });
@@ -737,12 +632,12 @@
                 const modalOverlay = document.getElementById('modalOverlay');
                 const criarMaisBtn = document.getElementById('criarMais');
 
-                criarMaisBtn.addEventListener('click', function () {
+                criarMaisBtn.addEventListener('click', function() {
                     modalOverlay.style.display = 'flex';
                     preencherCandidatos("candidatos-container");
                 });
 
-                modalOverlay.addEventListener('click', function (event) {
+                modalOverlay.addEventListener('click', function(event) {
                     if (event.target === modalOverlay) {
                         modalOverlay.style.display = 'none';
                     }
@@ -780,19 +675,14 @@
                 const modalEditarOverlay = document.getElementById('modalEditarOverlay');
                 modalEditarOverlay.style.display = 'none';
             }
+
             function criarEleicao() {
                 alert('Eleição criada com sucesso');
                 const modalOverlay = document.getElementById('modalOverlay');
                 modalOverlay.style.display = 'none';
             }
-
-
-
         </script>
     </main>
-
-
-
 
     <footer class="footer">
         <div class="footer-top">
@@ -839,11 +729,6 @@
             FaVote - Todos os direitos reservados | 2025
         </div>
     </footer>
-
-
-
-
-
 
 </body>
 

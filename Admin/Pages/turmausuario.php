@@ -1,3 +1,42 @@
+<?php
+
+include '../../php/config.php';
+
+$sqlUsuarios = "
+    SELECT 
+        a.id AS aluno_id,
+        a.ra,
+        a.nome,
+        a.email_institucional,
+        a.cpf,
+        c.nome AS curso_nome,
+        s.nome AS semestre_nome
+    FROM alunos a
+    LEFT JOIN turmas t ON a.turma_id = t.id
+    LEFT JOIN cursos c ON t.curso_id = c.id
+    LEFT JOIN semestres s ON t.semestre_id = s.id
+";
+
+$resultUsuarios = $conexao->query($sqlUsuarios);
+
+$sqlTurmas = "
+    SELECT 
+        t.id AS turma_id,
+        c.id AS curso_id,
+        c.nome AS curso_nome,
+        s.nome AS semestre_nome,
+        COUNT(a.id) AS qtd_alunos
+    FROM turmas t
+    LEFT JOIN cursos c ON t.curso_id = c.id
+    LEFT JOIN semestres s ON t.semestre_id = s.id
+    LEFT JOIN alunos a ON a.turma_id = t.id
+    GROUP BY t.id
+";
+
+$resultTurmas = $conexao->query($sqlTurmas);
+
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -93,7 +132,27 @@
                     </tr>
                 </thead>
                 <tbody id="usuarios-tbody">
-                </tbody>
+                <?php if ($resultUsuarios->num_rows > 0): ?>
+                    <?php foreach ($resultUsuarios as $usuario): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($usuario['ra']); ?></td>
+                            <td><?php echo htmlspecialchars($usuario['nome']); ?></td>
+                            <td><?php echo htmlspecialchars($usuario['email_institucional']); ?></td>
+                            <td><?php echo htmlspecialchars($usuario['cpf']); ?></td>
+                            <td><?php echo htmlspecialchars($usuario['curso_nome']); ?></td>
+                            <td><?php echo htmlspecialchars($usuario['semestre_nome']); ?></td>
+                            <td>
+                                <div class="actions">
+                                    <button class="action-btn tableEdit-btn" title="Editar" onclick="editarUsuario('<?php echo $usuario['aluno_id']; ?>')">✎</button>
+                                    <button class="action-btn tabledelete-btn" title="Excluir" onclick="excluirUsuario('<?php echo $usuario['aluno_id']; ?>')">🗑</button>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr><td colspan="7">Nenhum usuário encontrado.</td></tr>
+                <?php endif; ?>
+            </tbody>
             </table>
         </div>
 
@@ -117,7 +176,26 @@
                     </tr>
                 </thead>
                 <tbody id="turmas-tbody">
-                </tbody>
+                <?php if ($resultTurmas->num_rows > 0): ?>
+                    <?php foreach ($resultTurmas as $turma): ?>
+                        <?php $idFormatado = str_pad($turma['turma_id'], 2, '0', STR_PAD_LEFT); ?>
+                        <tr>
+                            <td><?php echo $idFormatado; ?></td>
+                            <td><?php echo htmlspecialchars($turma['curso_nome']); ?></td>
+                            <td><?php echo $turma['qtd_alunos']; ?></td>
+                            <td><?php echo htmlspecialchars($turma['semestre_nome']); ?></td>
+                            <td>
+                                <div class="actions">
+                                    <button class="action-btn tableEdit-btn" title="Editar" onclick="editarTurma('<?php echo $turma['turma_id']; ?>')">✎</button>
+                                    <button class="action-btn tabledelete-btn" title="Excluir" onclick="excluirTurma('<?php echo $turma['turma_id']; ?>')">🗑</button>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr><td colspan="5">Nenhuma turma encontrada.</td></tr>
+                <?php endif; ?>
+            </tbody>
             </table>
         </div>
     </div>
@@ -125,288 +203,6 @@
 
 
     <script defer>
-        const usuarios = [
-            {
-                ra: "2025113456789",
-                nome: "Ana Silva Santos",
-                email: "ana.silva@fatec.sp.gov.br",
-                cpf: "123.456.789-01",
-                curso: "Desenvolvimento de Software Multiplataforma",
-                periodo: "3º Semestre"
-            },
-            {
-                ra: "2025129876543",
-                nome: "Carlos Oliveira",
-                email: "carlos.oliveira@fatec.sp.gov.br",
-                cpf: "234.567.890-12",
-                curso: "Gestão Empresarial",
-                periodo: "2º Semestre"
-            },
-            {
-                ra: "2025132468101",
-                nome: "Maria João Costa",
-                email: "maria.costa@fatec.sp.gov.br",
-                cpf: "345.678.901-23",
-                curso: "Desenvolvimento de Software Multiplataforma",
-                periodo: "4º Semestre"
-            },
-            {
-                ra: "2025141357913",
-                nome: "Pedro Santos Lima",
-                email: "pedro.lima@fatec.sp.gov.br",
-                cpf: "456.789.012-34",
-                curso: "Desenvolvimento de Software Multiplataforma",
-                periodo: "1º Semestre"
-            },
-            {
-                ra: "2025151122334",
-                nome: "Juliana Ferreira",
-                email: "juliana.ferreira@fatec.sp.gov.br",
-                cpf: "567.890.123-45",
-                curso: "Gestão de Produção Industrial",
-                periodo: "2º Semestre"
-            },
-            {
-                ra: "2025169988776",
-                nome: "Roberto Almeida",
-                email: "roberto.almeida@fatec.sp.gov.br",
-                cpf: "678.901.234-56",
-                curso: "Gestão Empresarial",
-                periodo: "3º Semestre"
-            },
-            {
-                ra: "2025175544332",
-                nome: "Fernanda Rodrigues",
-                email: "fernanda.rodrigues@fatec.sp.gov.br",
-                cpf: "789.012.345-67",
-                curso: "Gestão de Produção Industrial",
-                periodo: "4º Semestre"
-            },
-            // --------- Adicionados ----------
-            {
-                ra: "2025186655443",
-                nome: "Lucas Martins Souza",
-                email: "lucas.martins@fatec.sp.gov.br",
-                cpf: "890.123.456-78",
-                curso: "Desenvolvimento de Software Multiplataforma",
-                periodo: "5º Semestre"
-            },
-            {
-                ra: "2025193322110",
-                nome: "Bianca Costa Silva",
-                email: "bianca.costa@fatec.sp.gov.br",
-                cpf: "901.234.567-89",
-                curso: "Gestão Empresarial",
-                periodo: "6º Semestre"
-            },
-            {
-                ra: "2025209988776",
-                nome: "Mateus Pereira Ramos",
-                email: "mateus.ramos@fatec.sp.gov.br",
-                cpf: "012.345.678-90",
-                curso: "Gestão de Produção Industrial",
-                periodo: "3º Semestre"
-            },
-            {
-                ra: "2025215566778",
-                nome: "Larissa Mendes",
-                email: "larissa.mendes@fatec.sp.gov.br",
-                cpf: "123.987.654-32",
-                curso: "Desenvolvimento de Software Multiplataforma",
-                periodo: "2º Semestre"
-            },
-            {
-                ra: "2025224455667",
-                nome: "Gabriel Lima Rocha",
-                email: "gabriel.rocha@fatec.sp.gov.br",
-                cpf: "234.876.543-21",
-                curso: "Gestão Empresarial",
-                periodo: "1º Semestre"
-            },
-            {
-                ra: "2025239988445",
-                nome: "Amanda Torres",
-                email: "amanda.torres@fatec.sp.gov.br",
-                cpf: "345.765.432-10",
-                curso: "Gestão de Produção Industrial",
-                periodo: "5º Semestre"
-            },
-            {
-                ra: "2025242233445",
-                nome: "Thiago Almeida Souza",
-                email: "thiago.almeida@fatec.sp.gov.br",
-                cpf: "456.654.321-09",
-                curso: "Desenvolvimento de Software Multiplataforma",
-                periodo: "6º Semestre"
-            },
-            {
-                ra: "2025255544332",
-                nome: "Isabela Ferreira Lima",
-                email: "isabela.ferreira@fatec.sp.gov.br",
-                cpf: "567.543.210-98",
-                curso: "Gestão Empresarial",
-                periodo: "4º Semestre"
-            },
-            {
-                ra: "2025268877665",
-                nome: "Vinícius Barbosa",
-                email: "vinicius.barbosa@fatec.sp.gov.br",
-                cpf: "678.432.109-87",
-                curso: "Gestão de Produção Industrial",
-                periodo: "6º Semestre"
-            },
-            {
-                ra: "2025276655884",
-                nome: "Bruna Carvalho",
-                email: "bruna.carvalho@fatec.sp.gov.br",
-                cpf: "789.321.098-76",
-                curso: "Desenvolvimento de Software Multiplataforma",
-                periodo: "1º Semestre"
-            }
-        ];
-
-
-
-        const turmas = [
-
-            {
-                id: "DSM-1",
-                curso: "Desenvolvimento de Software Multiplataforma",
-                qtdAlunos: 30,
-                semestre: "1º Semestre"
-            },
-            {
-                id: "DSM-2",
-                curso: "Desenvolvimento de Software Multiplataforma",
-                qtdAlunos: 28,
-                semestre: "2º Semestre"
-            },
-            {
-                id: "DSM-3",
-                curso: "Desenvolvimento de Software Multiplataforma",
-                qtdAlunos: 32,
-                semestre: "3º Semestre"
-            },
-            {
-                id: "DSM-4",
-                curso: "Desenvolvimento de Software Multiplataforma",
-                qtdAlunos: 26,
-                semestre: "4º Semestre"
-            },
-            {
-                id: "DSM-5",
-                curso: "Desenvolvimento de Software Multiplataforma",
-                qtdAlunos: 25,
-                semestre: "5º Semestre"
-            },
-            {
-                id: "DSM-6",
-                curso: "Desenvolvimento de Software Multiplataforma",
-                qtdAlunos: 24,
-                semestre: "6º Semestre"
-            },
-
-
-            {
-                id: "GE-1",
-                curso: "Gestão Empresarial",
-                qtdAlunos: 27,
-                semestre: "1º Semestre"
-            },
-            {
-                id: "GE-2",
-                curso: "Gestão Empresarial",
-                qtdAlunos: 26,
-                semestre: "2º Semestre"
-            },
-            {
-                id: "GE-3",
-                curso: "Gestão Empresarial",
-                qtdAlunos: 25,
-                semestre: "3º Semestre"
-            },
-            {
-                id: "GE-4",
-                curso: "Gestão Empresarial",
-                qtdAlunos: 24,
-                semestre: "4º Semestre"
-            },
-            {
-                id: "GE-5",
-                curso: "Gestão Empresarial",
-                qtdAlunos: 23,
-                semestre: "5º Semestre"
-            },
-            {
-                id: "GE-6",
-                curso: "Gestão Empresarial",
-                qtdAlunos: 22,
-                semestre: "6º Semestre"
-            },
-
-
-            {
-                id: "GPI-1",
-                curso: "Gestão de Produção Industrial",
-                qtdAlunos: 29,
-                semestre: "1º Semestre"
-            },
-            {
-                id: "GPI-2",
-                curso: "Gestão de Produção Industrial",
-                qtdAlunos: 28,
-                semestre: "2º Semestre"
-            },
-            {
-                id: "GPI-3",
-                curso: "Gestão de Produção Industrial",
-                qtdAlunos: 30,
-                semestre: "3º Semestre"
-            },
-            {
-                id: "GPI-4",
-                curso: "Gestão de Produção Industrial",
-                qtdAlunos: 27,
-                semestre: "4º Semestre"
-            },
-            {
-                id: "GPI-5",
-                curso: "Gestão de Produção Industrial",
-                qtdAlunos: 26,
-                semestre: "5º Semestre"
-            },
-            {
-                id: "GPI-6",
-                curso: "Gestão de Produção Industrial",
-                qtdAlunos: 25,
-                semestre: "6º Semestre"
-            }
-        ];
-
-
-
-        function criarLinhasTabela() {
-            const tbody = document.getElementById('usuarios-tbody');
-
-            usuarios.forEach(usuario => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${usuario.ra}</td>
-                    <td>${usuario.nome}</td>
-                    <td>${usuario.email}</td>
-                    <td>${usuario.cpf}</td>
-                    <td>${usuario.curso}</td>
-                    <td>${usuario.periodo}</td>
-                    <td>
-                        <div class="actions">
-                            <button class="action-btn tableEdit-btn" title="Editar" onclick="abrirEditar('${usuario.nome}')">✎</button>
-                            <button class="action-btn tabledelete-btn" title="Excluir" onclick="excluirUsuario('${usuario.ra}')">🗑</button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
 
         function criarLinhasTurmas() {
             const tbody = document.getElementById('turmas-tbody');
