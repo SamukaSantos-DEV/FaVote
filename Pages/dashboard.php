@@ -1,6 +1,7 @@
+<?php require '../php/session_auth.php';?>
 <?php
 
-include '../../php/config.php';
+include '../php/config.php';
 
 $sqlEleicoesAtivas = "SELECT * FROM eleicoes WHERE ativa != 0";
 $resultAtivas = $conexao->query($sqlEleicoesAtivas);
@@ -17,7 +18,6 @@ $sqlUsuarios = "
         a.ra,
         a.nome,
         a.email_institucional,
-        a.cpf,
         c.nome AS curso_nome,
         s.nome AS semestre_nome
     FROM alunos a
@@ -46,6 +46,73 @@ $sqlTurmas = "
 
 $resultTurmas = $conexao->query($sqlTurmas);
 
+// Excluir usuário
+if (isset($_POST['action']) && $_POST['action'] === 'delete_user') {
+    $ra = $_POST['ra'];
+    $sql = "DELETE FROM alunos WHERE ra = '$ra'";
+    if ($conexao->query($sql)) {
+        echo "<script>alert('Usuário removido com sucesso!'); window.location='dashboard.php';</script>";
+        exit;
+    } else {
+        echo "<script>alert('Erro ao excluir usuário.');</script>";
+    }
+}
+
+// Editar usuário
+if (isset($_POST['action']) && $_POST['action'] === 'edit_user') {
+    $ra = $_POST['ra'];
+    $nome = $_POST['nome'];
+    $email = $_POST['email_institucional'];
+    $sql = "UPDATE alunos SET nome='$nome', email_institucional='$email' WHERE ra='$ra'";
+    if ($conexao->query($sql)) {
+        echo "<script>alert('Usuário atualizado com sucesso!'); window.location='dashboard.php';</script>";
+        exit;
+    } else {
+        echo "<script>alert('Erro ao editar usuário.');</script>";
+    }
+}
+
+
+// ======================
+// AÇÕES DE TURMAS
+// ======================
+
+// Excluir turma
+if (isset($_POST['action']) && $_POST['action'] === 'delete_turma') {
+    $id = $_POST['turma_id'];
+    $sql = "DELETE FROM turmas WHERE id = '$id'";
+    if ($conexao->query($sql)) {
+        echo "<script>alert('Turma excluída com sucesso!'); window.location='dashboard.php';</script>";
+        exit;
+    } else {
+        echo "<script>alert('Erro ao excluir turma.');</script>";
+    }
+}
+
+// Editar turma
+if (isset($_POST['action']) && $_POST['action'] === 'edit_turma') {
+    $id = $_POST['turma_id'];
+    $curso_id = $_POST['curso_id'];
+    $semestre_id = $_POST['semestre_id'];
+    $sql = "UPDATE turmas SET curso_id='$curso_id', semestre_id='$semestre_id' WHERE id='$id'";
+    if ($conexao->query($sql)) {
+        echo "<script>alert('Turma atualizada com sucesso!'); window.location='dashboard.php';</script>";
+        exit;
+    } else {
+        echo "<script>alert('Erro ao editar turma.');</script>";
+    }
+}
+
+?>
+
+<?php
+if (isset($_GET['success']) && $_GET['success'] === 'noticia_excluida') {
+    echo "<script>alert('Notícia excluída com sucesso!');</script>";
+}
+
+if (isset($_GET['error'])) {
+    echo "<script>alert('Erro ao excluir a notícia.');</script>";
+}
 ?>
 
 <!DOCTYPE html>
@@ -84,25 +151,26 @@ $resultTurmas = $conexao->query($sqlTurmas);
             </a>
         </nav>
         <div class="user-icon">
-            <img src="../Images/user.png" width="50" alt="user" />
-            <div class="user-popup">
-                <strong>Usuário Administrador</strong>
-                <p>FATEC “Dr. Ogari de Castro Pacheco”</p>
-                <strong>
-                    <p>DSM (N)</p>
-                </strong>
-                <p>1º Semestre</p>
+        <img src="../Images/user.png" width="50" alt="user" />
+        <div class="user-popup">
 
-                <div class="editar">
-                    <a href="editardados.php">Editar dados<i class="fa-solid fa-pen-to-square"
-                            style="margin-left: 7px;"></i></a>
-                </div>
-                <div class="sair">
-                    <a href="../../login.php">Sair<i style="margin-left: 5px;"
-                            class="fa-solid fa-right-from-bracket"></i></a>
-                </div>
+            <strong>
+                <?php echo htmlspecialchars($_SESSION['user_name']); ?>
+            </strong>
+
+            <p>FATEC “Dr. Ogari de Castro Pacheco”</p> <strong>
+            </strong>
+
+            <div class="editar">
+                <a href="editardados.php">Editar dados<i class="fa-solid fa-pen-to-square" style="margin-left: 7px;"></i></a>
+            </div>
+
+            <div class="sair">
+                <a href="../../php/logout.php">Sair<i style="margin-left: 5px;"
+                        class="fa-solid fa-right-from-bracket"></i></a>
             </div>
         </div>
+    </div>
 
     </header>
 
@@ -160,10 +228,7 @@ $resultTurmas = $conexao->query($sqlTurmas);
                         </div>
                     </div>
                 <?php endforeach; ?>
-                <div class="ver-mais">
-                    <label class="btn-ver-mais">Ver mais <i class="fas fa-chevron-down"
-                            style="margin-left: 5px;"></i></label>
-                </div>
+                
             <?php else: ?>
                 <p>Nenhuma eleição ativa encontrada.</p>
             <?php endif; ?>
@@ -220,10 +285,7 @@ $resultTurmas = $conexao->query($sqlTurmas);
                         </div>
                     </div>
                 <?php endforeach; ?>
-                <div class="ver-mais">
-                    <label class="btn-ver-mais">Ver mais <i class="fas fa-chevron-down"
-                            style="margin-left: 5px;"></i></label>
-                </div>
+                
             <?php else: ?>
                 <p>Nenhuma eleição passada encontrada.</p>
             <?php endif; ?>
@@ -249,11 +311,12 @@ $resultTurmas = $conexao->query($sqlTurmas);
                             </div>
 
                             <div class="card-actions">
-                                <a href="dashboard.php?id=<?= $noticia['id'] ?>"
-                                    class="delete-btn"
-                                    onclick="return confirm('AVISO: Você está prestes a excluir a notícia “<?= htmlspecialchars($noticia['titulo']) ?>”, criada em <?= date('d/m/Y H:i', strtotime($noticia['dataPublicacao'])) ?>')">
-                                    EXCLUIR
-                                </a>
+                                <a href="../php/excluir_noticia.php?id=<?= $noticia['id'] ?>"
+    class="delete-btn"
+    onclick="return confirm('AVISO: Você está prestes a excluir a notícia “<?= htmlspecialchars($noticia['titulo']) ?>”, criada em <?= date('d/m/Y H:i', strtotime($noticia['dataPublicacao'])) ?>')">
+    EXCLUIR
+</a>
+
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -263,11 +326,7 @@ $resultTurmas = $conexao->query($sqlTurmas);
             </div>
 
             <?php if ($resultNoticias && $resultNoticias->num_rows > 0): ?>
-                <div class="ver-mais">
-                    <label class="btn-ver-mais">
-                        Ver mais <i class="fas fa-chevron-down" style="margin-left: 5px;"></i>
-                    </label>
-                </div>
+               
             <?php endif; ?>
         </div>
 
@@ -288,10 +347,8 @@ $resultTurmas = $conexao->query($sqlTurmas);
                             <th>RA</th>
                             <th>Nome</th>
                             <th>E-Mail</th>
-                            <th>CPF</th>
                             <th>Curso</th>
                             <th>Período</th>
-                            <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody id="usuarios-tbody">
@@ -302,15 +359,9 @@ $resultTurmas = $conexao->query($sqlTurmas);
                                 echo '  <td>' . htmlspecialchars($usuario['ra']) . '</td>';
                                 echo '  <td>' . htmlspecialchars($usuario['nome']) . '</td>';
                                 echo '  <td>' . htmlspecialchars($usuario['email_institucional']) . '</td>';
-                                echo '  <td>' . htmlspecialchars($usuario['cpf']) . '</td>';
                                 echo '  <td>' . htmlspecialchars($usuario['curso_nome'] ?? '-') . '</td>';
                                 echo '  <td>' . htmlspecialchars($usuario['semestre_nome'] ?? '-') . '</td>';
-                                echo '  <td>';
-                                echo '      <div class="actions">';
-                                echo '          <button class="action-btn tableEdit-btn" title="Editar" onclick="abrirEditar(\'' . addslashes($usuario['nome']) . '\')">✎</button>';
-                                echo '          <button class="action-btn tabledelete-btn" title="Excluir" onclick="excluirUsuario(\'' . addslashes($usuario['ra']) . '\')">🗑</button>';
-                                echo '      </div>';
-                                echo '  </td>';
+                               
                                 echo '</tr>';
                             }
                         } else {
@@ -341,7 +392,6 @@ $resultTurmas = $conexao->query($sqlTurmas);
                             <th>Nome do Curso</th>
                             <th>Qtd de Alunos Relacionados</th>
                             <th>Semestre</th>
-                            <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody id="turmas-tbody">
@@ -370,12 +420,7 @@ $resultTurmas = $conexao->query($sqlTurmas);
                                 echo '  <td>' . htmlspecialchars($turma['curso_nome']) . '</td>';
                                 echo '  <td>' . $turma['qtd_alunos'] . '</td>';
                                 echo '  <td>' . htmlspecialchars($turma['semestre_nome']) . '</td>';
-                                echo '  <td>';
-                                echo '      <div class="actions">';
-                                echo '          <button class="action-btn tableEdit-btn" title="Editar" onclick="editarTurma(\'' . $turma['turma_id'] . '\')">✎</button>';
-                                echo '          <button class="action-btn tabledelete-btn" title="Excluir" onclick="excluirTurma(\'' . $turma['turma_id'] . '\')">🗑</button>';
-                                echo '      </div>';
-                                echo '  </td>';
+                               
                                 echo '</tr>';
                             }
                         } else {
@@ -388,7 +433,6 @@ $resultTurmas = $conexao->query($sqlTurmas);
         </div>
 
 
-        <!-- Modal do + Criar Nova Eleicao -->
 
         <div id="modalOverlay" class="modal-overlay">
             <div class="modal">

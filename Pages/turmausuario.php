@@ -1,6 +1,7 @@
+<?php require '../php/session_auth.php';?>
 <?php
 
-include '../../php/config.php';
+include '../php/config.php';
 
 $sqlUsuarios = "
     SELECT 
@@ -8,7 +9,6 @@ $sqlUsuarios = "
         a.ra,
         a.nome,
         a.email_institucional,
-        a.cpf,
         c.nome AS curso_nome,
         s.nome AS semestre_nome
     FROM alunos a
@@ -73,27 +73,26 @@ $resultTurmas = $conexao->query($sqlTurmas);
             </a>
         </nav>
         <div class="user-icon">
-            <img src="../Images/user.png" width="50" alt="user" />
-            <div class="user-popup">
-                <strong>Usuário Administrador</strong>
-                <p>FATEC “Dr. Ogari de Castro Pacheco”</p>
-                <strong>
-                    <p>DSM (N)</p>
-                </strong>
-                <p>1º Semestre</p>
+        <img src="../Images/user.png" width="50" alt="user" />
+        <div class="user-popup">
 
-                    <div class="editar">
-                    <a href="editardados.php">Editar dados<i class="fa-solid fa-pen-to-square" style="margin-left: 7px;"></i></a>
-                </div>
+            <strong>
+                <?php echo htmlspecialchars($_SESSION['user_name']); ?>
+            </strong>
 
+            <p>FATEC “Dr. Ogari de Castro Pacheco”</p> <strong>
+            </strong>
 
+            <div class="editar">
+                <a href="editardados.php">Editar dados<i class="fa-solid fa-pen-to-square" style="margin-left: 7px;"></i></a>
+            </div>
 
-                
-                <div class="sair">
-                    <a href="../../login.php">Sair<i style="margin-left: 5px;" class="fa-solid fa-right-from-bracket"></i></a>
-                </div>
+            <div class="sair">
+                <a href="../../php/logout.php">Sair<i style="margin-left: 5px;"
+                        class="fa-solid fa-right-from-bracket"></i></a>
             </div>
         </div>
+    </div>
 
     </header>
 
@@ -125,7 +124,6 @@ $resultTurmas = $conexao->query($sqlTurmas);
                         <th>RA</th>
                         <th>Nome</th>
                         <th>E-Mail</th>
-                        <th>CPF</th>
                         <th>Curso</th>
                         <th>Período</th>
                         <th>Ações</th>
@@ -138,7 +136,6 @@ $resultTurmas = $conexao->query($sqlTurmas);
                             <td><?php echo htmlspecialchars($usuario['ra']); ?></td>
                             <td><?php echo htmlspecialchars($usuario['nome']); ?></td>
                             <td><?php echo htmlspecialchars($usuario['email_institucional']); ?></td>
-                            <td><?php echo htmlspecialchars($usuario['cpf']); ?></td>
                             <td><?php echo htmlspecialchars($usuario['curso_nome']); ?></td>
                             <td><?php echo htmlspecialchars($usuario['semestre_nome']); ?></td>
                             <td>

@@ -23,6 +23,4 @@ class db {
 
 $db = new db();
 $conexao = $db->conecta_mysql();
-
-echo "Conectado com sucesso!";
 ?>
