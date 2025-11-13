@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 12/11/2025 às 02:17
+-- Tempo de geração: 12/11/2025 às 22:19
 -- Versão do servidor: 10.4.32-MariaDB
--- Versão do PHP: 8.2.12
+-- Versão do PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -34,7 +34,6 @@ CREATE TABLE `admin` (
   `nome_usuario` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `ra` varchar(20) DEFAULT NULL,
-  `cpf` varchar(11) NOT NULL,
   `senha` varchar(255) NOT NULL,
   `criado_data` timestamp NOT NULL DEFAULT current_timestamp(),
   `atualizado_data` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -46,8 +45,8 @@ CREATE TABLE `admin` (
 -- Despejando dados para a tabela `admin`
 --
 
-INSERT INTO `admin` (`id`, `nome_usuario`, `email`, `ra`, `cpf`, `senha`, `criado_data`, `atualizado_data`, `curso_nome`, `semestre_nome`) VALUES
-(1, 'administrador', 'admin@fatec.sp.gov.br', '27800000000', '24530186807', '$2y$10$FZ17klPO.O9dQ8BLbQTxn.Tg09JjSCS8c0MQccWwAxigKD9sMutEC', '2025-11-11 00:38:21', '2025-11-12 01:11:37', 'Sem Curso', 'Sem Semestre');
+INSERT INTO `admin` (`id`, `nome_usuario`, `email`, `ra`, `senha`, `criado_data`, `atualizado_data`, `curso_nome`, `semestre_nome`) VALUES
+(1, 'administrador', 'admin@fatec.sp.gov.br', '27800000000', '$2y$10$FZ17klPO.O9dQ8BLbQTxn.Tg09JjSCS8c0MQccWwAxigKD9sMutEC', '2025-11-11 00:38:21', '2025-11-12 01:11:37', 'Sem Curso', 'Sem Semestre');
 
 -- --------------------------------------------------------
 
@@ -240,7 +239,6 @@ ALTER TABLE `admin`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `nome_usuario` (`nome_usuario`),
   ADD UNIQUE KEY `email` (`email`),
-  ADD UNIQUE KEY `cpf` (`cpf`),
   ADD UNIQUE KEY `ra` (`ra`);
 
 --

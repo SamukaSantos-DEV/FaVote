@@ -20,7 +20,6 @@ if (!$aluno_ra) {
     exit;
 }
 
-// Buscar informações da eleição + curso/semestre via turma
 $sql = "
     SELECT 
       e.id,
@@ -166,7 +165,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             color: white;
             border: none;
             padding: 20px;
-            width: 100%;
+            width: 105%;
             margin-top: 20px;
             border-radius: 15px;
             font-weight: bold;
@@ -181,8 +180,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         .close-btn {
             position: absolute;
-            right: 20px;
-            top: 20px;
+            right: 25px;
+            top: 25px;
             background-color: #e9e9e9;
             color: #383838;
             border: none;

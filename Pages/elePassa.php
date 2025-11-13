@@ -184,10 +184,9 @@
                 <div>
                     <h4>INTEGRANTES</h4>
                     <ul>
-                        <li>Graziela Dilany da Silva</li>
+                        <li>João Paulo Gomes</li>
                         <li>João Pedro Baradeli Pavan</li>
                         <li>Pedro Henrique Cavenaghi dos Santos</li>
-                        <li>Samara Stefani da Silva</li>
                         <li>Samuel Santos Oliveira</li>
                     </ul>
                 </div>

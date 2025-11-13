@@ -141,23 +141,23 @@ while ($row = $query_noticias->fetch_assoc()) {
         <!-- NOTÍCIAS -->
         <section class="news-votes">
             <div class="news">
-                <div style="display: flex; justify-content: space-between;">
+                <div class="section-header">
                     <h2>Notícias</h2>
                     <a href="news.php">Ver mais ➜</a>
                 </div>
 
                 <?php if ($eleicao && !$jaCandidato): ?>
-                    <a href="querocandidatar.php?id=<?php echo urlencode($eleicao['id']); ?>" class="news-card special-card"
-                        style="text-decoration: none; color: inherit;">
+                    <div class="news-card special-card"
+                        onclick="window.location.href='querocandidatar.php?id=<?php echo urlencode($eleicao['id']); ?>'">
                         <h3>Quero me candidatar!</h3>
                         <p>Participe da eleição ativa da sua turma. Mostre suas ideias e concorra como representante!</p>
-                        <br>
-                        <small><strong>Clique aqui para se inscrever</strong></small>
-                    </a>
+                        <small style="text-decoration: underline dotted black 2px;"><strong>Clique aqui para se inscrever</strong></small>
+                    </div>
+
                 <?php elseif ($eleicao && $jaCandidato): ?>
-                    <div class="news-card special-card" style="background-color: #e6ffe6; border-left: 5px solid #4caf50;">
+                    <div class="news-card special-card">
                         <h3>Você já se candidatou!</h3>
-                        <p>Boa sorte! Aguarde o início da votação da sua turma.</p><br>
+                        <p>Boa sorte! Aguarde o início da votação da sua turma.</p>
                         <small><strong>Eleição:</strong> <?php echo htmlspecialchars($eleicao['titulo']); ?></small>
                     </div>
                 <?php endif; ?>
@@ -166,7 +166,7 @@ while ($row = $query_noticias->fetch_assoc()) {
                     <?php foreach ($noticias as $n): ?>
                         <div class="news-card">
                             <h3><?php echo htmlspecialchars($n['titulo']); ?></h3>
-                            <p><?php echo htmlspecialchars($n['descricao']); ?></p><br>
+                            <p><?php echo nl2br(htmlspecialchars($n['descricao'])); ?></p>
                             <small><strong>Publicado em:</strong>
                                 <?php echo date('d/m/Y \à\s H:i', strtotime($n['dataPublicacao'])); ?></small>
                         </div>
@@ -174,35 +174,36 @@ while ($row = $query_noticias->fetch_assoc()) {
                 <?php else: ?>
                     <p>Nenhuma notícia publicada ainda.</p>
                 <?php endif; ?>
-
             </div>
 
-            <!-- ÚLTIMAS VOTAÇÕES -->
+            <!-- COLUNA: ÚLTIMAS VOTAÇÕES -->
             <div class="votes">
-                <div style="display: flex; justify-content: space-between;">
+                <div class="section-header">
                     <h2>Últimas votações</h2>
                     <a href="elePassa.php">Ver mais ➜</a>
                 </div>
+
                 <div class="vote-result">
-                    <h3>VICTOR LUIZ RODRIGUES</h3><br>
+                    <h3>VICTOR LUIZ RODRIGUES</h3>
                     Representante 2º DSM<br>
                     <small>Eleito em: <strong class="badge-date">05/05/2025</strong></small>
                     <img src="../Images/taça.png" width="144" class="taca1">
                 </div>
                 <div class="vote-result">
-                    <h3>RAFAEL MORAES ALMEIDA</h3><br>
+                    <h3>RAFAEL MORAES ALMEIDA</h3>
                     Representante 4º DSM<br>
                     <small>Eleito em: <strong class="badge-date">03/05/2025</strong></small>
                     <img src="../Images/taça.png" width="144" class="taca2">
                 </div>
                 <div class="vote-result">
-                    <h3>RODRIGO POLASTRO</h3><br>
+                    <h3>RODRIGO POLASTRO</h3>
                     Representante 3º DSM<br>
                     <small>Eleito em: <strong class="badge-date">01/05/2025</strong></small>
                     <img src="../Images/taça.png" width="144" class="taca3">
                 </div>
             </div>
         </section>
+
     </main>
 
     <footer class="footer">
@@ -236,10 +237,9 @@ while ($row = $query_noticias->fetch_assoc()) {
                 <div>
                     <h4>INTEGRANTES</h4>
                     <ul>
-                        <li>Graziela Dilany da Silva</li>
+                        <li>João Paulo Gomes</li>
                         <li>João Pedro Baradeli Pavan</li>
                         <li>Pedro Henrique Cavenaghi dos Santos</li>
-                        <li>Samara Stefani da Silva</li>
                         <li>Samuel Santos Oliveira</li>
                     </ul>
                 </div>

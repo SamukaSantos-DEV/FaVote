@@ -41,7 +41,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $aluno = $result_aluno->fetch_assoc();
         $stmt_aluno->close();
 
-        // 🔹 Teste de senha do aluno
         if ($aluno) {
             $senha_correta = (
                 $aluno['senha'] === $senha ||
@@ -54,7 +53,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
 
-        // 🔹 Se não for aluno, verifica admin
         if (!$user) {
             $sql_admin = "SELECT * FROM admin WHERE email = ?";
             $stmt_admin = $conexao->prepare($sql_admin);
@@ -77,18 +75,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
 
-        // 🔹 Login bem-sucedido
         if ($user) {
             $_SESSION['logged_in'] = true;
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_type'] = $user_type;
 
-            // Define e-mail de forma segura
             $_SESSION['user_email'] = isset($user['email'])
                 ? $user['email']
                 : ($user['email_institucional'] ?? '');
 
-            // Admin
             if ($user_type == 'admin') {
                 $_SESSION['user_name'] = $user['nome_usuario'];
                 $conexao->close();
@@ -96,7 +91,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 exit();
             }
 
-            // Aluno
             $_SESSION['user_name'] = $user['nome'];
             $_SESSION['user_ra'] = $user['ra'] ?? '';
             $_SESSION['curso_nome'] = $user['curso_nome'] ?? 'Curso não definido';
@@ -108,13 +102,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
 
-        // 🔹 Caso falhe o login
         $conexao->close();
         header("Location: ../login.php?error=invalid_credentials");
         exit();
 
     } catch (mysqli_sql_exception $e) {
-        // Erro no banco
         header("Location: ../login.php?error=db_error");
         exit();
     }

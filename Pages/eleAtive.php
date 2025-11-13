@@ -116,7 +116,7 @@ $resultBloqueadas = $stmtBloqueadas->get_result();
                     <section class="main-vote">
                         <div class="vote-box">
                             <h1><?php echo strtoupper($eleicao['titulo']); ?></h1><br>
-                            <h2 style="margin-top: -35px; margin-bottom: 12px; font-size: 24px;">
+                            <h2 style="border-bottom: none; margin-top: -35px; margin-bottom: 12px; font-size: 24px;">
                                 <?php echo $eleicao['curso_nome'] . " (" . $eleicao['semestre_nome'] . ")"; ?></h1>
                             </h2>
                             <p><?php echo htmlspecialchars($eleicao['descricao']); ?></p><br>
@@ -146,7 +146,7 @@ $resultBloqueadas = $stmtBloqueadas->get_result();
                 <section class="main-vote2">
                     <div class="vote-box">
                         <h1><?php echo strtoupper($eleicao['titulo']); ?></h1><br>
-                        <h3 style="margin-top: -35px; margin-bottom: 12px; font-size: 24px;">
+                        <h4 style="margin-top: -35px; margin-bottom: 12px; font-size: 24px;">
                             <?php echo $eleicao['curso_nome'] . " (" . $eleicao['semestre_nome'] . ")"; ?></h3>
                         <p><?php echo htmlspecialchars($eleicao['descricao']); ?></p><br>
                         <small>
@@ -157,7 +157,7 @@ $resultBloqueadas = $stmtBloqueadas->get_result();
                             </p>
                         </small>
                     </div>
-                    <div class="vote-img2">
+                    <div class="vote-img">
                         <img style="margin-top: 5px;" src="../Images/imgAlvo2.png" width="310">
                     </div>
                 </section>
@@ -199,10 +199,9 @@ $resultBloqueadas = $stmtBloqueadas->get_result();
                 <div>
                     <h4>INTEGRANTES</h4>
                     <ul>
-                        <li>Graziela Dilany da Silva</li>
+                        <li>João Paulo Gomes</li>
                         <li>João Pedro Baradeli Pavan</li>
                         <li>Pedro Henrique Cavenaghi dos Santos</li>
-                        <li>Samara Stefani da Silva</li>
                         <li>Samuel Santos Oliveira</li>
                     </ul>
                 </div>

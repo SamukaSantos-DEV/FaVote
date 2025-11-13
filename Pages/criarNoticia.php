@@ -140,8 +140,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <div class="form-group">
                     <label for="descricao">Descrição:</label>
-                    <textarea id="descricao" name="descricao" class="form-control" rows="5" required></textarea>
+                    <textarea id="descricao" name="descricao" class="form-control" rows="3" maxlength="150" required></textarea>
                 </div>
+
+            
+
+
 
                 <div class="atention-card">
                     <p>⚠️ A notícia será visível para todos os usuários da instituição.</p>
@@ -152,4 +156,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 </body>
+
 </html>

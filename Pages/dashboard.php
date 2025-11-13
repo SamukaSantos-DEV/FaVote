@@ -1,4 +1,4 @@
-<?php require '../php/session_auth.php';?>
+<?php require '../php/session_auth.php'; ?>
 <?php
 
 include '../php/config.php';
@@ -46,62 +46,37 @@ $sqlTurmas = "
 
 $resultTurmas = $conexao->query($sqlTurmas);
 
-// Excluir usuário
-if (isset($_POST['action']) && $_POST['action'] === 'delete_user') {
-    $ra = $_POST['ra'];
-    $sql = "DELETE FROM alunos WHERE ra = '$ra'";
-    if ($conexao->query($sql)) {
-        echo "<script>alert('Usuário removido com sucesso!'); window.location='dashboard.php';</script>";
+// EXCLUIR ELEIÇÃO (quando vem com ?id=)
+if (isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+
+    $stmt = $conexao->prepare("
+        DELETE FROM votos 
+        WHERE candidato_id IN (SELECT id FROM candidatos WHERE eleicao_id = ?)
+    ");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->close();
+
+    $stmt = $conexao->prepare("DELETE FROM candidatos WHERE eleicao_id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->close();
+
+    $stmt = $conexao->prepare("DELETE FROM eleicoes WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $ok = $stmt->execute();
+    $stmt->close();
+
+    if ($ok) {
+        echo "<script>alert('Eleição excluída com sucesso!'); window.location.href='dashboard.php';</script>";
         exit;
     } else {
-        echo "<script>alert('Erro ao excluir usuário.');</script>";
+        echo "<script>alert('Erro ao excluir eleição.'); window.location.href='dashboard.php';</script>";
+        exit;
     }
 }
 
-// Editar usuário
-if (isset($_POST['action']) && $_POST['action'] === 'edit_user') {
-    $ra = $_POST['ra'];
-    $nome = $_POST['nome'];
-    $email = $_POST['email_institucional'];
-    $sql = "UPDATE alunos SET nome='$nome', email_institucional='$email' WHERE ra='$ra'";
-    if ($conexao->query($sql)) {
-        echo "<script>alert('Usuário atualizado com sucesso!'); window.location='dashboard.php';</script>";
-        exit;
-    } else {
-        echo "<script>alert('Erro ao editar usuário.');</script>";
-    }
-}
-
-
-// ======================
-// AÇÕES DE TURMAS
-// ======================
-
-// Excluir turma
-if (isset($_POST['action']) && $_POST['action'] === 'delete_turma') {
-    $id = $_POST['turma_id'];
-    $sql = "DELETE FROM turmas WHERE id = '$id'";
-    if ($conexao->query($sql)) {
-        echo "<script>alert('Turma excluída com sucesso!'); window.location='dashboard.php';</script>";
-        exit;
-    } else {
-        echo "<script>alert('Erro ao excluir turma.');</script>";
-    }
-}
-
-// Editar turma
-if (isset($_POST['action']) && $_POST['action'] === 'edit_turma') {
-    $id = $_POST['turma_id'];
-    $curso_id = $_POST['curso_id'];
-    $semestre_id = $_POST['semestre_id'];
-    $sql = "UPDATE turmas SET curso_id='$curso_id', semestre_id='$semestre_id' WHERE id='$id'";
-    if ($conexao->query($sql)) {
-        echo "<script>alert('Turma atualizada com sucesso!'); window.location='dashboard.php';</script>";
-        exit;
-    } else {
-        echo "<script>alert('Erro ao editar turma.');</script>";
-    }
-}
 
 ?>
 
@@ -151,27 +126,30 @@ if (isset($_GET['error'])) {
             </a>
         </nav>
         <div class="user-icon">
-        <img src="../Images/user.png" width="50" alt="user" />
-        <div class="user-popup">
+            <img src="../Images/user.png" width="50" alt="user" />
+            <div class="user-popup">
+                <strong><?php echo htmlspecialchars($_SESSION['user_name']); ?></strong>
+                <p>FATEC “Dr. Ogari de Castro Pacheco”</p>
+                <?php
 
-            <strong>
-                <?php echo htmlspecialchars($_SESSION['user_name']); ?>
-            </strong>
+                // Supondo que o login salva o e-mail na sessão assim:
+                $emailLogado = $_SESSION['user_email'] ?? null;
+                ?>
 
-            <p>FATEC “Dr. Ogari de Castro Pacheco”</p> <strong>
-            </strong>
+                <!-- ... resto do seu HTML ... -->
 
-            <div class="editar">
-                <a href="editardados.php">Editar dados<i class="fa-solid fa-pen-to-square" style="margin-left: 7px;"></i></a>
-            </div>
-
-            <div class="sair">
-                <a href="../../php/logout.php">Sair<i style="margin-left: 5px;"
-                        class="fa-solid fa-right-from-bracket"></i></a>
+                <?php if ($emailLogado !== 'admin@fatec.sp.gov.br'): ?>
+                    <strong>
+                        <p><?php echo htmlspecialchars($_SESSION['curso_nome']); ?></p>
+                    </strong>
+                    <p><?php echo htmlspecialchars($_SESSION['semestre_nome']); ?></p>
+                <?php endif; ?>
+                <div class="sair">
+                    <a href="../php/logout.php">Sair<i style="margin-left: 5px;"
+                            class="fa-solid fa-right-from-bracket"></i></a>
+                </div>
             </div>
         </div>
-    </div>
-
     </header>
 
 
@@ -228,7 +206,7 @@ if (isset($_GET['error'])) {
                         </div>
                     </div>
                 <?php endforeach; ?>
-                
+
             <?php else: ?>
                 <p>Nenhuma eleição ativa encontrada.</p>
             <?php endif; ?>
@@ -285,7 +263,7 @@ if (isset($_GET['error'])) {
                         </div>
                     </div>
                 <?php endforeach; ?>
-                
+
             <?php else: ?>
                 <p>Nenhuma eleição passada encontrada.</p>
             <?php endif; ?>
@@ -312,10 +290,10 @@ if (isset($_GET['error'])) {
 
                             <div class="card-actions">
                                 <a href="../php/excluir_noticia.php?id=<?= $noticia['id'] ?>"
-    class="delete-btn"
-    onclick="return confirm('AVISO: Você está prestes a excluir a notícia “<?= htmlspecialchars($noticia['titulo']) ?>”, criada em <?= date('d/m/Y H:i', strtotime($noticia['dataPublicacao'])) ?>')">
-    EXCLUIR
-</a>
+                                    class="delete-btn"
+                                    onclick="return confirm('AVISO: Você está prestes a excluir a notícia “<?= htmlspecialchars($noticia['titulo']) ?>”, criada em <?= date('d/m/Y H:i', strtotime($noticia['dataPublicacao'])) ?>')">
+                                    EXCLUIR
+                                </a>
 
                             </div>
                         </div>
@@ -326,7 +304,7 @@ if (isset($_GET['error'])) {
             </div>
 
             <?php if ($resultNoticias && $resultNoticias->num_rows > 0): ?>
-               
+
             <?php endif; ?>
         </div>
 
@@ -361,7 +339,7 @@ if (isset($_GET['error'])) {
                                 echo '  <td>' . htmlspecialchars($usuario['email_institucional']) . '</td>';
                                 echo '  <td>' . htmlspecialchars($usuario['curso_nome'] ?? '-') . '</td>';
                                 echo '  <td>' . htmlspecialchars($usuario['semestre_nome'] ?? '-') . '</td>';
-                               
+
                                 echo '</tr>';
                             }
                         } else {
@@ -390,7 +368,7 @@ if (isset($_GET['error'])) {
                         <tr>
                             <th>ID</th>
                             <th>Nome do Curso</th>
-                            <th>Qtd de Alunos Relacionados</th>
+                            <th>Alunos Relacionados</th>
                             <th>Semestre</th>
                         </tr>
                     </thead>
@@ -420,7 +398,7 @@ if (isset($_GET['error'])) {
                                 echo '  <td>' . htmlspecialchars($turma['curso_nome']) . '</td>';
                                 echo '  <td>' . $turma['qtd_alunos'] . '</td>';
                                 echo '  <td>' . htmlspecialchars($turma['semestre_nome']) . '</td>';
-                               
+
                                 echo '</tr>';
                             }
                         } else {
@@ -757,10 +735,9 @@ if (isset($_GET['error'])) {
                 <div>
                     <h4>INTEGRANTES</h4>
                     <ul>
-                        <li>Graziela Dilany da Silva</li>
+                        <li>João Paulo Gomes</li>
                         <li>João Pedro Baradeli Pavan</li>
                         <li>Pedro Henrique Cavenaghi dos Santos</li>
-                        <li>Samara Stefani da Silva</li>
                         <li>Samuel Santos Oliveira</li>
                     </ul>
                 </div>

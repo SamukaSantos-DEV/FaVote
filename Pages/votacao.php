@@ -73,52 +73,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['candidato_id'])) {
 <body>
     <header class="header">
         <div class="logo"><img src="../Images/logofatec.png" width="190"></div>
-        <nav class="nav">
-            <a href="home.php">Home</a>
-            <a href="eleAtive.php" class="active">Eleições Ativas</a>
-            <a href="news.php">Notícias</a>
-            <a href="elePassa.php">Eleições Passadas</a>
-            <?php
-            $emailLogado = $_SESSION['user_email'] ?? null;
-            ?>
-            <?php if ($emailLogado === 'admin@fatec.sp.gov.br'): ?>
-                <a href="dashboard.php"
-                    style="background-color: brown; color: white; padding: 4px 8px; border-radius: 4px; text-decoration: none; transition: background-color 0.6s ease;"
-                    onmouseover="this.style.backgroundColor='#631212'" onmouseout="this.style.backgroundColor='brown'">
-                    DASHBOARD
-                </a>
-            <?php endif; ?>
-        </nav>
-        <div class="user-icon">
-            <img src="../Images/user.png" width="50" alt="user" />
-            <div class="user-popup">
-
-                <strong>
-                    <?php echo htmlspecialchars($_SESSION['user_name']); ?>
-                </strong>
-
-                <p>FATEC “Dr. Ogari de Castro Pacheco”</p> <strong>
-                    <?php
-
-                    // Supondo que o login salva o e-mail na sessão assim:
-                    $emailLogado = $_SESSION['user_email'] ?? null;
-                    ?>
-
-                    <!-- ... resto do seu HTML ... -->
-
-                    <?php if ($emailLogado !== 'admin@fatec.sp.gov.br'): ?>
-                        <strong>
-                            <p><?php echo htmlspecialchars($_SESSION['curso_nome']); ?></p>
-                        </strong>
-                        <p><?php echo htmlspecialchars($_SESSION['semestre_nome']); ?></p>
-                    <?php endif; ?>
-
-                    <div class="sair">
-                        <a href="../php/logout.php">Sair<i style="margin-left: 5px;"
-                                class="fa-solid fa-right-from-bracket"></i></a>
-                    </div>
-            </div>
-        </div>
+        
+        
     </header>
 
     <main class="main-content">
@@ -198,10 +154,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['candidato_id'])) {
                 <div>
                     <h4>INTEGRANTES</h4>
                     <ul>
-                        <li>Graziela Dilany da Silva</li>
+                        <li>João Paulo Gomes</li>
                         <li>João Pedro Baradeli Pavan</li>
                         <li>Pedro Henrique Cavenaghi dos Santos</li>
-                        <li>Samara Stefani da Silva</li>
                         <li>Samuel Santos Oliveira</li>
                     </ul>
                 </div>

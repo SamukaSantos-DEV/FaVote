@@ -23,11 +23,13 @@ $success = $_GET['success'] ?? null;
             text-align: center;
             font-weight: bold;
         }
+
         .message.error {
             background-color: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
+
         .message.success {
             background-color: #d4edda;
             color: #155724;
@@ -44,16 +46,31 @@ $success = $_GET['success'] ?? null;
             <?php if ($error): ?>
                 <div class="message error">
                     <?php
-                        switch ($error) {
-                            case 'empty_fields': echo 'Por favor, preencha todos os campos.'; break;
-                            case 'invalid_email': echo 'O email deve ser institucional (@fatec.sp.gov.br).'; break;
-                            case 'invalid_ra': echo 'O RA deve conter 13 números.'; break;
-                            case 'user_exists': echo 'Email ou RA já cadastrado.'; break;
-                            case 'db_error': echo 'Erro no banco de dados. Tente novamente.'; break;
-                            case 'invalid_credentials': echo 'Email ou senha incorretos.'; break;
-                            case 'not_logged_in': echo 'Você precisa fazer login para acessar esta página.'; break;
-                            default: echo 'Ocorreu um erro desconhecido.';
-                        }
+                    switch ($error) {
+                        case 'empty_fields':
+                            echo 'Por favor, preencha todos os campos.';
+                            break;
+                        case 'invalid_email':
+                            echo 'O email deve ser institucional (@fatec.sp.gov.br).';
+                            break;
+                        case 'invalid_ra':
+                            echo 'O RA deve conter 13 números.';
+                            break;
+                        case 'user_exists':
+                            echo 'Email ou RA já cadastrado.';
+                            break;
+                        case 'db_error':
+                            echo 'Erro no banco de dados. Tente novamente.';
+                            break;
+                        case 'invalid_credentials':
+                            echo 'Email ou senha incorretos.';
+                            break;
+                        case 'not_logged_in':
+                            echo 'Você precisa fazer login para acessar esta página.';
+                            break;
+                        default:
+                            echo 'Ocorreu um erro desconhecido.';
+                    }
                     ?>
                 </div>
             <?php endif; ?>
@@ -69,17 +86,20 @@ $success = $_GET['success'] ?? null;
                 <input type="email" name="email_login" placeholder="Ex: joao.silva@fatec.sp.gov.br" />
 
                 <label>Senha:</label>
-                <input type="password" name="senha_login" placeholder="Digite sua senha" />
+                <input type="password" id="senha_login" name="senha_login" placeholder="Digite sua senha" />
 
                 <div class="checkbox">
                     <input type="checkbox" id="keepLogged" name="keep_logged" />
-                    <label for="keepLogged">Mantenha-me conectado</label>
+                    <label for="keepLogged">Exibir Senha</label>
                 </div>
+
+
+
 
                 <div style=" height: 20%;"></div>
 
                 <div class="link">
-                   <label style="font-size: 13px" for="terms">Ao fazer login, os <a href="Pages/termos.php"
+                    <label style="font-size: 13px" for="terms">Ao fazer login, os <a href="Pages/termos.php"
                             style="text-decoration: none; color: rgb(112, 0, 0);">Termos de
                             Contrato</a> foram
                         aceitos.</label>
@@ -124,6 +144,15 @@ $success = $_GET['success'] ?? null;
     </div>
 
     <script>
+        const senhaInput = document.getElementById('senha_login');
+        const checkbox = document.getElementById('keepLogged');
+
+        checkbox.addEventListener('change', () => {
+            senhaInput.type = checkbox.checked ? 'text' : 'password';
+        });
+    </script>
+
+    <script>
         const container = document.getElementById('container');
 
         function toggleForm() {
@@ -139,18 +168,18 @@ $success = $_GET['success'] ?? null;
 
         document.title = 'Fazer login';
 
-        document.getElementById('loginForm').addEventListener('submit', function (e) {
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
             const email = this.querySelector('input[name="email_login"]').value.trim();
             const password = this.querySelector('input[name="senha_login"]').value.trim();
 
             if (!email || !password) {
                 alert('Por favor, preencha todos os campos.');
-                e.preventDefault(); 
+                e.preventDefault();
                 return;
             }
         });
 
-        document.getElementById('registerForm').addEventListener('submit', function (e) {
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
             const username = this.querySelector('input[name="nome_cadastro"]').value.trim();
             const email = this.querySelector('input[name="email_cadastro"]').value.trim();
             const ra = this.querySelector('input[name="ra_cadastro"]').value.trim();
@@ -167,16 +196,17 @@ $success = $_GET['success'] ?? null;
 
             if (!emailValido) {
                 alert('O email deve ser institucional (@fatec.sp.gov.br).');
-                e.preventDefault(); 
+                e.preventDefault();
                 return;
             }
 
             if (!raValido) {
                 alert('RA inválido. Use 13 dígitos numéricos.');
-                e.preventDefault(); 
+                e.preventDefault();
                 return;
             }
         });
     </script>
 </body>
+
 </html>
