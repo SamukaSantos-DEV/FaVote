@@ -503,6 +503,7 @@ body {
 
 
 
+
 @media (max-width: 768px) {
     .news-cards {
         grid-template-columns: 1fr;
@@ -633,6 +634,35 @@ td {
 .tabledelete-btn {
     background: #d8d8d8;
     color: black;
+}
+
+.tableSave-btn {
+    background-color: #bebebe;
+    color: white;
+    border: none;
+    width: 38px;
+    height: 38px;
+    font-size: 17px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-right: 6px;
+    transition: transform 0.2s;
+}
+
+.tableCancel-btn {
+    background-color: #bebebe;
+    color: white;
+    border: none;
+    width: 38px;
+    height: 38px;
+    font-size: 17px;
+    border-radius: 50%;
+    transition: transform 0.2s;
+}
+.tableSave-btn:hover,  .tableCancel-btn:hover{
+   
+    transform: scale(1.1);
+    background-color: #b9b9b9; 
 }
 
 

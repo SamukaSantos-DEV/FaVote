@@ -26,7 +26,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['acao'])) {
     if ($_POST['acao'] === 'excluir') {
         $id = $_POST['id'] ?? null;
         if ($id) {
-            // 1️⃣ Obter o RA do aluno antes de excluir
             $raAluno = null;
             $res = $conexao->prepare("SELECT ra FROM alunos WHERE id = ?");
             $res->bind_param("i", $id);
@@ -36,25 +35,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['acao'])) {
             $res->close();
 
             if ($raAluno) {
-                // 2️⃣ Excluir votos relacionados a esse aluno (como eleitor)
                 $stmt = $conexao->prepare("DELETE FROM votos WHERE aluno_ra = ?");
                 $stmt->bind_param("s", $raAluno);
                 $stmt->execute();
                 $stmt->close();
 
-                // 3️⃣ Excluir votos relacionados a esse aluno (como candidato)
                 $stmt = $conexao->prepare("DELETE FROM votos WHERE candidato_id IN (SELECT id FROM candidatos WHERE aluno_ra = ?)");
                 $stmt->bind_param("s", $raAluno);
                 $stmt->execute();
                 $stmt->close();
 
-                // 4️⃣ Excluir o candidato (se existir)
                 $stmt = $conexao->prepare("DELETE FROM candidatos WHERE aluno_ra = ?");
                 $stmt->bind_param("s", $raAluno);
                 $stmt->execute();
                 $stmt->close();
 
-                // 5️⃣ Agora sim, excluir o aluno
                 $stmt = $conexao->prepare("DELETE FROM alunos WHERE id = ?");
                 $stmt->bind_param("i", $id);
                 $ok = $stmt->execute();
@@ -121,26 +116,6 @@ $resultTurmas = $conexao->query($sqlTurmas);
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-
-    <style>
-        .tableSave-btn {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 4px 8px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-        .tableCancel-btn {
-            background-color: #f44336;
-            color: white;
-            border: none;
-            padding: 4px 8px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-    </style>
 </head>
 
 
