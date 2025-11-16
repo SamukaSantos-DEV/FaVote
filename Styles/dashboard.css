@@ -659,10 +659,12 @@ td {
     border-radius: 50%;
     transition: transform 0.2s;
 }
-.tableSave-btn:hover,  .tableCancel-btn:hover{
-   
+
+.tableSave-btn:hover,
+.tableCancel-btn:hover {
+
     transform: scale(1.1);
-    background-color: #b9b9b9; 
+    background-color: #b9b9b9;
 }
 
 
@@ -716,6 +718,53 @@ td {
     position: relative;
 }
 
+.modalCriar {
+    border-radius: 40px;
+    width: 90%;
+    max-width: 1200px;
+    display: flex;
+    overflow: hidden;
+    position: fixed;
+    top: 50%;
+    left: 60%;
+    transform: translate(-42%, -50%);
+}
+
+.close-btn {
+    position: absolute;
+    margin-left: 19%;
+    background-color: #d4d4d4;
+    color: #383838;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.6s ease, transform 0.6s ease;
+}
+
+.close-btn:hover {
+    background-color: #eea7a7;
+}
+
+.close-btn2 {
+    position: absolute;
+    margin-left: 40%;
+    background-color: #d4d4d4;
+    color: #383838;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 1.4em;
+    cursor: pointer;
+    transition: background-color 0.6s ease, transform 0.6s ease;
+}
+
+.close-btn2:hover {
+    background-color: #eea7a7;
+}
+
+
 .election-title {
     text-align: center;
 }
@@ -768,6 +817,15 @@ td {
     border-radius: 10px;
 }
 
+.two-col {
+    display: flex;
+    gap: 10px;
+}
+
+.two-col .form-group {
+    flex: 1;
+}
+
 .form-row {
     display: flex;
     gap: 10px;
@@ -775,7 +833,10 @@ td {
 
 .form-row .form-group {
     flex: 1;
+    max-width: 49%;
 }
+
+
 
 .submit-btn {
     background-color: #D60E0E;
@@ -853,6 +914,7 @@ td {
     padding: 10px;
     border-radius: 10px;
 }
+
 
 
 .candidate-header {

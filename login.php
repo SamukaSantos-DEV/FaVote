@@ -3,7 +3,31 @@ session_start();
 
 $error = $_GET['error'] ?? null;
 $success = $_GET['success'] ?? null;
+
+if ($error) {
+
+    switch ($error) {
+        case 'empty_fields':
+            $msg = 'Preencha todos os campos para continuar.';
+            break;
+
+        case 'invalid_credentials':
+            $msg = 'Email ou senha incorretos.';
+            break;
+
+        case 'db_error':
+            $msg = 'Erro no servidor ao tentar realizar o login.';
+            break;
+
+        default:
+            $msg = 'Ocorreu um erro inesperado.';
+            break;
+    }
+
+    echo "<script>alert('$msg');</script>";
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -121,7 +145,8 @@ $success = $_GET['success'] ?? null;
                 <input type="email" name="email_cadastro" placeholder="email@fatec.sp.gov.br" />
 
                 <label>RA:</label>
-                <input type="text" name="ra_cadastro" maxlength="13" placeholder="0000000000000" title="Digite exatamente 13 números" />
+                <input type="text" name="ra_cadastro" maxlength="13" placeholder="0000000000000"
+                    title="Digite exatamente 13 números" />
 
                 <label>Senha:</label>
                 <input type="password" name="senha_cadastro" placeholder="Crie uma senha" />
@@ -168,7 +193,7 @@ $success = $_GET['success'] ?? null;
 
         document.title = 'Fazer login';
 
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
             const email = this.querySelector('input[name="email_login"]').value.trim();
             const password = this.querySelector('input[name="senha_login"]').value.trim();
 
@@ -179,7 +204,7 @@ $success = $_GET['success'] ?? null;
             }
         });
 
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
+        document.getElementById('registerForm').addEventListener('submit', function (e) {
             const username = this.querySelector('input[name="nome_cadastro"]').value.trim();
             const email = this.querySelector('input[name="email_cadastro"]').value.trim();
             const ra = this.querySelector('input[name="ra_cadastro"]').value.trim();

@@ -3,11 +3,38 @@
 
 include '../php/config.php';
 
-$sqlEleicoesAtivas = "SELECT * FROM eleicoes WHERE ativa != 0";
+// Eleições ativas com informações de curso e semestre
+$sqlEleicoesAtivas = "
+    SELECT 
+        e.*,
+        t.id AS turma_id,
+        c.nome AS curso_nome,
+        s.nome AS semestre_nome
+    FROM eleicoes e
+    LEFT JOIN turmas t ON e.turma_id = t.id
+    LEFT JOIN cursos c ON t.curso_id = c.id
+    LEFT JOIN semestres s ON t.semestre_id = s.id
+    WHERE e.ativa != 0
+    ORDER BY e.dataPostagem DESC
+";
 $resultAtivas = $conexao->query($sqlEleicoesAtivas);
 
-$sqlEleicoesPassadas = "SELECT * FROM eleicoes WHERE ativa = 0";
+// Eleições passadas com informações de curso e semestre
+$sqlEleicoesPassadas = "
+    SELECT 
+        e.*,
+        t.id AS turma_id,
+        c.nome AS curso_nome,
+        s.nome AS semestre_nome
+    FROM eleicoes e
+    LEFT JOIN turmas t ON e.turma_id = t.id
+    LEFT JOIN cursos c ON t.curso_id = c.id
+    LEFT JOIN semestres s ON t.semestre_id = s.id
+    WHERE e.ativa = 0
+    ORDER BY e.dataPostagem DESC
+";
 $resultPassadas = $conexao->query($sqlEleicoesPassadas);
+
 
 $sqlNoticias = "SELECT * FROM noticias ORDER BY dataPublicacao DESC";
 $resultNoticias = $conexao->query($sqlNoticias);
@@ -77,8 +104,162 @@ if (isset($_GET['id'])) {
     }
 }
 
+// BUSCA CURSOS
+$cursos = $conexao->query("SELECT * FROM cursos ORDER BY nome")->fetch_all(MYSQLI_ASSOC);
+
+// BUSCA SEMESTRES
+$semestres = $conexao->query("SELECT * FROM semestres ORDER BY id")->fetch_all(MYSQLI_ASSOC);
+
+// BUSCA TURMAS
+$turmas = $conexao->query("SELECT * FROM turmas")->fetch_all(MYSQLI_ASSOC);
+
+// BUSCA ALUNOS
+$alunos = $conexao->query("SELECT ra, nome, turma_id FROM alunos ORDER BY nome")->fetch_all(MYSQLI_ASSOC);
+
+
+if (isset($_POST['criar_eleicao'])) {
+
+    $titulo = $_POST['titulo'];
+    $descricao = $_POST['descricao'];
+
+    // COMBINAR DATA + HORA
+    $data_inicio = $_POST['data_inicio_data'] . " " . $_POST['data_inicio_hora'];
+    $data_fim = $_POST['data_fim_data'] . " " . $_POST['data_fim_hora'];
+
+    $curso_id = $_POST['curso_id'];
+    $semestre_id = $_POST['semestre_id'];
+
+    // ENCONTRAR TURMA
+    $sqlTurma = $conexao->prepare("SELECT id FROM turmas WHERE curso_id = ? AND semestre_id = ?");
+    $sqlTurma->bind_param("ii", $curso_id, $semestre_id);
+    $sqlTurma->execute();
+    $turma = $sqlTurma->get_result()->fetch_assoc();
+
+    if (!$turma) {
+        echo "<script>alert('Nenhuma turma encontrada para este curso e semestre');</script>";
+        exit;
+    }
+
+    $turma_id = $turma['id'];
+
+    // CRIAR ELEIÇÃO
+    $sql = $conexao->prepare("
+        INSERT INTO eleicoes (titulo, descricao, data_inicio, data_fim, turma_id)
+        VALUES (?, ?, ?, ?, ?)
+    ");
+    $sql->bind_param("ssssi", $titulo, $descricao, $data_inicio, $data_fim, $turma_id);
+    $sql->execute();
+
+    $eleicao_id = $conexao->insert_id;
+
+    // INSERIR TODOS OS ALUNOS DA TURMA
+    $sqlAlunos = $conexao->prepare("SELECT ra FROM alunos WHERE turma_id = ?");
+    $sqlAlunos->bind_param("i", $turma_id);
+    $sqlAlunos->execute();
+    $resultAlunos = $sqlAlunos->get_result();
+
+    while ($aluno = $resultAlunos->fetch_assoc()) {
+        $ra = $aluno['ra'];
+        $conexao->query("INSERT INTO candidatos (eleicao_id, aluno_ra) VALUES ($eleicao_id, '$ra')");
+    }
+
+    header("Location: dashboard.php?success=eleicao_criada");
+    exit;
+}
+
+if (isset($_POST['editar_eleicao'])) {
+
+    $id = intval($_POST['id']);
+    $titulo = $_POST['titulo'];
+    $descricao = $_POST['descricao'];
+    $data_inicio = $_POST['data_inicio'];
+    $data_fim = $_POST['data_fim'];
+
+    $sql = $conexao->prepare("
+        UPDATE eleicoes 
+        SET titulo = ?, descricao = ?, data_inicio = ?, data_fim = ?
+        WHERE id = ?
+    ");
+    $sql->bind_param("ssssi", $titulo, $descricao, $data_inicio, $data_fim, $id);
+
+    if ($sql->execute()) {
+        echo "<script>alert('Eleição editada com sucesso!'); window.location='dashboard.php';</script>";
+        exit;
+    } else {
+        echo "<script>alert('Erro ao editar eleição!');</script>";
+    }
+}
+
+// ==========================
+// RETORNAR DADOS + CANDIDATOS
+// ==========================
+if (isset($_GET['get_eleicao'])) {
+
+    $id = intval($_GET['get_eleicao']);
+
+    // BUSCA DA ELEIÇÃO + TURMA + CURSO + SEMESTRE
+    $sql = $conexao->prepare("
+        SELECT 
+            e.*, 
+            c.nome AS curso_nome,
+            s.nome AS semestre_nome
+        FROM eleicoes e
+        LEFT JOIN turmas t ON e.turma_id = t.id
+        LEFT JOIN cursos c ON t.curso_id = c.id
+        LEFT JOIN semestres s ON t.semestre_id = s.id
+        WHERE e.id = ?
+    ");
+    $sql->bind_param("i", $id);
+    $sql->execute();
+    $eleicao = $sql->get_result()->fetch_assoc();
+
+    if (!$eleicao) {
+        echo json_encode(["erro" => "Eleição não encontrada"]);
+        exit;
+    }
+
+    // BUSCA DOS CANDIDATOS
+    $sqlCand = $conexao->prepare("
+        SELECT 
+            c.id AS candidato_id,
+            a.nome,
+            a.ra
+        FROM candidatos c
+        LEFT JOIN alunos a ON a.ra = c.aluno_ra
+        WHERE c.eleicao_id = ?
+    ");
+    $sqlCand->bind_param("i", $id);
+    $sqlCand->execute();
+    $candResult = $sqlCand->get_result();
+
+    $candidatos = [];
+    while ($c = $candResult->fetch_assoc()) {
+        $candidatos[] = $c;
+    }
+
+    // RETORNO FINAL
+    echo json_encode([
+        "eleicao" => $eleicao,
+        "candidatos" => $candidatos
+    ]);
+
+    exit;
+}
+
+
 
 ?>
+<?php if (isset($_GET['success']) && $_GET['success'] === 'eleicao_criada'): ?>
+    <script>
+        alert("Eleição criada com sucesso!");
+
+        // Remove o parâmetro da URL sem recarregar a página
+        if (history.pushState) {
+            const novaURL = window.location.href.split("?")[0];
+            window.history.replaceState({}, document.title, novaURL);
+        }
+    </script>
+<?php endif; ?>
 
 <?php
 if (isset($_GET['success']) && $_GET['success'] === 'noticia_excluida') {
@@ -110,6 +291,9 @@ if (isset($_GET['error'])) {
 
 
 <body>
+
+
+
     <header class="header">
         <div class="logo"><img src="../Images/logofatec.png" width="190"></div>
 
@@ -165,10 +349,13 @@ if (isset($_GET['error'])) {
                 <?php foreach ($resultAtivas as $row): ?>
                     <div class="election-card">
                         <div class="election-id">
-                            <span>ID</span>
-                            <span><?= htmlspecialchars($row['id']) ?></span>
+                            <?php
+                            $semestre = $row['semestre_nome'] ?? '-';
+                            $semestre = preg_replace('/[^0-9]/', '', $semestre);
+                            ?>
+                            <span><?= htmlspecialchars($semestre) ?></span>
+                            <span><?= htmlspecialchars($row['curso_nome'] ?? '-') ?></span>
                         </div>
-
                         <div class="election-details">
                             <div class="election-info">
                                 <div class="election-title">
@@ -192,12 +379,12 @@ if (isset($_GET['error'])) {
                             </div>
 
                             <div class="election-actions">
-                                <button type="button" id="btnEditar<?= $row['id'] ?>" class="btn-edit">
+                                <button type="button" onclick="abrirModalEditar(<?= $row['id'] ?>)" class="btn-edit">
                                     <i class="fas fa-edit" style="margin-right: 5px;"></i> EDITAR
                                 </button>
 
-                                <a href="dashboard.php?id=<?= $row['id'] ?>"
-                                    class="btn-cancel"
+
+                                <a href="dashboard.php?id=<?= $row['id'] ?>" class="btn-cancel"
                                     id="btnCancelar<?= $row['id'] ?>"
                                     onclick="return confirm('AVISO: Você está prestes a cancelar/excluir “<?= htmlspecialchars($row['titulo']) ?>”, criada em <?= date('d/m/Y H:i', strtotime($row['dataPostagem'])) ?>')">
                                     <i class="fas fa-times" style="margin-right: 5px;"></i> Excluir
@@ -246,16 +433,11 @@ if (isset($_GET['error'])) {
                             </div>
 
                             <div class="election-actions">
-                                <a href="../Docs/Ata.docx"
-                                    target="_blank"
-                                    class="btn-pdf"
-                                    id="btnPdf<?= $row['id'] ?>">
+                                <a href="../Docs/Ata.docx" target="_blank" class="btn-pdf" id="btnPdf<?= $row['id'] ?>">
                                     <i class="fa-solid fa-download" style="margin-right: 5px;"></i> Ata
                                 </a>
 
-                                <a href="dashboard.php?id=<?= $row['id'] ?>"
-                                    class="btn-delete"
-                                    id="btnExcluir<?= $row['id'] ?>"
+                                <a href="dashboard.php?id=<?= $row['id'] ?>" class="btn-delete" id="btnExcluir<?= $row['id'] ?>"
                                     onclick="return confirm('AVISO: Você está prestes a cancelar/excluir “<?= htmlspecialchars($row['titulo']) ?>”, criada em <?= date('d/m/Y H:i', strtotime($row['dataPostagem'])) ?>')">
                                     <i class="fas fa-trash" style="margin-right: 5px;"></i> Excluir
                                 </a>
@@ -289,8 +471,7 @@ if (isset($_GET['error'])) {
                             </div>
 
                             <div class="card-actions">
-                                <a href="../php/excluir_noticia.php?id=<?= $noticia['id'] ?>"
-                                    class="delete-btn"
+                                <a href="../php/excluir_noticia.php?id=<?= $noticia['id'] ?>" class="delete-btn"
                                     onclick="return confirm('AVISO: Você está prestes a excluir a notícia “<?= htmlspecialchars($noticia['titulo']) ?>”, criada em <?= date('d/m/Y H:i', strtotime($noticia['dataPublicacao'])) ?>')">
                                     EXCLUIR
                                 </a>
@@ -349,9 +530,6 @@ if (isset($_GET['error'])) {
                     </tbody>
                 </table>
             </div>
-
-
-
         </div>
 
         <div class="container">
@@ -360,7 +538,6 @@ if (isset($_GET['error'])) {
                 <a href="turmausuario.php" class="ver-todos-btn">
                     Ver todos ➜
                 </a>
-
             </div>
             <div class="table-container">
                 <table>
@@ -412,168 +589,154 @@ if (isset($_GET['error'])) {
 
 
 
-        <div id="modalOverlay" class="modal-overlay">
-            <div class="modal">
+        <!-- Modal do Criar Eleicao -->
+        <form method="POST">
+            <input type="hidden" name="criar_eleicao" value="1"></div>
+            <div id="modalOverlay" class="modal-overlay">
+                <div class="modalCriar">
+                    <div class="modal-left">
+                        <div class="election-title">
+                            <span onclick="fecharModalCriar()" class="close-btn">✖</span>
 
-                <div class="modal-left">
-                    <div class="election-title">
-                        <h2>CRIAR ELEIÇÃO</h2>
-                    </div>
-                    <div class="form-group">
-                        <label for="nome">Nome:</label>
-                        <input type="text" id="nome" value="ELEIÇÃO de Representante de Turma 1° DSM"
-                            class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="descricao">Descrição:</label>
-                        <textarea id="descricao" class="form-control"
-                            rows="5">Votação para eleição do primeiro representante de sala da turma de 1º DSM Noturno</textarea>
+                            <h2>CRIAR ELEIÇÃO</h2>
+                        </div>
+                        <div class="form-group">
+                            <label>Título</label>
+                            <input type="text" placeholder="Eleição de Representante de Turma" class="form-control"
+                                name="titulo" required>
 
-                    </div>
-                    <div class="form-group">
-                        <label>Curso e Semestre:</label>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <select class="form-control">
-                                    <option value="">DSM (N)</option>
-                                    <option value="">GE (N)</option>
-                                    <option value="">GPI (N)</option>
+                        </div>
+                        <div class="form-group">
+                            <label>Descrição</label>
+                            <textarea rows="5" class="form-control"
+                                placeholder="Votação para eleição do primeiro representante de sala da turma de 1º DSM Noturno"
+                                name="descricao"></textarea>
 
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <select class="form-control">
-                                    <option value="">1° Semestre</option>
-                                    <option value="">2° Semestre</option>
-                                    <option value="">3° Semestre</option>
-                                    <option value="">4° Semestre</option>
-                                    <option value="">5° Semestre</option>
-                                    <option value="">6° Semestre</option>
-                                </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Curso e Semestre:</label>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <select class="form-control" name="curso_id" required>
+                                        <?php foreach ($cursos as $c): ?>
+                                            <option value="<?= $c['id'] ?>"><?= $c['nome'] ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+
+                                </div>
+                                <div class="form-group">
+                                    <select class="form-control" name="semestre_id" required>
+                                        <?php foreach ($semestres as $s): ?>
+                                            <option value="<?= $s['id'] ?>"><?= $s['nome'] ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Início:</label>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <input type="date" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <input type="time" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Fim:</label>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <input type="date" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <input type="time" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                    <button class="submit-btn" onclick="criarEleicao()">CRIAR ELEIÇÃO</button>
-                </div>
-                <div class="modal-right">
-                    <h2>CANDIDATOS</h2>
-                    <div class="search-candidate">
-                        <input type="text" placeholder="Pesquisar candidato...">
-                    </div>
-                    <h3>Listagem</h3>
-                    <div class="candidate-header">
-                        <label for="selectAll">Selecionar Todos</label>
-                        <input type="checkbox" id="selectAll" class="candidate-checkbox select-all">
-                    </div>
-                    <div id="candidatos-container" class="candidate-list"></div>
+                        <div class="form-group">
+                            <label>Início:</label>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <input type="date" class="form-control" name="data_inicio_data" required>
 
+                                </div>
+                                <div class="form-group">
+                                    <input type="time" class="form-control" name="data_inicio_hora" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Fim:</label>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <input type="date" class="form-control" name="data_fim_data" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="time" class="form-control" name="data_fim_hora" required>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-btn">CRIAR ELEIÇÃO</button>
+                    </div>
                 </div>
             </div>
-        </div>
-        </div>
+        </form>
 
 
         <!-- Modal do Editar Eleicao -->
-        <div id="modalEditarOverlay" class="modal-overlay" style="display: none;">
+        <div id="modalEditarOverlay" class="modal-overlay" style="display:none;">
             <div class="modal">
+
+                <!-- LADO ESQUERDO -->
                 <div class="modal-left">
+
                     <div class="election-title">
                         <h2>EDITAR ELEIÇÃO</h2>
                     </div>
 
-                    <div class="form-group">
-                        <label for="nome">Nome:</label>
-                        <input type="text" id="nome" value="ELEIÇÃO de Representante de Turma 1° DSM"
-                            class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="descricao">Descrição:</label>
-                        <textarea id="descricao" class="form-control"
-                            rows="5">Votação para eleição do primeiro representante de sala da turma de 1º DSM Noturno</textarea>
+                    <form id="formEditar" method="POST">
 
-                    </div>
-                    <div class="form-group">
-                        <label>Curso e Semestre:</label>
-                        <div class="form-row">
+                        <input type="hidden" name="editar_eleicao" value="1">
+                        <input type="hidden" id="editId" name="id">
+
+                        <div class="form-group">
+                            <label>Nome:</label>
+                            <input type="text" id="editTitulo" name="titulo" class="form-control" readonly style="background-color: #bbb;">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Descrição:</label>
+                            <textarea id="editDescricao" name="descricao" class="form-control" rows="5" style="background-color: #bbb;" readonly></textarea>
+                        </div>
+
+                        <div class="two-col">
                             <div class="form-group">
-                                <select class="form-control">
-                                    <option value="">DSM (N)</option>
-                                    <option value="">GE (N)</option>
-                                    <option value="">GPI (N)</option>
-
-                                </select>
+                                <label>Curso:</label>
+                                <input type="text" id="editCurso" class="form-control" style="background-color: #bbb;" readonly>
                             </div>
+
                             <div class="form-group">
-                                <select class="form-control">
-                                    <option value="">1° Semestre</option>
-                                    <option value="">2° Semestre</option>
-                                    <option value="">3° Semestre</option>
-                                    <option value="">4° Semestre</option>
-                                    <option value="">5° Semestre</option>
-                                    <option value="">6° Semestre</option>
-                                </select>
+                                <label>Semestre:</label>
+                                <input type="text" id="editSemestre" class="form-control" style="background-color: #bbb;" readonly>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label>Datas de Início e Fim:</label>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <input type="datetime-local" id="editInicio" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <input type="datetime-local" id="editFim" class="form-control">
+                        <div class="form-group">
+                            <label>Datas:</label>
+                            <div class="form-row">
+
+                                <div class="form-group">
+                                    <input type="datetime-local" style="background-color: #bbb;" id="editInicio" name="data_inicio"
+                                        class="form-control" readonly >
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="datetime-local" id="editFim" name="data_fim" class="form-control">
+                                </div>
+
                             </div>
                         </div>
-                    </div>
 
+                        <div class="atention-card">
+                            <p>Você só pode alterar a data de fim.</p>
+                        </div>
 
-                    <div class="atention-card">
-                        <p>ATENÇÃO: Ao editar uma eleição, você só pode alterar a data e hora do fim do processo,
-                            para caso de prorrogação. Para mais alterações, crie uma nova eleição e cancele a atual,
-                            para que os votos sejam descontabilizados! Edição do Início da Eleição disponível apenas
-                            antes do período de iniciar.
-                        </p>
-                    </div>
+                        <button class="submit-btn" type="submit">SALVAR ALTERAÇÕES</button>
 
-                    <button class="submit-btn" onclick="salvarAlteracoes()">SALVAR ALTERAÇÕES</button>
+                    </form>
+
                 </div>
 
                 <div class="modal-right">
+                    <span onclick="fecharModalEditar()" class="close-btn2">✖</span>
                     <h2>Candidatos</h2>
-                    <div class="search-candidate">
-                        <input type="text" placeholder="Pesquisar candidato...">
-                    </div>
-
 
                     <div id="candidatos-editar-container" class="candidate-list2"></div>
                 </div>
+
             </div>
         </div>
-
 
 
         <script defer>
@@ -597,156 +760,92 @@ if (isset($_GET['error'])) {
                 }
             }
 
-            document.addEventListener('DOMContentLoaded', () => {
-                criarLinhasTabela();
-                criarLinhasTurmas();
+            function abrirModalEditar(id) {
 
-                const candidatos = [
-                    "Victor Luiz Rodrigues", "Ana Beatriz Silva", "João Pedro Oliveira", "Carlos Eduardo",
-                    "Maria Fernanda", "Juliana Moura", "Felipe Andrade", "Larissa Costa", "Thiago Martins",
-                    "Camila Ribeiro", "Eduardo Lima", "Patrícia Alves", "Gabriel Souza", "Renata Dias",
-                    "Lucas Pereira", "Amanda Rocha", "Bruno Fernandes", "Natália Gomes", "Vinícius Castro",
-                    "Letícia Mendes"
-                ];
+                fetch("dashboard.php?get_eleicao=" + id)
+                    .then(res => res.json())
+                    .then(data => {
 
+                        if (data.erro) {
+                            alert(data.erro);
+                            return;
+                        }
 
-                function preencherCandidatos(containerId, marcarTodos = false) {
-                    const container = document.getElementById(containerId);
-                    container.innerHTML = "";
-                    candidatos.forEach(nome => {
-                        const partes = nome.trim().split(" ");
-                        const iniciais = (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
-                        const item = document.createElement("div");
-                        item.className = "candidate-item";
-                        const avatar = document.createElement("div");
-                        avatar.className = "candidate-avatar";
-                        avatar.textContent = iniciais;
-                        const name = document.createElement("div");
-                        name.className = "candidate-name";
-                        name.textContent = nome;
-                        const checkbox = document.createElement("input");
-                        checkbox.type = "checkbox";
-                        checkbox.className = "candidate-checkbox";
-                        checkbox.checked = marcarTodos;
-                        item.addEventListener("click", function() {
-                            checkbox.checked = !checkbox.checked;
-                        });
-                        item.appendChild(avatar);
-                        item.appendChild(name);
-                        item.appendChild(checkbox);
-                        container.appendChild(item);
+                        let e = data.eleicao;
+
+                        // Preencher campos
+                        document.getElementById("editId").value = e.id;
+                        document.getElementById("editTitulo").value = e.titulo;
+                        document.getElementById("editDescricao").value = e.descricao;
+
+                        document.getElementById("editInicio").value = e.data_inicio.replace(" ", "T");
+                        document.getElementById("editFim").value = e.data_fim.replace(" ", "T");
+
+                        // NOVOS CAMPOS
+                        document.getElementById("editCurso").value = e.curso_nome;
+
+                        // transformar semestre para número apenas
+                        let sem = e.semestre_nome.replace(/[^0-9]/g, "");
+                        document.getElementById("editSemestre").value = sem;
+
+                        let container = document.getElementById("candidatos-editar-container");
+                        container.innerHTML = "";
+
+                        if (data.candidatos.length === 0) {
+                            container.innerHTML = "<p>Nenhum candidato encontrado.</p>";
+                        } else {
+                            data.candidatos.forEach(c => {
+                                container.innerHTML += `
+                        <div class="candidate-item2">
+                            <strong>${c.nome}</strong>
+                            <span>RA: ${c.ra}</span>
+                        </div>
+                    `;
+                            });
+                        }
+
+                        document.getElementById("modalEditarOverlay").style.display = "flex";
                     });
-                }
-
-                function configurarSelecionarTodos(checkboxId, containerId) {
-                    const selectAll = document.getElementById(checkboxId);
-                    const container = document.getElementById(containerId);
-                    selectAll.addEventListener("change", function() {
-                        const checkboxes = container.querySelectorAll(".candidate-checkbox");
-                        checkboxes.forEach(cb => cb.checked = this.checked);
-                    });
-                }
+            }
 
 
-                const modalOverlay = document.getElementById('modalOverlay');
-                const criarMaisBtn = document.getElementById('criarMais');
-
-                criarMaisBtn.addEventListener('click', function() {
-                    modalOverlay.style.display = 'flex';
-                    preencherCandidatos("candidatos-container");
-                });
-
-                modalOverlay.addEventListener('click', function(event) {
-                    if (event.target === modalOverlay) {
-                        modalOverlay.style.display = 'none';
-                    }
-                });
-
-                configurarSelecionarTodos("selectAll", "candidatos-container");
-
-                const btnEditar1 = document.getElementById('btnEditar1');
-                const btnEditar2 = document.getElementById('btnEditar2');
-                const modalEditarOverlay = document.getElementById('modalEditarOverlay');
-
-                btnEditar1.addEventListener('click', () => {
-                    modalEditarOverlay.style.display = 'flex';
-                    preencherCandidatos("candidatos-editar-container", true);
-                });
-
-                btnEditar2.addEventListener('click', () => {
-                    modalEditarOverlay.style.display = 'flex';
-                    preencherCandidatos("candidatos-editar-container", true);
-                });
-
-
-
-                modalEditarOverlay.addEventListener('click', (event) => {
-                    if (event.target === modalEditarOverlay) {
-                        modalEditarOverlay.style.display = 'none';
-                    }
-                });
-
-                configurarSelecionarTodos("selectAllEditar", "candidatos-editar-container");
+            // Abrir modal de criação
+            document.getElementById("criarMais").addEventListener("click", () => {
+                document.getElementById("modalOverlay").style.display = "flex";
             });
 
-            function salvarAlteracoes() {
-                alert('Dados salvos com sucesso');
-                const modalEditarOverlay = document.getElementById('modalEditarOverlay');
-                modalEditarOverlay.style.display = 'none';
+            // Fechar modal clicando fora
+            document.getElementById("modalOverlay").addEventListener("click", (e) => {
+                if (e.target.id === "modalOverlay") {
+                    e.target.style.display = "none";
+                }
+            });
+
+            function fecharModalCriar() {
+                document.getElementById('modalOverlay').style.display = 'none';
+            }
+            function fecharModalEditar() {
+                document.getElementById('modalEditarOverlay').style.display = 'none';
             }
 
-            function criarEleicao() {
-                alert('Eleição criada com sucesso');
-                const modalOverlay = document.getElementById('modalOverlay');
-                modalOverlay.style.display = 'none';
-            }
+
+            // Abrir modal de edição
+            document.querySelectorAll(".btn-edit").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    document.getElementById("modalEditarOverlay").style.display = "flex";
+                });
+            });
+
+            // Fechar modal de edição clicando fora
+            document.getElementById("modalEditarOverlay").addEventListener("click", (e) => {
+                if (e.target.id === "modalEditarOverlay") {
+                    e.target.style.display = "none";
+                }
+            });
+
         </script>
-    </main>
 
-    <footer class="footer">
-        <div class="footer-top">
-            <div class="footer-logo">
-                <img src="../Images/logoFaVote.png" width="70">
-            </div>
-            <div class="footer-links">
-                <div>
-                    <h4>PÁGINAS</h4>
-                    <ul>
-                        <li><a href="home.php">Home</a></li>
-                        <li><a href="eleAtive.php">Eleições Ativas</a></li>
-                        <li><a href="news.php">Notícias</a></li>
-                        <li><a href="elepassa.php">Eleições Passadas</a></li>
-                        <li><a href="termos.php">Termos de Contrato</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4>REDES</h4>
-                    <ul>
-                        <li><a href="https://www.instagram.com/fatecdeitapira?igsh=MWUzNXMzcWNhZzB4Ng=="
-                                target="_blank">Instagram</a></li>
-                        <li><a href="https://www.facebook.com/share/16Y3jKo71m/" target="_blank">Facebook</a></li>
-                        <li><a href="https://www.youtube.com/@fatecdeitapiraogaridecastr2131"
-                                target="_blank">Youtube</a></li>
-                        <li><a href="https://www.linkedin.com/school/faculdade-estadual-de-tecnologia-de-itapira-ogari-de-castro-pacheco/about/"
-                                target="_blank">Linkedin</a></li>
-                        <li><a href="https://fatecitapira.cps.sp.gov.br/" target="_blank">Site Fatec</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4>INTEGRANTES</h4>
-                    <ul>
-                        <li>João Paulo Gomes</li>
-                        <li>João Pedro Baradeli Pavan</li>
-                        <li>Pedro Henrique Cavenaghi dos Santos</li>
-                        <li>Samuel Santos Oliveira</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            FaVote - Todos os direitos reservados | 2025
-        </div>
-    </footer>
+    </main>
 
 </body>
 
