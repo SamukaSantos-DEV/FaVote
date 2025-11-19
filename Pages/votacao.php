@@ -73,8 +73,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['candidato_id'])) {
 <body>
     <header class="header">
         <div class="logo"><img src="../Images/logofatec.png" width="190"></div>
-        
-        
+
+
     </header>
 
     <main class="main-content">
@@ -112,9 +112,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['candidato_id'])) {
                 </div>
             </section>
 
-            <p class="termos">Ao finalizar esse processo eleitoral, você concorda com os
-                <a href="termos.php" class="link-termos">Termos e Condições</a>.
-            </p>
+            <div class="checkbox">
+                <input type="checkbox" required>
+                <p class="termos">Ao finalizar esse processo eleitoral, você concorda com os
+                    <a href="termos.php" class="link-termos">Termos e Condições</a>.
+                </p>
+
+            </div>
+
 
             <div class="finalizar-container">
                 <button type="submit" class="botao-finalizar">FINALIZAR</button>

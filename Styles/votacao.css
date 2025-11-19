@@ -114,10 +114,9 @@ body {
 
 .main-content {
     padding: 40px 20px 0px 20px;
-    position: absolute;
-    top: 55%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    width: 31%;
+    margin: auto;
+    margin-top: 30px;
     border-radius: 30px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     background: #d9d9d9;
@@ -172,7 +171,7 @@ body {
     text-align: center;
     background: #b10707;
     color: white;
-    padding: 10px 30px;
+    padding: 10px 15px;
     display: inline-block;
     border-radius: 10px;
     margin-bottom: 20px;
@@ -206,9 +205,6 @@ body {
     width: 8%;
 }
 
-
-
-
 .lista-candidatos input[type="radio"] {
     appearance: none;
     -webkit-appearance: none;
@@ -234,9 +230,49 @@ body {
     border-radius: 50%;
 }
 
+.checkbox {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    gap: 9px;   
+}
 
+.checkbox input[type="checkbox"] {
+    margin-top: 12px;
+    width: 23px;
+    height: 23px;
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: #ffffff;
+    border: 2px solid black;
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+}
+
+.checkbox input[type="checkbox"]:checked {
+    background-color: white;
+}
+
+.checkbox input[type="checkbox"]::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 7px;
+    width: 4px;
+    height: 8px;
+    border: solid #D60E0E;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    display: none;
+}
+
+.checkbox input[type="checkbox"]:checked::after {
+    display: block;
+}
 
 .termos {
+    margin-top: 15px;
     text-align: center;
     font-weight: bold;
 }
@@ -249,14 +285,14 @@ body {
 
 .finalizar-container {
     text-align: center;
-    margin: 20px 0px 0px 0px;
+    margin: 30px 0px 0px 0px;
 }
 
 .botao-finalizar {
-    padding: 10px 10%;
+    padding: 10px 15%;
     background: #5f0000;
     color: white;
-    font-size: 1.2em;
+    font-size: 1.5em;
     border: none;
     font-weight: 500;
     border-radius: 10px 10px 0px 0px;
@@ -272,7 +308,7 @@ body {
 
 
 .footer {
-    margin-top: 90vh;
+    margin-top: 30px;
     background: #d9d9d9;
     border-radius: 30px 30px 0 0;
     overflow: hidden;

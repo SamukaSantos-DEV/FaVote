@@ -406,8 +406,12 @@ if (isset($_GET['error'])) {
                 <?php foreach ($resultPassadas as $row): ?>
                     <div class="election-card election-past">
                         <div class="election-id">
-                            <span>ID</span>
-                            <span><?= htmlspecialchars($row['id']) ?></span>
+                            <?php
+                            $semestre = $row['semestre_nome'] ?? '-';
+                            $semestre = preg_replace('/[^0-9]/', '', $semestre);
+                            ?>
+                            <span><?= htmlspecialchars($semestre) ?></span>
+                            <span><?= htmlspecialchars($row['curso_nome'] ?? '-') ?></span>
                         </div>
 
                         <div class="election-details">
@@ -433,9 +437,13 @@ if (isset($_GET['error'])) {
                             </div>
 
                             <div class="election-actions">
-                                <a href="../Docs/Ata.docx" target="_blank" class="btn-pdf" id="btnPdf<?= $row['id'] ?>">
-                                    <i class="fa-solid fa-download" style="margin-right: 5px;"></i> Ata
-                                </a>
+
+                                <button onclick="gerarAtaPDF(<?= $row['id'] ?>)" class="btn-pdf" id="btnPdf<?= $row['id'] ?>">
+
+
+                                    <i class="fa-solid fa-download" style="margin-right: 5px;"></i>
+                                    Ata Oficial
+                                </button>                               
 
                                 <a href="dashboard.php?id=<?= $row['id'] ?>" class="btn-delete" id="btnExcluir<?= $row['id'] ?>"
                                     onclick="return confirm('AVISO: Você está prestes a cancelar/excluir “<?= htmlspecialchars($row['titulo']) ?>”, criada em <?= date('d/m/Y H:i', strtotime($row['dataPostagem'])) ?>')">
@@ -492,9 +500,9 @@ if (isset($_GET['error'])) {
 
         <div class="container" style="margin-top: 5%;">
             <div class="table-header">
-                <h2>Usuários</h2>
+                <h2>Alunos</h2>
                 <a href="turmausuario.php" class="ver-todos-btn">
-                    Ver todos ➜
+                    Editar 🖉 ➜
                 </a>
 
             </div>
@@ -682,23 +690,27 @@ if (isset($_GET['error'])) {
 
                         <div class="form-group">
                             <label>Nome:</label>
-                            <input type="text" id="editTitulo" name="titulo" class="form-control" readonly style="background-color: #bbb;">
+                            <input type="text" id="editTitulo" name="titulo" class="form-control" readonly
+                                style="background-color: #bbb;">
                         </div>
 
                         <div class="form-group">
                             <label>Descrição:</label>
-                            <textarea id="editDescricao" name="descricao" class="form-control" rows="5" style="background-color: #bbb;" readonly></textarea>
+                            <textarea id="editDescricao" name="descricao" class="form-control" rows="5"
+                                style="background-color: #bbb;" readonly></textarea>
                         </div>
 
                         <div class="two-col">
                             <div class="form-group">
                                 <label>Curso:</label>
-                                <input type="text" id="editCurso" class="form-control" style="background-color: #bbb;" readonly>
+                                <input type="text" id="editCurso" class="form-control" style="background-color: #bbb;"
+                                    readonly>
                             </div>
 
                             <div class="form-group">
                                 <label>Semestre:</label>
-                                <input type="text" id="editSemestre" class="form-control" style="background-color: #bbb;" readonly>
+                                <input type="text" id="editSemestre" class="form-control"
+                                    style="background-color: #bbb;" readonly>
                             </div>
                         </div>
 
@@ -707,8 +719,8 @@ if (isset($_GET['error'])) {
                             <div class="form-row">
 
                                 <div class="form-group">
-                                    <input type="datetime-local" style="background-color: #bbb;" id="editInicio" name="data_inicio"
-                                        class="form-control" readonly >
+                                    <input type="datetime-local" style="background-color: #bbb;" id="editInicio"
+                                        name="data_inicio" class="form-control" readonly>
                                 </div>
 
                                 <div class="form-group">
@@ -729,7 +741,8 @@ if (isset($_GET['error'])) {
                 </div>
 
                 <div class="modal-right">
-                    <span onclick="fecharModalEditar()" class="close-btn2">✖</span>
+
+                    <button onclick="fecharModalEditar()" class="close-btn2">✖</button>
                     <h2>Candidatos</h2>
 
                     <div id="candidatos-editar-container" class="candidate-list2"></div>
@@ -762,6 +775,7 @@ if (isset($_GET['error'])) {
 
             function abrirModalEditar(id) {
 
+                document.body.style.overflow = "hidden"; 
                 fetch("dashboard.php?get_eleicao=" + id)
                     .then(res => res.json())
                     .then(data => {
@@ -812,20 +826,24 @@ if (isset($_GET['error'])) {
             // Abrir modal de criação
             document.getElementById("criarMais").addEventListener("click", () => {
                 document.getElementById("modalOverlay").style.display = "flex";
+                document.body.style.overflow = "hidden"; 
             });
 
             // Fechar modal clicando fora
             document.getElementById("modalOverlay").addEventListener("click", (e) => {
                 if (e.target.id === "modalOverlay") {
                     e.target.style.display = "none";
+                    document.body.style.overflow = "auto"; 
                 }
             });
 
             function fecharModalCriar() {
                 document.getElementById('modalOverlay').style.display = 'none';
+                document.body.style.overflow = "auto"; 
             }
             function fecharModalEditar() {
                 document.getElementById('modalEditarOverlay').style.display = 'none';
+                document.body.style.overflow = "auto"; 
             }
 
 
@@ -833,6 +851,7 @@ if (isset($_GET['error'])) {
             document.querySelectorAll(".btn-edit").forEach(btn => {
                 btn.addEventListener("click", () => {
                     document.getElementById("modalEditarOverlay").style.display = "flex";
+                    document.body.style.overflow = "hidden"; 
                 });
             });
 
@@ -840,10 +859,14 @@ if (isset($_GET['error'])) {
             document.getElementById("modalEditarOverlay").addEventListener("click", (e) => {
                 if (e.target.id === "modalEditarOverlay") {
                     e.target.style.display = "none";
+                    document.body.style.overflow = "auto"; 
                 }
             });
 
         </script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+           <script src="../php/gerarPDF.js"></script>
 
     </main>
 

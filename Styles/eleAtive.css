@@ -116,7 +116,7 @@ body {
 
 .main-content {
     width: 60%;
-    margin: 3% 20% 20% 20%;
+    margin: 3% 20% 0% 20%;
 }
 
 .main-content h2 {
@@ -202,9 +202,6 @@ body {
     border-radius: 30px 30px 0 0;
     overflow: hidden;
     font-size: 16px;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
 }
 
 .footer-top {

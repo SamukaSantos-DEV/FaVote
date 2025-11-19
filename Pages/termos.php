@@ -8,7 +8,8 @@
   <link rel="icon" href="../Images/logoFaVote.png">
   <title>Termos de Uso | FaVote</title>
   <style>
-     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
     * {
       box-sizing: border-box;
       animation: fadeIn;
@@ -44,6 +45,7 @@
       font-size: 1.05em;
       line-height: 1.7;
       margin-bottom: 15px;
+      text-align: justify;
     }
 
     .btn-close {
@@ -65,7 +67,6 @@
       transform: scale(1.05);
 
     }
-
   </style>
 </head>
 
@@ -96,7 +97,14 @@
   <p>Reservamo-nos o direito de modificar estes termos a qualquer momento. As alterações serão comunicadas aos usuários
     através do site.</p>
 
-  <p>Última atualização: 31 de maio de 2025</p>
+  <h2>6. Uso de Dados para Votação</h2>
+  <p>Ao participar de uma eleição, o usuário concorda que seus dados pessoais, como RA, nome completo, e outras
+    informações necessárias, poderão ser utilizados para fins de registro em ata de votação e demais documentos
+    oficiais relacionados ao processo eleitoral. Esses dados serão empregados exclusivamente para garantir a
+    legitimidade, transparência e auditabilidade do sistema.</p>
+
+
+  <p>Última atualização: 18 de Novembro de 2025</p>
 
 </body>
 
