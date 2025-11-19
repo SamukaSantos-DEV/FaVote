@@ -133,7 +133,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             background-color: #d6d6d6;
             border-radius: 30px;
             width: 450px;
-            padding: 30px 50px 30px 30px;
+            padding: 30px 30px 30px 30px;
             box-shadow: 0 0 10px rgb(136, 136, 136);
         }
 
@@ -165,7 +165,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             color: white;
             border: none;
             padding: 20px;
-            width: 105%;
+            width: 100%;
             margin-top: 20px;
             border-radius: 15px;
             font-weight: bold;
