@@ -116,6 +116,7 @@ body {
 .main-content {
     width: 60%;
     margin: 2% 20%;
+    flex-grow: 1;
 }
 
 .main-vote {
@@ -143,7 +144,9 @@ body {
 .vote-box h1 {
     font-size: 32px;
     margin-bottom: 10px;
+    text-transform: uppercase;
 }
+
 .badge {
     background: white;
     color: #D60E0E;
@@ -181,7 +184,6 @@ body {
     margin-top: 20px;
 }
 
-/* Cada coluna */
 .news,
 .votes {
     flex: 1;
@@ -189,81 +191,6 @@ body {
     max-width: 500px;
 }
 
-/* Cabeçalho de seção (título + link) */
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.section-header h2 {
-    font-size: 24px;
-    border-bottom: 3px solid #D60E0E;
-    width: fit-content;
-    margin-bottom: 20px;
-}
-
-/* Cards de notícias */
-.news-card {
-    background: #D60E0E;
-    color: white;
-    padding: 20px;
-    border-radius: 30px;
-    margin: 15px 0;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
-    transition: transform 0.3s;
-    display: flex;
-    flex-direction: column;
-    word-break: break-word;
-}
-
-.news-card:hover {
-    transform: scale(1.02);
-}
-
-.news-card p {
-    font-size: 14px;
-    margin-bottom: 8px;
-    white-space: pre-wrap;
-    /* <-- quebra linhas e respeita \n */
-    word-wrap: break-word;
-    line-height: 1.5;
-}
-
-.news-card h3 {
-    font-size: 22px;
-    padding-bottom: 10px;
-    text-align: center;
-}
-
-
-
-.news-card.special-card {
-    background: linear-gradient(145deg, #d4d4d4, #abff9b);
-    color: #2b2b2b;
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
-    cursor: pointer;
-    text-align: center;
-}
-
-.news-card.special-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
-    filter: brightness(1.05);
-}
-
-
-/* Votações */
-.vote-result {
-    background: #d3d3d3;
-    color: rgb(20, 20, 20);
-    padding: 20px;
-    border-radius: 30px;
-    margin: 15px 0;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Links dos cabeçalhos */
 .news a,
 .votes a {
     text-decoration: none;
@@ -283,7 +210,7 @@ body {
     transform: scale(1.03);
 }
 
-/* Responsivo */
+
 @media (max-width: 900px) {
     .news-votes {
         flex-direction: column;
@@ -291,25 +218,131 @@ body {
     }
 }
 
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-.btncandidatar {
-    background: white;
-    color: #D60E0E;
-    padding: 5px 12px;
+.section-header h2 {
+    font-size: 24px;
+    border-bottom: 3px solid #D60E0E;
+    width: fit-content;
+    margin-bottom: 20px;
+}
+
+
+.news-card {
+    background: #868686;
+    color: white;
+    padding: 20px;
+    border-radius: 30px;
+    margin: 15px 0;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s;
+    display: flex;
+    flex-direction: column;
+    word-break: break-word;
+}
+
+.news-card:hover {
+    transform: scale(1.02);
+}
+
+.news-card p {
     font-size: 14px;
-    margin-left: 120px;
+    margin-bottom: 8px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    line-height: 1.5;
+}
+
+.news-card h3 {
+    font-size: 22px;
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+.news-card.special-card {
+    background: linear-gradient(145deg, #d4d4d4, #abff9b);
+    color: #2b2b2b;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
     cursor: pointer;
-    border-radius: 20px;
-    border: none;
-    font-weight: bold;
-    display: inline-block;
-    margin-bottom: 10px;
+    text-align: center;
+}
+
+.news-card.special-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    filter: brightness(1.05);
+}
+
+
+.vote-result {
+    background: #e7e7e7;
+    color: #222;
+    padding: 22px;
+    border-radius: 25px;
+    margin: 18px 0;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12); 
+    align-items: center;
+    gap: 25px;
+    position: relative;
     transition: 0.3s;
 }
 
-.btncandidatar:hover {
-    transform: scale(1.05);
+.vote-result:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
 }
+
+.vote-result-content {
+    flex: 1;
+}
+
+.titulo-eleicao-recente {
+    font-size: 22px;
+    font-weight: bold;
+    color: #880000;
+    margin: 0 0 8px 0;
+}
+
+.turma-nome {
+    display: block;
+    font-size: 15px;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.badge-date {
+    background: #880000;
+    padding: 3px 10px;
+    color: white;
+    border-radius: 12px;
+}
+
+.vencedores,
+.segundo-colocado {
+    margin: 10px 0 0 0;
+    font-size: 15px;
+}
+.taca {
+    width: 120px;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.9;
+}
+
+.sem-votacoes {
+    color: gray;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+
 
 .footer {
     margin-top: 60px;
@@ -374,32 +407,4 @@ body {
     color: white;
     padding: 12px;
     font-weight: bold;
-}
-
-.titulo-eleicao-recente{
-    text-transform: uppercase;
-}
-
-.vote-box h1{
-    text-transform: uppercase;
-}
-
-.vencedores, .segundo-colocado{
-    text-transform: uppercase;
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
-}
-
-.main-content {
-    flex-grow: 1;
-}
-
-.footer {
-    flex-shrink: 0;
 }

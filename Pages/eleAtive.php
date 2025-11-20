@@ -54,10 +54,8 @@ $resultBloqueadas = $stmtBloqueadas->get_result();
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Eleições 🕢 | FaVote</title>
     <link rel="stylesheet" href="../Styles/eleAtive.css">
-
     <link rel="icon" href="../Images/iconlogoFaVote.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
@@ -118,32 +116,55 @@ $resultBloqueadas = $stmtBloqueadas->get_result();
         <h2>Eleições ativas para seu usuário</h2>
 
         <?php if ($resultAtivas->num_rows > 0): ?>
-            <?php while ($eleicao = $resultAtivas->fetch_assoc()): ?>
-                <a href="votacao.php?id=<?php echo $eleicao['id']; ?>" style="text-decoration: none;">
-                    <section class="main-vote">
-                        <div class="vote-box">
-                            <h1><?php echo strtoupper($eleicao['titulo']); ?></h1><br>
-                            <h2 style="border-bottom: none; margin-top: -35px; margin-bottom: 12px; font-size: 24px;">
-                                <?php echo $eleicao['curso_nome'] . " (" . $eleicao['semestre_nome'] . ")"; ?></h1>
-                            </h2>
-                            <p><?php echo htmlspecialchars($eleicao['descricao']); ?></p><br>
-                            <small>
-                                <p>
-                                    <strong>Início:</strong>
-                                    <?php echo date('d/m/Y H:i', strtotime($eleicao['data_inicio'])); ?>
-                                    &nbsp;
-                                    <strong>Fim:</strong> <?php echo date('d/m/Y H:i', strtotime($eleicao['data_fim'])); ?>
-                                </p>
-                            </small>
-                        </div>
-                        <div class="vote-img">
-                            <img src="../Images/imgAlvo.png" width="310">
-                        </div>
-                    </section>
-                </a>
+            <?php
+            $temEleicaoDisponivel = false; // controla se algum card foi exibido
+        
+            while ($eleicao = $resultAtivas->fetch_assoc()): ?>
+
+                <?php
+                // Calcula se o período de candidatura ainda está aberto para esta eleição
+                $dataInicio = strtotime($eleicao['data_inicio']);
+                $periodo_candidatura_aberto = (time() < $dataInicio + (7 * 24 * 60 * 60));
+                ?>
+
+                <?php if (!$periodo_candidatura_aberto): ?>
+                    <?php $temEleicaoDisponivel = true; // achou pelo menos uma ?>
+
+                    <a href="votacao.php?id=<?php echo $eleicao['id']; ?>" style="text-decoration: none;">
+                        <section class="main-vote">
+                            <div class="vote-box">
+                                <h1><?php echo strtoupper($eleicao['titulo']); ?></h1><br>
+                                <h2 style="border-bottom: none; margin-top: -35px; margin-bottom: 12px; font-size: 24px;">
+                                    <?php echo $eleicao['curso_nome'] . " (" . $eleicao['semestre_nome'] . ")"; ?>
+                                </h2>
+                                <p><?php echo htmlspecialchars($eleicao['descricao']); ?></p><br>
+                                <small>
+                                    <p>
+                                        <strong>Início:</strong>
+                                        <?php echo date('d/m/Y H:i', strtotime($eleicao['data_inicio'])); ?>
+                                        &nbsp;
+                                        <strong>Fim:</strong> <?php echo date('d/m/Y H:i', strtotime($eleicao['data_fim'])); ?>
+                                    </p>
+                                </small>
+                            </div>
+                            <div class="vote-img">
+                                <img src="../Images/imgAlvo.png" width="310">
+                            </div>
+                        </section>
+                    </a>
+                <?php endif; ?>
+
             <?php endwhile; ?>
+
+            <?php if (!$temEleicaoDisponivel): ?>
+                <p style="color: gray; font-size: 15px; margin-bottom: 20px;">
+                    Nenhuma eleição ativa disponível para sua turma.
+                </p>
+            <?php endif; ?>
+
+
         <?php else: ?>
-            <p style="color: gray;">Nenhuma eleição ativa disponível para sua turma.</p>
+            <p style="color: gray; font-size: 15px;">Nenhuma eleição ativa disponível para sua turma.</p>
         <?php endif; ?>
 
         <h2 style="color: gray; border-bottom: 3px solid gray;">Eleições bloqueadas para seu usuário</h2>
@@ -155,14 +176,15 @@ $resultBloqueadas = $stmtBloqueadas->get_result();
                         <h1><?php echo strtoupper($eleicao['titulo']); ?></h1><br>
                         <h4 style="margin-top: -35px; margin-bottom: 12px; font-size: 24px;">
                             <?php echo $eleicao['curso_nome'] . " (" . $eleicao['semestre_nome'] . ")"; ?></h3>
-                        <p><?php echo htmlspecialchars($eleicao['descricao']); ?></p><br>
-                        <small>
-                            <p>
-                                <strong>Início:</strong> <?php echo date('d/m/Y H:i', strtotime($eleicao['data_inicio'])); ?>
-                                &nbsp;
-                                <strong>Fim:</strong> <?php echo date('d/m/Y H:i', strtotime($eleicao['data_fim'])); ?>
-                            </p>
-                        </small>
+                            <p><?php echo htmlspecialchars($eleicao['descricao']); ?></p><br>
+                            <small>
+                                <p>
+                                    <strong>Início:</strong>
+                                    <?php echo date('d/m/Y H:i', strtotime($eleicao['data_inicio'])); ?>
+                                    &nbsp;
+                                    <strong>Fim:</strong> <?php echo date('d/m/Y H:i', strtotime($eleicao['data_fim'])); ?>
+                                </p>
+                            </small>
                     </div>
                     <div class="vote-img">
                         <img style="margin-top: 5px;" src="../Images/imgAlvo2.png" width="310">
@@ -170,7 +192,7 @@ $resultBloqueadas = $stmtBloqueadas->get_result();
                 </section>
             <?php endwhile; ?>
         <?php else: ?>
-            <p style="color: gray;">Nenhuma eleição bloqueada encontrada.</p>
+            <p style="color: gray; font-size: 15px;">Nenhuma eleição bloqueada encontrada.</p>
         <?php endif; ?>
     </main>
 

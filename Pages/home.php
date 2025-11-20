@@ -206,7 +206,8 @@ $conexao->close(); // Fecha a conexão após todas as operações de banco
     </header>
 
     <main class="main-content">
-        <?php if ($eleicao): ?>
+        
+        <?php if (!$periodo_candidatura_aberto && $eleicao): ?>
             <a href="eleAtive.php" style="text-decoration: none;">
                 <section class="main-vote">
                     <div class="vote-box">
@@ -234,29 +235,28 @@ $conexao->close(); // Fecha a conexão após todas as operações de banco
                 </div>
 
                 <?php 
-                // Lógica de candidatura (Aluno pode se candidatar SOMENTE se houver eleição, ele não for candidato E o período de 7 dias estiver aberto)
                 if ($eleicao) {
-                    if (!$jaCandidato && $periodo_candidatura_aberto): // Candidatura aberta
+                    if (!$jaCandidato && $periodo_candidatura_aberto):
                 ?>
                     <div class="news-card special-card"
                         onclick="window.location.href='querocandidatar.php?id=<?php echo urlencode($eleicao['id']); ?>'">
                         <h3>Quero me candidatar!</h3>
-                        <p>Participe da eleição ativa da sua turma. Mostre suas ideias e concorra como representante! <br>
-                        <small style="color: red;">O período de candidatura é de 7 dias após o início da eleição.</small></p>
-                        <small style="text-decoration: underline dotted black 2px;"><strong>Clique aqui para se inscrever</strong></small>
+                        <p>Participe da eleição ativa da sua turma. Mostre suas ideias e concorra como representante!</p>
+                        <p style="color: crimson;">O período de candidatura é de 7 dias após o início da eleição.</p>
+                        <p style="text-decoration: underline dotted black 2px;"><strong>Clique aqui para se inscrever</strong></p>
                     </div>
 
                 <?php 
-                    elseif (!$jaCandidato && !$periodo_candidatura_aberto): // Período encerrado
+                    elseif (!$jaCandidato && !$periodo_candidatura_aberto):
                 ?>
                     <div class="news-card special-card">
                         <h3>Período de Candidatura Encerrado</h3>
-                        <p>O prazo de 7 dias para se candidatar à eleição **<?php echo htmlspecialchars($eleicao['titulo']); ?>** já se encerrou.</p>
-                        <small>Aguarde a próxima eleição.</small>
+                        <p>O prazo de 7 dias para se candidatar à eleição <?php echo htmlspecialchars($eleicao['titulo']); ?> já se encerrou.</p>
+                        <p><strong>Aguarde a próxima eleição.</strong></p>
                     </div>
 
                 <?php 
-                    elseif ($jaCandidato): // Já é candidato
+                    elseif ($jaCandidato): 
                 ?>
                     <div class="news-card special-card">
                         <h3>Você já se candidatou!</h3>
@@ -289,10 +289,11 @@ $conexao->close(); // Fecha a conexão após todas as operações de banco
                     <a href="elePassa.php">Ver mais ➜</a>
                 </div>
 
+                
                 <?php if (!empty($ultimas_eleicoes_com_vencedores)): ?>
                     <?php foreach ($ultimas_eleicoes_com_vencedores as $eleicao_result): ?>
                         <?php
-                        // Monta o nome da turma
+                        
                         $turma_nome = htmlspecialchars($eleicao_result['curso_nome']) . ' - ' . htmlspecialchars($eleicao_result['semestre_nome']);
                         $data_fim = date('d/m/Y', strtotime($eleicao_result['data_fim']));
                         $vencedores = $eleicao_result['vencedores'];
@@ -309,11 +310,11 @@ $conexao->close(); // Fecha a conexão após todas as operações de banco
                                 <?= htmlspecialchars(strtoupper($eleicao_result['titulo'])) ?>
                             </h3>
 
-
                             <small class="turma-nome"><?= $turma_nome ?></small>
 
-                            <small>Finalizado em: <strong class="badge-date"><?= $data_fim ?></strong></small>
-                            <p class="vencedores"><strong>Vencedor:</strong> <?= $primeiro_colocado ?></p>
+                            <p style="margin-top: 10px;">Finalizado em: <strong class="badge-date"><?= $data_fim ?></strong></p>
+
+                            <p class="vencedores">Vencedor:<strong> <?= $primeiro_colocado ?></strong></p>
 
 
 

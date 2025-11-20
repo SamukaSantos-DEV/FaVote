@@ -3,7 +3,7 @@
 
 // Inclui a autenticação de sessão e a configuração de banco de dados
 require '../php/session_auth.php';
-require '../php/config.php'; 
+require '../php/config.php';
 
 $query_finalizar = $conexao->prepare("UPDATE eleicoes SET ativa = 0 WHERE ativa = 1 AND data_fim <= NOW()");
 $query_finalizar->execute();
@@ -21,7 +21,7 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'fetch') {
     // Busca o ano do filtro
     // O ano pode ser '2025', '2024', '2023' ou vazio ('') se for "Todos os Anos"
     $ano = $_GET['ano'] ?? null;
-    
+
     // Verifica se o ano é um valor válido para filtrar (não vazio e é numérico de 4 dígitos)
     $temFiltro = !empty($ano) && is_numeric($ano) && strlen($ano) === 4;
 
@@ -59,7 +59,7 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'fetch') {
         $temEleicoesPassadas = true;
         $eleicaoId = (int) $eleicao['id'];
         $turmaFormatada = htmlspecialchars($eleicao['curso_nome']) . ' - ' . htmlspecialchars($eleicao['semestre_nome']);
-        
+
         // SQL para buscar os 2 mais votados (Lógica de Vencedores)
         $sqlVencedores = "
             SELECT a.nome AS candidato,
@@ -83,9 +83,9 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'fetch') {
         while ($row = $resultVencedores->fetch_assoc()) {
             $vencedores[] = $row;
         }
-        
+
         $stmtVencedores->close();
-    ?>
+        ?>
         <div class="eleicao-card">
             <div class="info-eleicao">
                 <h3>
@@ -122,18 +122,19 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'fetch') {
             </div>
         </div>
     <?php endwhile;
-    
+
     $stmtEleicoes->close();
 
     if (!$temEleicoesPassadas):
-    ?>
-        <p class="nenhuma-eleicao">Não há eleições passadas registradas no momento<?php echo $temFiltro ? " para o ano de " . htmlspecialchars($ano) . "." : "." ; ?></p>
+        ?>
+        <p class="nenhuma-eleicao">Não há eleições passadas registradas no
+            momento<?php echo $temFiltro ? " para o ano de " . htmlspecialchars($ano) . "." : "."; ?></p>
     <?php endif;
 
     $conexao->close();
 
     // FINALIZA a execução do script PHP aqui para não renderizar o HTML da página inteira
-    die(); 
+    die();
 }
 ?>
 <!DOCTYPE html>
@@ -144,8 +145,8 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'fetch') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Eleições Passadas | FaVote</title>
     <link rel="stylesheet" href="../Styles/elePassa.css">
-
     <link rel="icon" href="../Images/iconlogoFaVote.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 </head>
@@ -153,17 +154,17 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'fetch') {
 
 <body>
     <header class="header">
-        <div class="logo"><img src="../Images/logofatec.png" width="190" alt="Logo Fatec"></div>
+        <div class="logo"><img src="../Images/logofatec.png" width="190"></div>
 
         <nav class="nav">
             <a href="home.php">Home</a>
-            <a href="eleAtive.php">Eleições Ativas</a>
+            <a href="eleAtive.php" >Eleições Ativas</a>
             <a href="news.php">Notícias</a>
             <a href="elePassa.php" class="active">Eleições Passadas</a>
             <?php
             $emailLogado = $_SESSION['user_email'] ?? null;
-            if ($emailLogado === 'admin@fatec.sp.gov.br'):
             ?>
+            <?php if ($emailLogado === 'admin@fatec.sp.gov.br'): ?>
                 <a href="dashboard.php"
                     style="background-color: brown; color: white; padding: 4px 8px; border-radius: 4px; text-decoration: none; transition: background-color 0.6s ease;"
                     onmouseover="this.style.backgroundColor='#631212'" onmouseout="this.style.backgroundColor='brown'">
@@ -171,22 +172,34 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'fetch') {
                 </a>
             <?php endif; ?>
         </nav>
-
         <div class="user-icon">
-            <img src="../Images/user.png" width="50" alt="Ícone de Usuário" />
+            <img src="../Images/user.png" width="50" alt="user" />
             <div class="user-popup">
-                <strong><?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Usuário'); ?></strong>
+
+                <strong>
+                    <?php echo htmlspecialchars($_SESSION['user_name']); ?>
+                </strong>
+
                 <p>FATEC “Dr. Ogari de Castro Pacheco”</p>
+                <?php
+
+                // Supondo que o login salva o e-mail na sessão assim:
+                $emailLogado = $_SESSION['user_email'] ?? null;
+                ?>
+
+                <!-- ... resto do seu HTML ... -->
 
                 <?php if ($emailLogado !== 'admin@fatec.sp.gov.br'): ?>
                     <strong>
-                        <p><?php echo htmlspecialchars($_SESSION['curso_nome'] ?? 'Curso Não Informado'); ?></p>
+                        <p><?php echo htmlspecialchars($_SESSION['curso_nome']); ?></p>
                     </strong>
-                    <p><?php echo htmlspecialchars($_SESSION['semestre_nome'] ?? 'Semestre Não Informado'); ?></p>
+                    <p><?php echo htmlspecialchars($_SESSION['semestre_nome']); ?></p>
                 <?php endif; ?>
 
+
                 <div class="sair">
-                    <a href="../php/logout.php">Sair<i style="margin-left: 5px;" class="fa-solid fa-right-from-bracket"></i></a>
+                    <a href="../php/logout.php">Sair<i style="margin-left: 5px;"
+                            class="fa-solid fa-right-from-bracket"></i></a>
                 </div>
             </div>
         </div>
@@ -207,7 +220,7 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'fetch') {
         </div>
 
         <div id="eleicoes-lista">
-            </div>
+        </div>
 
     </div>
 
@@ -231,11 +244,16 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'fetch') {
                 <div>
                     <h4>REDES</h4>
                     <ul>
-                        <li><a href="https://www.instagram.com/fatecdeitapira?igsh=MWUzNXMzcWNhZzB4Ng==" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-                        <li><a href="https://www.facebook.com/share/16Y3jKo71m/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
-                        <li><a href="https://www.youtube.com/@fatecdeitapiraogaridecastr2131" target="_blank" rel="noopener noreferrer">Youtube</a></li>
-                        <li><a href="https://www.linkedin.com/school/faculdade-estadual-de-tecnologia-de-itapira-ogari-de-castro-pacheco/about/" target="_blank" rel="noopener noreferrer">Linkedin</a></li>
-                        <li><a href="https://fatecitapira.cps.sp.gov.br/" target="_blank" rel="noopener noreferrer">Site Fatec</a></li>
+                        <li><a href="https://www.instagram.com/fatecdeitapira?igsh=MWUzNXMzcWNhZzB4Ng==" target="_blank"
+                                rel="noopener noreferrer">Instagram</a></li>
+                        <li><a href="https://www.facebook.com/share/16Y3jKo71m/" target="_blank"
+                                rel="noopener noreferrer">Facebook</a></li>
+                        <li><a href="https://www.youtube.com/@fatecdeitapiraogaridecastr2131" target="_blank"
+                                rel="noopener noreferrer">Youtube</a></li>
+                        <li><a href="https://www.linkedin.com/school/faculdade-estadual-de-tecnologia-de-itapira-ogari-de-castro-pacheco/about/"
+                                target="_blank" rel="noopener noreferrer">Linkedin</a></li>
+                        <li><a href="https://fatecitapira.cps.sp.gov.br/" target="_blank" rel="noopener noreferrer">Site
+                                Fatec</a></li>
                     </ul>
                 </div>
                 <div>
@@ -255,7 +273,7 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'fetch') {
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const filtroSelect = document.getElementById('filtro');
             const listaDiv = document.getElementById('eleicoes-lista');
 
@@ -266,7 +284,7 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'fetch') {
 
                 // CHAMA O PRÓPRIO ARQUIVO, mas com o parâmetro 'acao=fetch'
                 // Isto faz com que o PHP execute a lógica de busca (bloco 1) e retorne apenas o HTML dos cards.
-                const url = 'elePassa.php?acao=fetch&ano=' + ano; 
+                const url = 'elePassa.php?acao=fetch&ano=' + ano;
 
                 fetch(url)
                     .then(response => {
@@ -286,14 +304,14 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'fetch') {
             }
 
             // 1. Event Listener: Recarrega a lista quando o filtro muda
-            filtroSelect.addEventListener('change', function() {
+            filtroSelect.addEventListener('change', function () {
                 const anoSelecionado = this.value;
                 carregarEleicoes(anoSelecionado);
             });
 
             // 2. Carregamento Inicial: Carrega todas as eleições ao carregar a página
             // O valor inicial é vazio ('') (Todos os Anos)
-            carregarEleicoes(filtroSelect.value); 
+            carregarEleicoes(filtroSelect.value);
         });
     </script>
 </body>

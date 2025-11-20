@@ -14,7 +14,15 @@ body {
     animation: fadeIn;
     animation-duration: 1s;
     scroll-behavior: smooth;
+    
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
 }
+
+
 
 .header {
     display: flex;
@@ -261,22 +269,3 @@ body {
     font-weight: bold;
 }
 
-.vote-box h1{
-    text-transform: uppercase;
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
-}
-
-.main-content {
-    flex-grow: 1;
-}
-
-.footer {
-    flex-shrink: 0;
-}

@@ -238,7 +238,7 @@ $resultTurmas = $conexao->query($sqlTurmas);
 
     <button class="btn-close" onclick="history.back()">➜</button>
 
-    <div class="container" style="margin-top: 50px;">
+    <div class="container" style="margin-top: 50px; width: 100%;">
         <div class="table-header">
             <h2>Turmas</h2>
         </div>

@@ -509,7 +509,7 @@ if (isset($_GET['error'])) {
             <div class="table-header">
                 <h2>Alunos</h2>
                 <a href="alunosDash.php" class="ver-todos-btn">
-                    Editar 🖉 ➜
+                    <i class="fas fa-edit" style="margin-right: 5px;"></i> Editar
                 </a>
 
             </div>
@@ -671,6 +671,10 @@ if (isset($_GET['error'])) {
                                     <input type="time" class="form-control" name="data_fim_hora" required>
                                 </div>
                             </div>
+                        </div>
+
+                          <div class="atention-card">
+                            <p>A data de candidatura será os primeiros 7 dias após o início da eleição. Após os 7 dias a eleição fica aberta pra votação.</p>
                         </div>
                         <button type="submit" class="submit-btn">CRIAR ELEIÇÃO</button>
                     </div>
