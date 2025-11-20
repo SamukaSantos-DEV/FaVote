@@ -151,13 +151,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         .modal-content textarea {
-            width: 100%;
+            width: 420px;
             padding: 10px;
             margin-top: 8px;
             border-radius: 10px;
             border: 2px solid #000;
             font-size: 14px;
             resize: vertical;
+            /* Adicione a linha abaixo: */
+            **box-sizing: border-box;
+            **
         }
 
         .btn-concluir {
@@ -196,7 +199,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             background-color: #eea7a7;
             transform: scale(1.05);
         }
-    </style>    
+    </style>
 </head>
 
 <body>
@@ -226,7 +229,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <label>Descreva sua proposta:</label>
                 <textarea name="proposta" <?php if (!$eleicaoAberta || $jaCandidato)
                     echo 'disabled'; ?>
-                    placeholder="Digite aqui sua proposta..."></textarea>
+                    placeholder="Digite aqui sua proposta..." required></textarea>
 
                 <button type="submit" class="btn-concluir" <?php if (!$eleicaoAberta || $jaCandidato)
                     echo 'disabled'; ?>>CANDIDATAR</button>
