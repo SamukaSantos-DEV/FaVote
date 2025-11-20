@@ -325,6 +325,7 @@ body {
 .segundo-colocado {
     margin: 10px 0 0 0;
     font-size: 15px;
+    text-transform: uppercase;
 }
 .taca {
     width: 120px;
