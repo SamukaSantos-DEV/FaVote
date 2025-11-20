@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
 
+
 * {
     box-sizing: border-box;
     font-family: 'Poppins';
@@ -38,8 +39,9 @@ body {
     font-weight: bold;
     font-size: 18px;
 }
+
 .nav a:hover {
-    text-decoration: underline dotted #D60E0E 2px;    
+    text-decoration: underline dotted #D60E0E 2px;
     text-underline-offset: 3px;
 }
 
@@ -52,7 +54,6 @@ body {
     filter: brightness(80%);
 
 }
-
 .user-popup {
     opacity: 0;
     pointer-events: none;
@@ -99,6 +100,7 @@ body {
     background-color: #e0e0e0;
     transform: scale(1.05);
 }
+
 .sair a {
     text-decoration: none;
     color: #b10707;
@@ -110,6 +112,7 @@ body {
     text-decoration: underline dotted;
     text-underline-offset: 4px;
 }
+
 
 
 .footer {
@@ -156,12 +159,14 @@ body {
 .footer-links li {
     margin-bottom: 5px;
 }
-.footer-links a{
+
+.footer-links a {
     text-decoration: none;
     color: #880000;
     transition: 1s;
 }
-.footer-links a:hover{        
+
+.footer-links a:hover {
     text-decoration: underline dotted;
     text-underline-offset: 4px;
     color: #222;
@@ -180,6 +185,8 @@ body {
     max-width: 1000px;
     margin: auto;
 }
+
+
 
 .titulo-pagina {
     font-size: 26px;
@@ -202,7 +209,7 @@ body {
 .filtro-ano select {
     font-size: 16px;
     padding: 10px 19px;
-    padding-right: 40px; 
+    padding-right: 40px;
     border-radius: 10px;
     border: 1px solid #e2e2e2;
     background-color: #e2e2e2;
@@ -229,9 +236,10 @@ body {
 
 }
 
-.filtro-ano option{
+.filtro-ano option {
     background-color: rgb(233, 233, 233);
 }
+
 .eleicao-card {
     display: flex;
     justify-content: space-between;
@@ -271,12 +279,12 @@ body {
 
 .eleito {
     background-color: #f23030;
-    color: white;    
+    color: white;
     z-index: 1;
 }
 
 .eleito2 {
-    background-color: #a80b0b;    
+    background-color: #a80b0b;
     border-radius: 0px 20px 20px 0px;
     color: white;
     z-index: 0;
@@ -302,5 +310,29 @@ body {
     padding: 2px 6px;
     border-radius: 5px;
     font-size: 12px;
-    
+
+}
+
+.info-eleicao h3 {
+    text-transform: uppercase;
+}
+
+.nome-eleito {
+    text-transform: uppercase;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.main-content {
+    flex-grow: 1;
+}
+
+.footer {
+    flex-shrink: 0;
 }

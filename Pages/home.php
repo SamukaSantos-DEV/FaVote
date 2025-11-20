@@ -2,26 +2,53 @@
 require '../php/session_auth.php';
 require '../php/config.php';
 
+// Conecta ao banco de dados usando o método do seu objeto $db
+// Assumindo que $db->conecta_mysql() retorna um objeto mysqli connection
 $conexao = $db->conecta_mysql();
+
+// =========================================================================
+// 1. LÓGICA DE FINALIZAÇÃO AUTOMÁTICA DE ELEIÇÕES VENCIDAS ⏳ (CORRIGIDA)
+//    Usa a função NOW() do MySQL para garantir consistência de data/hora.
+// =========================================================================
+$query_finalizar = $conexao->prepare("UPDATE eleicoes SET ativa = 0 WHERE ativa = 1 AND data_fim <= NOW()");
+$query_finalizar->execute();
+$query_finalizar->close();
+$query_finalizar = $conexao->prepare("UPDATE eleicoes SET ativa = 1 WHERE ativa = 0 AND data_fim >= NOW()");
+$query_finalizar->execute();
+$query_finalizar->close();
+// =========================================================================
 
 // Pegando RA do usuário logado
 $ra_usuario = $_SESSION['user_ra'] ?? null;
 
-// Pega turma_id do aluno
+// Pega turma_id e dados da turma do aluno
 $turma_id = null;
 if ($ra_usuario) {
-    $query_turma = $conexao->prepare("SELECT turma_id FROM alunos WHERE ra = ?");
+    // Busca os dados da turma para o aluno logado
+    $query_turma = $conexao->prepare("
+        SELECT a.turma_id, c.nome AS curso_nome, s.nome AS semestre_nome
+        FROM alunos a
+        INNER JOIN turmas t ON t.id = a.turma_id
+        INNER JOIN cursos c ON c.id = t.curso_id
+        INNER JOIN semestres s ON s.id = t.semestre_id
+        WHERE a.ra = ?
+    ");
     $query_turma->bind_param("s", $ra_usuario);
     $query_turma->execute();
     $resultado = $query_turma->get_result();
     if ($resultado->num_rows > 0) {
-        $turma_id = $resultado->fetch_assoc()['turma_id'];
+        $dados_turma = $resultado->fetch_assoc();
+        $turma_id = $dados_turma['turma_id'];
+        // Atualiza as variáveis de sessão para exibição no header
+        $_SESSION['curso_nome'] = $dados_turma['curso_nome'];
+        $_SESSION['semestre_nome'] = $dados_turma['semestre_nome'];
     }
     $query_turma->close();
 }
 
 // Busca a eleição ativa da turma do aluno
 $eleicao = null;
+$periodo_candidatura_aberto = false; // Flag para a regra de 7 dias
 if ($turma_id) {
     $query_eleicao = $conexao->prepare("SELECT * FROM eleicoes WHERE turma_id = ? AND ativa = 1 ORDER BY data_inicio DESC LIMIT 1");
     $query_eleicao->bind_param("i", $turma_id);
@@ -29,6 +56,24 @@ if ($turma_id) {
     $resultado_eleicao = $query_eleicao->get_result();
     if ($resultado_eleicao->num_rows > 0) {
         $eleicao = $resultado_eleicao->fetch_assoc();
+
+        // =========================================================================
+        // 2. LÓGICA DE PERÍODO DE CANDIDATURA (7 DIAS) 🗓️ (Refatorada para maior segurança)
+        // =========================================================================
+        // Cria um objeto DateTime para a data de início
+        $data_inicio = new DateTime($eleicao['data_inicio']);
+        
+        // Cria um novo objeto DateTime para o limite (Data Início + 7 dias)
+        // Usamos uma nova instância para não modificar $data_inicio
+        $data_limite_candidatura = (new DateTime($eleicao['data_inicio']))->modify('+7 days'); 
+        $agora = new DateTime();
+        
+        // Verifica se a data/hora atual é anterior à data limite de candidatura
+        if ($agora < $data_limite_candidatura) {
+            $periodo_candidatura_aberto = true;
+        }
+        // =========================================================================
+
     }
     $query_eleicao->close();
 }
@@ -52,6 +97,62 @@ $query_noticias = $conexao->query("SELECT * FROM noticias ORDER BY dataPublicaca
 while ($row = $query_noticias->fetch_assoc()) {
     $noticias[] = $row;
 }
+
+// =========================================================================
+// LÓGICA PARA BUSCAR AS 3 ÚLTIMAS ELEIÇÕES E SEUS 2 MAIS VOTADOS
+// =========================================================================
+
+$ultimas_eleicoes_com_vencedores = [];
+
+// 1. Busca as 3 eleições finalizadas mais recentes e seus dados de turma (ativa = 0)
+$sql_ultimas_eleicoes = "
+    SELECT e.id, e.titulo, e.data_fim, c.nome AS curso_nome, s.nome AS semestre_nome
+    FROM eleicoes e
+    INNER JOIN turmas t ON t.id = e.turma_id
+    INNER JOIN cursos c ON c.id = t.curso_id
+    INNER JOIN semestres s ON s.id = t.semestre_id
+    WHERE e.ativa = 0
+    ORDER BY e.data_fim DESC
+    LIMIT 3
+";
+$result_eleicoes = $conexao->query($sql_ultimas_eleicoes);
+
+if ($result_eleicoes) {
+    while ($e = $result_eleicoes->fetch_assoc()) {
+        $eleicao_id = (int)$e['id'];
+        $vencedores = [];
+
+        // 2. Para cada eleição, busca os 2 candidatos mais votados
+        $sql_vencedores = "
+            SELECT a.nome AS candidato,
+                   COUNT(*) AS total
+            FROM votos v
+            INNER JOIN candidatos c ON c.id = v.candidato_id
+            INNER JOIN alunos a ON a.ra = c.aluno_ra
+            WHERE v.eleicao_id = ?
+            GROUP BY v.candidato_id, a.nome
+            ORDER BY total DESC
+            LIMIT 2
+        ";
+
+        $stmt_vencedores = $conexao->prepare($sql_vencedores);
+        if ($stmt_vencedores) {
+            $stmt_vencedores->bind_param("i", $eleicao_id);
+            $stmt_vencedores->execute();
+            $result_vencedores = $stmt_vencedores->get_result();
+            while ($v = $result_vencedores->fetch_assoc()) {
+                $vencedores[] = $v;
+            }
+            $stmt_vencedores->close();
+        }
+
+        // Armazena a eleição e seus vencedores (pode ser 1 ou 2)
+        $e['vencedores'] = $vencedores;
+        $ultimas_eleicoes_com_vencedores[] = $e;
+    }
+}
+
+$conexao->close(); // Fecha a conexão após todas as operações de banco
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -75,9 +176,7 @@ while ($row = $query_noticias->fetch_assoc()) {
             <a href="eleAtive.php">Eleições Ativas</a>
             <a href="news.php">Notícias</a>
             <a href="elePassa.php">Eleições Passadas</a>
-            <?php
-            $emailLogado = $_SESSION['user_email'] ?? null;
-            ?>
+            <?php $emailLogado = $_SESSION['user_email'] ?? null; ?>
             <?php if ($emailLogado === 'admin@fatec.sp.gov.br'): ?>
                 <a href="dashboard.php"
                     style="background-color: brown; color: white; padding: 4px 8px; border-radius: 4px; text-decoration: none; transition: background-color 0.6s ease;"
@@ -90,21 +189,13 @@ while ($row = $query_noticias->fetch_assoc()) {
         <div class="user-icon">
             <img src="../Images/user.png" width="50" alt="user" />
             <div class="user-popup">
-                <strong><?php echo htmlspecialchars($_SESSION['user_name']); ?></strong>
+                <strong><?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Usuário'); ?></strong>
                 <p>FATEC “Dr. Ogari de Castro Pacheco”</p>
-                <?php
-
-                // Supondo que o login salva o e-mail na sessão assim:
-                $emailLogado = $_SESSION['user_email'] ?? null;
-                ?>
-
-                <!-- ... resto do seu HTML ... -->
-
                 <?php if ($emailLogado !== 'admin@fatec.sp.gov.br'): ?>
                     <strong>
-                        <p><?php echo htmlspecialchars($_SESSION['curso_nome']); ?></p>
+                        <p><?php echo htmlspecialchars($_SESSION['curso_nome'] ?? 'Curso Não Informado'); ?></p>
                     </strong>
-                    <p><?php echo htmlspecialchars($_SESSION['semestre_nome']); ?></p>
+                    <p><?php echo htmlspecialchars($_SESSION['semestre_nome'] ?? 'Semestre Não Informado'); ?></p>
                 <?php endif; ?>
                 <div class="sair">
                     <a href="../php/logout.php">Sair<i style="margin-left: 5px;"
@@ -115,7 +206,6 @@ while ($row = $query_noticias->fetch_assoc()) {
     </header>
 
     <main class="main-content">
-        <!-- ELEIÇÃO PRINCIPAL -->
         <?php if ($eleicao): ?>
             <a href="eleAtive.php" style="text-decoration: none;">
                 <section class="main-vote">
@@ -134,11 +224,8 @@ while ($row = $query_noticias->fetch_assoc()) {
                     </div>
                 </section>
             </a>
-        <?php else: ?>
-
         <?php endif; ?>
 
-        <!-- NOTÍCIAS -->
         <section class="news-votes">
             <div class="news">
                 <div class="section-header">
@@ -146,21 +233,41 @@ while ($row = $query_noticias->fetch_assoc()) {
                     <a href="news.php">Ver mais ➜</a>
                 </div>
 
-                <?php if ($eleicao && !$jaCandidato): ?>
+                <?php 
+                // Lógica de candidatura (Aluno pode se candidatar SOMENTE se houver eleição, ele não for candidato E o período de 7 dias estiver aberto)
+                if ($eleicao) {
+                    if (!$jaCandidato && $periodo_candidatura_aberto): // Candidatura aberta
+                ?>
                     <div class="news-card special-card"
                         onclick="window.location.href='querocandidatar.php?id=<?php echo urlencode($eleicao['id']); ?>'">
                         <h3>Quero me candidatar!</h3>
-                        <p>Participe da eleição ativa da sua turma. Mostre suas ideias e concorra como representante!</p>
+                        <p>Participe da eleição ativa da sua turma. Mostre suas ideias e concorra como representante! <br>
+                        <small style="color: red;">O período de candidatura é de 7 dias após o início da eleição.</small></p>
                         <small style="text-decoration: underline dotted black 2px;"><strong>Clique aqui para se inscrever</strong></small>
                     </div>
 
-                <?php elseif ($eleicao && $jaCandidato): ?>
+                <?php 
+                    elseif (!$jaCandidato && !$periodo_candidatura_aberto): // Período encerrado
+                ?>
+                    <div class="news-card special-card">
+                        <h3>Período de Candidatura Encerrado</h3>
+                        <p>O prazo de 7 dias para se candidatar à eleição **<?php echo htmlspecialchars($eleicao['titulo']); ?>** já se encerrou.</p>
+                        <small>Aguarde a próxima eleição.</small>
+                    </div>
+
+                <?php 
+                    elseif ($jaCandidato): // Já é candidato
+                ?>
                     <div class="news-card special-card">
                         <h3>Você já se candidatou!</h3>
                         <p>Boa sorte! Aguarde o início da votação da sua turma.</p>
                         <small><strong>Eleição:</strong> <?php echo htmlspecialchars($eleicao['titulo']); ?></small>
                     </div>
-                <?php endif; ?>
+                <?php 
+                    endif;
+                }
+                // Se não houver eleição ativa, não exibe o card de candidatura.
+                ?>
 
                 <?php if (count($noticias) > 0): ?>
                     <?php foreach ($noticias as $n): ?>
@@ -176,31 +283,54 @@ while ($row = $query_noticias->fetch_assoc()) {
                 <?php endif; ?>
             </div>
 
-            <!-- COLUNA: ÚLTIMAS VOTAÇÕES -->
             <div class="votes">
                 <div class="section-header">
                     <h2>Últimas votações</h2>
                     <a href="elePassa.php">Ver mais ➜</a>
                 </div>
 
-                <div class="vote-result">
-                    <h3>VICTOR LUIZ RODRIGUES</h3>
-                    Representante 2º DSM<br>
-                    <small>Eleito em: <strong class="badge-date">05/05/2025</strong></small>
-                    <img src="../Images/taça.png" width="144" class="taca1">
-                </div>
-                <div class="vote-result">
-                    <h3>RAFAEL MORAES ALMEIDA</h3>
-                    Representante 4º DSM<br>
-                    <small>Eleito em: <strong class="badge-date">03/05/2025</strong></small>
-                    <img src="../Images/taça.png" width="144" class="taca2">
-                </div>
-                <div class="vote-result">
-                    <h3>RODRIGO POLASTRO</h3>
-                    Representante 3º DSM<br>
-                    <small>Eleito em: <strong class="badge-date">01/05/2025</strong></small>
-                    <img src="../Images/taça.png" width="144" class="taca3">
-                </div>
+                <?php if (!empty($ultimas_eleicoes_com_vencedores)): ?>
+                    <?php foreach ($ultimas_eleicoes_com_vencedores as $eleicao_result): ?>
+                        <?php
+                        // Monta o nome da turma
+                        $turma_nome = htmlspecialchars($eleicao_result['curso_nome']) . ' - ' . htmlspecialchars($eleicao_result['semestre_nome']);
+                        $data_fim = date('d/m/Y', strtotime($eleicao_result['data_fim']));
+                        $vencedores = $eleicao_result['vencedores'];
+
+                        // Define o nome do vencedor principal ou mensagem de empate/vazio
+                        $primeiro_colocado = "Nenhum Vencedor";
+                        if (isset($vencedores[0])) {
+                            $primeiro_colocado = htmlspecialchars(strtoupper($vencedores[0]['candidato']));
+                        }
+                        ?>
+
+                        <div class="vote-result">
+                            <h3 class="titulo-eleicao-recente">
+                                <?= htmlspecialchars(strtoupper($eleicao_result['titulo'])) ?>
+                            </h3>
+
+
+                            <small class="turma-nome"><?= $turma_nome ?></small>
+
+                            <small>Finalizado em: <strong class="badge-date"><?= $data_fim ?></strong></small>
+                            <p class="vencedores"><strong>Vencedor:</strong> <?= $primeiro_colocado ?></p>
+
+
+
+                            <?php if (isset($vencedores[1])): ?>
+                                <p class="segundo-colocado">
+                                    Vice: <strong><?= htmlspecialchars(strtoupper($vencedores[1]['candidato'])) ?></strong>
+                                </p>
+                            <?php elseif (count($vencedores) > 0 && count($vencedores) < 2): ?>
+                                <p class="segundo-colocado">Vencedor Único</p>
+                            <?php endif; ?>
+
+                            <img src="../Images/taça.png" width="144" class="taca">
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p class="sem-votacoes">Nenhuma eleição passada encontrada.</p>
+                <?php endif; ?>
             </div>
         </section>
 
@@ -225,13 +355,11 @@ while ($row = $query_noticias->fetch_assoc()) {
                 <div>
                     <h4>REDES</h4>
                     <ul>
-                        <li><a href="https://www.instagram.com/fatecdeitapira" target="_blank">Instagram</a></li>
-                        <li><a href="https://www.facebook.com/share/16Y3jKo71m/" target="_blank">Facebook</a></li>
-                        <li><a href="https://www.youtube.com/@fatecdeitapiraogaridecastr2131"
-                                target="_blank">YouTube</a></li>
-                        <li><a href="https://www.linkedin.com/school/faculdade-estadual-de-tecnologia-de-itapira-ogari-de-castro-pacheco/about/"
-                                target="_blank">LinkedIn</a></li>
-                        <li><a href="https://fatecitapira.cps.sp.gov.br/" target="_blank">Site Fatec</a></li>
+                        <li><a href="https://www.instagram.com/fatecdeitapira" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                        <li><a href="https://www.facebook.com/share/16Y3jKo71m/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+                        <li><a href="https://www.youtube.com/@fatecdeitapiraogaridecastr2131" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+                        <li><a href="https://www.linkedin.com/school/faculdade-estadual-de-tecnologia-de-itapira-ogari-de-castro-pacheco/about/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                        <li><a href="https://fatecitapira.cps.sp.gov.br/" target="_blank" rel="noopener noreferrer">Site Fatec</a></li>
                     </ul>
                 </div>
                 <div>

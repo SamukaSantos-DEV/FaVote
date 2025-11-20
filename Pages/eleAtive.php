@@ -5,6 +5,13 @@ require '../php/config.php';
 // Garante que o campo turma_id exista antes de usar
 $turmaUsuario = isset($_SESSION['turma_id']) ? $_SESSION['turma_id'] : 0;
 
+$query_finalizar = $conexao->prepare("UPDATE eleicoes SET ativa = 0 WHERE ativa = 1 AND data_fim <= NOW()");
+$query_finalizar->execute();
+$query_finalizar->close();
+$query_finalizar = $conexao->prepare("UPDATE eleicoes SET ativa = 1 WHERE ativa = 0 AND data_fim >= NOW()");
+$query_finalizar->execute();
+$query_finalizar->close();
+
 // Busca eleições ativas da turma do usuário
 $sqlAtivas = "
 SELECT 
@@ -32,7 +39,7 @@ FROM eleicoes e
 INNER JOIN turmas t ON e.turma_id = t.id
 INNER JOIN cursos c ON t.curso_id = c.id
 INNER JOIN semestres s ON t.semestre_id = s.id
-WHERE e.ativa = 0 OR e.turma_id != ?
+WHERE e.ativa = 1 AND e.turma_id != ?
 ";
 $stmtBloqueadas = $conexao->prepare($sqlBloqueadas);
 $stmtBloqueadas->bind_param("i", $turmaUsuario);

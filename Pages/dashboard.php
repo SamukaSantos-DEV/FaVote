@@ -3,6 +3,13 @@
 
 include '../php/config.php';
 
+$query_finalizar = $conexao->prepare("UPDATE eleicoes SET ativa = 0 WHERE ativa = 1 AND data_fim <= NOW()");
+$query_finalizar->execute();
+$query_finalizar->close();
+$query_finalizar = $conexao->prepare("UPDATE eleicoes SET ativa = 1 WHERE ativa = 0 AND data_fim >= NOW()");
+$query_finalizar->execute();
+$query_finalizar->close();
+
 // Eleições ativas com informações de curso e semestre
 $sqlEleicoesAtivas = "
     SELECT 
@@ -501,7 +508,7 @@ if (isset($_GET['error'])) {
         <div class="container" style="margin-top: 5%;">
             <div class="table-header">
                 <h2>Alunos</h2>
-                <a href="turmausuario.php" class="ver-todos-btn">
+                <a href="alunosDash.php" class="ver-todos-btn">
                     Editar 🖉 ➜
                 </a>
 
@@ -543,7 +550,7 @@ if (isset($_GET['error'])) {
         <div class="container">
             <div class="table-header">
                 <h2>Turmas</h2>
-                <a href="turmausuario.php" class="ver-todos-btn">
+                <a href="turmasDash.php" class="ver-todos-btn">
                     Ver todos ➜
                 </a>
             </div>
@@ -869,6 +876,48 @@ if (isset($_GET['error'])) {
            <script src="../php/gerarPDF.js"></script>
 
     </main>
+
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="footer-logo">
+                <img src="../Images/logoFaVote.png" width="70">
+            </div>
+            <div class="footer-links">
+                <div>
+                    <h4>PÁGINAS</h4>
+                    <ul>
+                        <li><a href="home.php">Home</a></li>
+                        <li><a href="eleAtive.php">Eleições Ativas</a></li>
+                        <li><a href="news.php">Notícias</a></li>
+                        <li><a href="elePassa.php">Eleições Passadas</a></li>
+                        <li><a href="termos.php">Termos de Contrato</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>REDES</h4>
+                    <ul>
+                        <li><a href="https://www.instagram.com/fatecdeitapira" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                        <li><a href="https://www.facebook.com/share/16Y3jKo71m/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+                        <li><a href="https://www.youtube.com/@fatecdeitapiraogaridecastr2131" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+                        <li><a href="https://www.linkedin.com/school/faculdade-estadual-de-tecnologia-de-itapira-ogari-de-castro-pacheco/about/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                        <li><a href="https://fatecitapira.cps.sp.gov.br/" target="_blank" rel="noopener noreferrer">Site Fatec</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>INTEGRANTES</h4>
+                    <ul>
+                        <li>João Paulo Gomes</li>
+                        <li>João Pedro Baradeli Pavan</li>
+                        <li>Pedro Henrique Cavenaghi dos Santos</li>
+                        <li>Samuel Santos Oliveira</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            FaVote - Todos os direitos reservados | 2025
+        </div>
+    </footer>
 
 </body>
 

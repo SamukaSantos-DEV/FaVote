@@ -260,3 +260,23 @@ body {
     padding: 12px;
     font-weight: bold;
 }
+
+.vote-box h1{
+    text-transform: uppercase;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.main-content {
+    flex-grow: 1;
+}
+
+.footer {
+    flex-shrink: 0;
+}

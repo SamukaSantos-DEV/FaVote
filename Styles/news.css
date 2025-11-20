@@ -248,11 +248,26 @@ body {
     white-space: normal;
 }
 
-
 .publicado {
     font-weight: bold;
     text-align: right;
     font-size: 13px;
     margin-top: auto;
     align-self: flex-end;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.main-content {
+    flex-grow: 1;
+}
+
+.footer {
+    flex-shrink: 0;
 }

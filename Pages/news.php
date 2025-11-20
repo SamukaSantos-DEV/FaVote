@@ -8,6 +8,13 @@ date_default_timezone_set('America/Sao_Paulo');
 $db = new db();
 $conexao = $db->conecta_mysql();
 
+$query_finalizar = $conexao->prepare("UPDATE eleicoes SET ativa = 0 WHERE ativa = 1 AND data_fim <= NOW()");
+$query_finalizar->execute();
+$query_finalizar->close();
+$query_finalizar = $conexao->prepare("UPDATE eleicoes SET ativa = 1 WHERE ativa = 0 AND data_fim >= NOW()");
+$query_finalizar->execute();
+$query_finalizar->close();
+
 // Buscar todas as notícias ordenadas pela data (mais recentes primeiro)
 $sql = "SELECT id, titulo, descricao, dataPublicacao FROM noticias ORDER BY dataPublicacao DESC";
 $result = $conexao->query($sql);

@@ -311,8 +311,6 @@ body {
     transform: scale(1.05);
 }
 
-
-
 .footer {
     margin-top: 60px;
     background: #d9d9d9;
@@ -376,4 +374,32 @@ body {
     color: white;
     padding: 12px;
     font-weight: bold;
+}
+
+.titulo-eleicao-recente{
+    text-transform: uppercase;
+}
+
+.vote-box h1{
+    text-transform: uppercase;
+}
+
+.vencedores, .segundo-colocado{
+    text-transform: uppercase;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.main-content {
+    flex-grow: 1;
+}
+
+.footer {
+    flex-shrink: 0;
 }
