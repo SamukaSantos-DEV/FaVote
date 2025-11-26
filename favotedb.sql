@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 12/11/2025 às 22:19
+-- Tempo de geração: 26/11/2025 às 01:20
 -- Versão do servidor: 10.4.32-MariaDB
--- Versão do PHP: 8.0.30
+-- Versão do PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -70,10 +70,12 @@ CREATE TABLE `alunos` (
 --
 
 INSERT INTO `alunos` (`id`, `ra`, `nome`, `email_institucional`, `senha`, `turma_id`, `criado_data`, `atualizado_data`) VALUES
-(1, '2025342343243', 'João Pedro', 'joao.pavan01@fatec.sp.gov.br', 'escolaestadual10', 2, '2025-11-05 23:32:30', '2025-11-05 23:32:30'),
-(10, '2781392513007', 'Pedro Henrique Cavenaghi', 'pedro.cavenaghi@fatec.sp.gov.br', '$2y$10$2XMjlBhCZxipHX.zcUBJIe8KpnY4k.9114Wjpzn5jSk8U5UqVanfC', 2, '2025-11-11 23:17:30', '2025-11-11 23:17:30'),
-(11, '2781392323007', 'teste aluno', 'teste@fatec.sp.gov.br', '$2y$10$CszZaDm4AIvzQLsJMkzcL.xpDxwQpwbkYmV8IhrfZ2OoYKQIR5dcS', 5, '2025-11-11 23:18:28', '2025-11-11 23:18:28'),
-(12, '2780642323004', 'Pedro Mantoan', 'pedro.mantoan@fatec.sp.gov.br', '$2y$10$QrDpWnYHWnHTDOFna5pQhOmzVt3mT3RMJbsge60Gwz7HpaFFGjN3G', 11, '2025-11-11 23:19:17', '2025-11-11 23:19:17');
+(10, '2781392513007', 'Pedro Henrique Cavenaghi', 'pedro.cavenaghi@fatec.sp.gov.br', '$2y$10$2XMjlBhCZxipHX.zcUBJIe8KpnY4k.9114Wjpzn5jSk8U5UqVanfC', 3, '2025-11-11 23:17:30', '2025-11-18 23:43:26'),
+(11, '2781392323007', 'teste aluno', 'admin2@fatec.sp.gov.br', '$2y$10$CszZaDm4AIvzQLsJMkzcL.xpDxwQpwbkYmV8IhrfZ2OoYKQIR5dcS', 5, '2025-11-11 23:18:28', '2025-11-13 19:26:56'),
+(12, '2780642323004', 'Pedro Mantoan', 'pedro.mantoan@fatec.sp.gov.br', '$2y$10$QrDpWnYHWnHTDOFna5pQhOmzVt3mT3RMJbsge60Gwz7HpaFFGjN3G', 11, '2025-11-11 23:19:17', '2025-11-11 23:19:17'),
+(13, '2781392513014', 'João Pedro Baradelli Pavan', 'joao.pavan@fatec.sp.gov.br', '$2y$10$F2./y1Ph/j6NLSYB08uZeuLloqRMdeC.vsgHPTpL1Al1GCX9E8Zkq', 2, '2025-11-18 23:10:20', '2025-11-18 23:10:20'),
+(17, '2781392513013', 'João Pedro Baradelli Pavan', 'joao.pavan0@fatec.sp.gov.br', '$2y$10$qqm5MGqSxdsA3zIrimKYCewfecXDsEEmwkiLSLvndNjt54B4TJ45a', 2, '2025-11-19 23:36:24', '2025-11-19 23:36:24'),
+(19, '2025342343243', 'João Pedro', 'joao.pavan01@fatec.sp.gov.br', 'escolaestadual10', 2, '2025-11-19 23:58:13', '2025-11-19 23:58:51');
 
 -- --------------------------------------------------------
 
@@ -87,6 +89,18 @@ CREATE TABLE `candidatos` (
   `aluno_ra` varchar(20) NOT NULL,
   `proposta` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `candidatos`
+--
+
+INSERT INTO `candidatos` (`id`, `eleicao_id`, `aluno_ra`, `proposta`) VALUES
+(10, 19, '2781392513007', 'as'),
+(11, 19, '2781392513014', 'Proposta'),
+(13, 17, '2781392513007', 'as'),
+(14, 17, '2781392513014', 'Proposta'),
+(15, 17, '2781392513007', 'as'),
+(16, 17, '2781392513014', 'Proposta');
 
 -- --------------------------------------------------------
 
@@ -104,9 +118,9 @@ CREATE TABLE `cursos` (
 --
 
 INSERT INTO `cursos` (`id`, `nome`) VALUES
-(1, 'Desenvolvimento de Software Multiplataforma'),
-(3, 'Gestão de Produção Industrial'),
-(2, 'Gestão Empresarial');
+(1, 'DSM'),
+(2, 'GE'),
+(3, 'GPI');
 
 -- --------------------------------------------------------
 
@@ -130,8 +144,8 @@ CREATE TABLE `eleicoes` (
 --
 
 INSERT INTO `eleicoes` (`id`, `titulo`, `descricao`, `dataPostagem`, `data_inicio`, `data_fim`, `ativa`, `turma_id`) VALUES
-(5, 'teste turma 1', 'teste', '2025-11-10 22:07:08', '2025-11-11 02:06:48', '2025-11-27 22:06:48', 1, 2),
-(6, 'teste turma 2', 'teste 2', '2025-11-10 22:17:04', '2025-11-11 02:16:53', '2025-11-27 22:16:53', 1, 1);
+(17, 'teste turma 2', 'teste', '2025-11-16 14:21:35', '2025-11-12 14:23:00', '2025-11-27 18:22:00', 1, 2),
+(19, 'teste turma 1 passada', 'asas', '2025-11-19 20:46:16', '2025-11-12 20:48:00', '2025-11-12 20:49:00', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -151,9 +165,7 @@ CREATE TABLE `noticias` (
 --
 
 INSERT INTO `noticias` (`id`, `titulo`, `descricao`, `dataPublicacao`) VALUES
-(5, 'Eleição 1', 'Teste 1', '2025-11-11 21:51:01'),
-(6, 'Eleição 2', 'Teste 2', '2025-11-11 21:51:46'),
-(7, 'Eleição 3', 'Teste 3', '2025-11-11 21:52:09');
+(10, 'asas', 'asas', '2025-11-20 08:36:04');
 
 -- --------------------------------------------------------
 
@@ -227,6 +239,15 @@ CREATE TABLE `votos` (
   `candidato_id` int(11) NOT NULL,
   `data_voto` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `votos`
+--
+
+INSERT INTO `votos` (`id`, `eleicao_id`, `aluno_ra`, `candidato_id`, `data_voto`) VALUES
+(5, 19, '2780642323004', 10, '2025-11-20 08:14:51'),
+(6, 19, '2781392323007', 11, '2025-11-20 08:14:51'),
+(8, 19, '2781392513007', 11, '2025-11-20 08:14:51');
 
 --
 -- Índices para tabelas despejadas
@@ -316,13 +337,13 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT de tabela `alunos`
 --
 ALTER TABLE `alunos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de tabela `candidatos`
 --
 ALTER TABLE `candidatos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT de tabela `cursos`
@@ -334,13 +355,13 @@ ALTER TABLE `cursos`
 -- AUTO_INCREMENT de tabela `eleicoes`
 --
 ALTER TABLE `eleicoes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de tabela `noticias`
 --
 ALTER TABLE `noticias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de tabela `semestres`
@@ -358,7 +379,7 @@ ALTER TABLE `turmas`
 -- AUTO_INCREMENT de tabela `votos`
 --
 ALTER TABLE `votos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Restrições para tabelas despejadas

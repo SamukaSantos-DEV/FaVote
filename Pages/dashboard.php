@@ -159,17 +159,6 @@ if (isset($_POST['criar_eleicao'])) {
 
     $eleicao_id = $conexao->insert_id;
 
-    // INSERIR TODOS OS ALUNOS DA TURMA
-    $sqlAlunos = $conexao->prepare("SELECT ra FROM alunos WHERE turma_id = ?");
-    $sqlAlunos->bind_param("i", $turma_id);
-    $sqlAlunos->execute();
-    $resultAlunos = $sqlAlunos->get_result();
-
-    while ($aluno = $resultAlunos->fetch_assoc()) {
-        $ra = $aluno['ra'];
-        $conexao->query("INSERT INTO candidatos (eleicao_id, aluno_ra) VALUES ($eleicao_id, '$ra')");
-    }
-
     header("Location: dashboard.php?success=eleicao_criada");
     exit;
 }

@@ -14,6 +14,53 @@ if ($resultSemestres->num_rows > 0) {
     }
 }
 
+// ==========================================================
+// === LÓGICA DE BUSCA DINÂMICA (AJAX) ===
+// Esta parte retorna JSON e encerra o script.
+// ==========================================================
+if (isset($_GET['termo_busca'])) {
+    // Escapa o termo para ser usado no LIKE e adiciona os curingas %
+    // Usamos str_contains para verificar se o termo não é totalmente vazio
+    $termoBusca = $_GET['termo_busca'] ?? '';
+    $termo = "%" . $termoBusca . "%";
+
+    $sqlBusca = "
+        SELECT 
+            a.id AS aluno_id,
+            a.ra,
+            a.nome,
+            a.email_institucional,
+            c.nome AS curso_nome,
+            s.nome AS semestre_nome
+        FROM alunos a
+        LEFT JOIN turmas t ON a.turma_id = t.id
+        LEFT JOIN cursos c ON t.curso_id = c.id
+        LEFT JOIN semestres s ON t.semestre_id = s.id
+        WHERE a.ra LIKE ? 
+           OR a.nome LIKE ? 
+           OR a.email_institucional LIKE ?
+           OR c.nome LIKE ?
+           OR s.nome LIKE ?
+    ";
+    
+    $stmt = $conexao->prepare($sqlBusca);
+    
+    // Bind dos parâmetros
+    $stmt->bind_param("sssss", $termo, $termo, $termo, $termo, $termo);
+    $stmt->execute();
+    $resultBusca = $stmt->get_result();
+
+    $usuariosFiltrados = [];
+    while ($usuario = $resultBusca->fetch_assoc()) {
+        $usuariosFiltrados[] = $usuario;
+    }
+    
+    header('Content-Type: application/json');
+    echo json_encode($usuariosFiltrados);
+    exit; // Importante: termina a execução para não imprimir o HTML
+}
+
+
 // === AÇÕES PHP DE EDIÇÃO OU EXCLUSÃO ===
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['acao'])) {
 
@@ -92,9 +139,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['acao'])) {
 
                 // Excluir votos que foram feitos em candidatos ligados ao aluno
                 $stmt = $conexao->prepare("DELETE FROM votos 
-                                           WHERE candidato_id IN (
-                                                SELECT id FROM candidatos WHERE aluno_ra = ?
-                                           )");
+                                             WHERE candidato_id IN (
+                                                 SELECT id FROM candidatos WHERE aluno_ra = ?
+                                             )");
                 $stmt->bind_param("s", $raAluno);
                 $stmt->execute();
                 $stmt->close();
@@ -129,7 +176,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['acao'])) {
 
 
 
-// === CONSULTA USUÁRIOS ===
+// === CONSULTA USUÁRIOS (Para o carregamento inicial da página) ===
 $sqlUsuarios = "
     SELECT 
         a.id AS aluno_id,
@@ -145,7 +192,7 @@ $sqlUsuarios = "
 ";
 $resultUsuarios = $conexao->query($sqlUsuarios);
 
-// === CONSULTA TURMAS ===
+// === CONSULTA TURMAS (Mantida) ===
 $sqlTurmas = "
     SELECT 
         t.id AS turma_id,
@@ -159,8 +206,6 @@ $sqlTurmas = "
 ";
 $resultTurmas = $conexao->query($sqlTurmas);
 ?>
-
-
 
 
 <!DOCTYPE html>
@@ -235,13 +280,20 @@ $resultTurmas = $conexao->query($sqlTurmas);
             }
         });
     </script>
+    
+    <div class="main-content">
 
     <button class="btn-close" onclick="history.back()">➜</button>
 
-    <div class="container" style="margin-top: 50px; width: 100%;">
-        <div class="table-header">
+<div class="headerTabela">
             <h2>Alunos</h2>
-        </div>
+            <input type="text" name="pesquisar" id="input-pesquisa" placeholder="Pesquisar...">
+            <div class="containerLupa">
+            <img src="../Images/lupa.png">
+            </div>
+</div>
+    <div class="containerAlunos" style="margin-top: 50px; width: 100%;">
+        
 
         <div class="table-container">
             <table>
@@ -283,82 +335,103 @@ $resultTurmas = $conexao->query($sqlTurmas);
             </table>
         </div>
     </div>
-
-    <footer class="footer">
-        <div class="footer-top">
-            <div class="footer-logo">
-                <img src="../Images/logoFaVote.png" width="70">
-            </div>
-            <div class="footer-links">
-                <div>
-                    <h4>PÁGINAS</h4>
-                    <ul>
-                        <li><a href="home.php">Home</a></li>
-                        <li><a href="eleAtive.php">Eleições Ativas</a></li>
-                        <li><a href="news.php">Notícias</a></li>
-                        <li><a href="elepassa.php">Eleições Passadas</a></li>
-                        <li><a href="termos.php">Termos de Contrato</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4>REDES</h4>
-                    <ul>
-                        <li><a href="https://www.instagram.com/fatecdeitapira?igsh=MWUzNXMzcWNhZzB4Ng=="
-                                target="_blank">Instagram</a></li>
-                        <li><a href="https://www.facebook.com/share/16Y3jKo71m/" target="_blank">Facebook</a></li>
-                        <li><a href="https://www.youtube.com/@fatecdeitapiraogaridecastr2131"
-                                target="_blank">Youtube</a></li>
-                        <li><a href="https://www.linkedin.com/school/faculdade-estadual-de-tecnologia-de-itapira-ogari-de-castro-pacheco/about/"
-                                target="_blank">Linkedin</a></li>
-                        <li><a href="https://fatecitapira.cps.sp.gov.br/" target="_blank">Site Fatec</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4>INTEGRANTES</h4>
-                    <ul>
-                        <li>João Paulo Gomes</li>
-                        <li>João Pedro Baradeli Pavan</li>
-                        <li>Pedro Henrique Cavenaghi dos Santos</li>
-                        <li>Samuel Santos Oliveira</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            FaVote - Todos os direitos reservados | 2025
-        </div>
-    </footer>
-
+</div>
+    
     <script defer>
+        const turmas = [
+            // Você precisa popular esta variável 'turmas' no seu PHP/JS para que esta função funcione.
+            // Mantendo a função, mas observando que a variável 'turmas' não está definida aqui.
+        ];
+
         function criarLinhasTurmas() {
             const tbody = document.getElementById('turmas-tbody');
-
-            turmas.forEach(turma => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-            <td>${turma.id}</td>
-            <td>${turma.curso}</td>
-            <td>${turma.qtdAlunos}</td>
-            <td>${turma.semestre}</td>
-            <td>
-                <div class="actions">
-                    <button class="action-btn tableEdit-btn" title="Editar" onclick="editarTurma('${turma.id}')">✎</button>
-                    <button class="action-btn tabledelete-btn" title="Excluir" onclick="excluirTurma('${turma.id}')">🗑</button>
-                </div>
-            </td>
-        `;
-                tbody.appendChild(tr);
-            });
+            if (tbody && typeof turmas !== 'undefined') {
+                turmas.forEach(turma => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                <td>${turma.id}</td>
+                <td>${turma.curso}</td>
+                <td>${turma.qtdAlunos}</td>
+                <td>${turma.semestre}</td>
+                <td>
+                    <div class="actions">
+                        <button class="action-btn tableEdit-btn" title="Editar" onclick="editarTurma('${turma.id}')">✎</button>
+                        <button class="action-btn tabledelete-btn" title="Excluir" onclick="excluirTurma('${turma.id}')">🗑</button>
+                    </div>
+                </td>
+            `;
+                    tbody.appendChild(tr);
+                });
+            }
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            criarLinhasTabela();
-            criarLinhasTurmas();
-        });
     </script>
-
-
+    
     <script>
+        // Função utilitária para criar a linha da tabela a partir de um objeto usuário
+        function criarLinhaTabela(usuario) {
+            return `
+                <tr>
+                    <td>${usuario.ra}</td>
+                    <td>${usuario.nome}</td>
+                    <td>${usuario.email_institucional}</td>
+                    <td>${usuario.curso_nome}</td>
+                    <td>${usuario.semestre_nome}</td>
+                    <td>
+                        <div class="actions">
+                            <button class="action-btn tableEdit-btn" title="Editar"
+                                onclick="editarUsuario('${usuario.aluno_id}')">✎</button>
+                            <button class="action-btn tabledelete-btn" title="Excluir"
+                                onclick="excluirUsuario('${usuario.aluno_id}')">🗑</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+        
+        // ==========================================================
+        // === LÓGICA DE BUSCA DINÂMICA (AJAX) ===
+        // ==========================================================
+        const inputPesquisa = document.getElementById('input-pesquisa');
+        const usuariosTbody = document.getElementById('usuarios-tbody');
+
+        function buscarUsuarios() {
+            const termo = inputPesquisa.value.trim();
+            // Envia o termo via GET para o próprio script PHP
+            const url = `?termo_busca=${encodeURIComponent(termo)}`; 
+
+            fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    // Limpa a tabela atual
+                    usuariosTbody.innerHTML = ''; 
+
+                    if (data.length > 0) {
+                        // Adiciona as novas linhas filtradas
+                        data.forEach(usuario => {
+                            usuariosTbody.innerHTML += criarLinhaTabela(usuario);
+                        });
+                    } else {
+                        // Mensagem de "não encontrado"
+                        usuariosTbody.innerHTML = `<tr><td colspan="7">Nenhum usuário encontrado para o termo "${termo}".</td></tr>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro na busca dinâmica:', error);
+                    usuariosTbody.innerHTML = `<tr><td colspan="7">Falha ao buscar dados. Tente novamente.</td></tr>`;
+                });
+        }
+        
+        // Adiciona o event listener para o evento 'input' (disparado a cada tecla digitada)
+        document.addEventListener('DOMContentLoaded', () => {
+            if (inputPesquisa) {
+                inputPesquisa.addEventListener('input', buscarUsuarios);
+            }
+        });
+        
+        
+        // ==========================================================
+        // === LÓGICA DE EDIÇÃO E EXCLUSÃO ===
+        // ==========================================================
         function editarUsuario(id) {
             const row = event.target.closest('tr');
             const cells = row.querySelectorAll('td');
@@ -367,7 +440,7 @@ $resultTurmas = $conexao->query($sqlTurmas);
             const nome = cells[1].innerText;
             const email = cells[2].innerText;
             const curso = cells[3].innerText;
-            const semestre = cells[4].innerText; // ← ADICIONE ESTO
+            const semestre = cells[4].innerText; 
 
             // CRIAR <select> do semestre
             let selectSemestre = `<select id="edit-semestre-${id}" style="padding:4px;">`;
@@ -382,15 +455,15 @@ $resultTurmas = $conexao->query($sqlTurmas);
 
             // Substitui por inputs editáveis
             row.innerHTML = `
-    <td><input type="text" value="${ra}" readonly style="background:#eee; border:none; width:90px;"></td>
-    <td><input type="text" value="${nome}" id="edit-nome-${id}" style="width:150px;"></td>
-    <td><input type="text" value="${email}" id="edit-email-${id}" style="width:200px;"></td>
-    <td>${curso}</td>
-    <td>${selectSemestre}</td>
-    <td>
-        <button onclick="salvarEdicao(${id})" class="tableSave-btn">💾</button>
-        <button onclick="cancelarEdicao()" class="tableCancel-btn">❌</button>
-    </td>`;
+        <td><input type="text" value="${ra}" readonly style="background:#eee; border:none; width:90px;"></td>
+        <td><input type="text" value="${nome}" id="edit-nome-${id}" style="width:150px;"></td>
+        <td><input type="text" value="${email}" id="edit-email-${id}" style="width:200px;"></td>
+        <td>${curso}</td>
+        <td>${selectSemestre}</td>
+        <td>
+            <button onclick="salvarEdicao(${id})" class="tableSave-btn">💾</button>
+            <button onclick="cancelarEdicao()" class="tableCancel-btn">↩</button>
+        </td>`;
 
         }
 
@@ -419,7 +492,8 @@ $resultTurmas = $conexao->query($sqlTurmas);
                 .then(msg => {
                     alert(msg);
                     location.reload();
-                });
+                })
+                .catch(() => alert("Erro na comunicação com o servidor."));
         }
 
 
@@ -441,12 +515,49 @@ $resultTurmas = $conexao->query($sqlTurmas);
                 .catch(() => alert("Erro ao excluir usuário."));
         }
     </script>
-
-
-
-
-
-
+    
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="footer-logo">
+                <img src="../Images/logoFaVote.png" width="70">
+            </div>
+            <div class="footer-links">
+                <div>
+                    <h4>PÁGINAS</h4>
+                    <ul>
+                        <li><a href="home.php">Home</a></li>
+                        <li><a href="eleAtive.php">Eleições Ativas</a></li>
+                        <li><a href="news.php">Notícias</a></li>
+                        <li><a href="elePassa.php">Eleições Passadas</a></li>
+                        <li><a href="termos.php">Termos de Contrato</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>REDES</h4>
+                    <ul>
+                        <li><a href="https://www.instagram.com/fatecdeitapira" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                        <li><a href="https://www.facebook.com/share/16Y3jKo71m/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+                        <li><a href="https://www.youtube.com/@fatecdeitapiraogaridecastr2131" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+                        <li><a href="https://www.linkedin.com/school/faculdade-estadual-de-tecnologia-de-itapira-ogari-de-castro-pacheco/about/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                        <li><a href="https://fatecitapira.cps.sp.gov.br/" target="_blank" rel="noopener noreferrer">Site Fatec</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>INTEGRANTES</h4>
+                    <ul>
+                        <li>João Paulo Gomes</li>
+                        <li>João Pedro Baradeli Pavan</li>
+                        <li>Pedro Henrique Cavenaghi dos Santos</li>
+                        <li>Samuel Santos Oliveira</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            FaVote - Todos os direitos reservados | 2025
+        </div>
+    </footer>
+    
 </body>
 
 </html>

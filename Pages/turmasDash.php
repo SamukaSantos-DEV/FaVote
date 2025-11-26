@@ -235,13 +235,16 @@ $resultTurmas = $conexao->query($sqlTurmas);
             }
         });
     </script>
+    
+    <div class="main-content">
 
     <button class="btn-close" onclick="history.back()">➜</button>
 
-    <div class="container" style="margin-top: 50px; width: 100%;">
-        <div class="table-header">
+<div class="headerTabela">
             <h2>Turmas</h2>
-        </div>
+</div>
+    <div class="containerView" style="margin-top: 50px; width: 100%;">
+        
         <div class="table-container">
             <table>
                 <thead>
@@ -290,50 +293,7 @@ $resultTurmas = $conexao->query($sqlTurmas);
         </div>
     </div>
 
-    <footer class="footer">
-        <div class="footer-top">
-            <div class="footer-logo">
-                <img src="../Images/logoFaVote.png" width="70">
-            </div>
-            <div class="footer-links">
-                <div>
-                    <h4>PÁGINAS</h4>
-                    <ul>
-                        <li><a href="home.php">Home</a></li>
-                        <li><a href="eleAtive.php">Eleições Ativas</a></li>
-                        <li><a href="news.php">Notícias</a></li>
-                        <li><a href="elepassa.php">Eleições Passadas</a></li>
-                        <li><a href="termos.php">Termos de Contrato</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4>REDES</h4>
-                    <ul>
-                        <li><a href="https://www.instagram.com/fatecdeitapira?igsh=MWUzNXMzcWNhZzB4Ng=="
-                                target="_blank">Instagram</a></li>
-                        <li><a href="https://www.facebook.com/share/16Y3jKo71m/" target="_blank">Facebook</a></li>
-                        <li><a href="https://www.youtube.com/@fatecdeitapiraogaridecastr2131"
-                                target="_blank">Youtube</a></li>
-                        <li><a href="https://www.linkedin.com/school/faculdade-estadual-de-tecnologia-de-itapira-ogari-de-castro-pacheco/about/"
-                                target="_blank">Linkedin</a></li>
-                        <li><a href="https://fatecitapira.cps.sp.gov.br/" target="_blank">Site Fatec</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4>INTEGRANTES</h4>
-                    <ul>
-                        <li>João Paulo Gomes</li>
-                        <li>João Pedro Baradeli Pavan</li>
-                        <li>Pedro Henrique Cavenaghi dos Santos</li>
-                        <li>Samuel Santos Oliveira</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            FaVote - Todos os direitos reservados | 2025
-        </div>
-    </footer>
+</div>
 
     <script defer>
         function criarLinhasTurmas() {
@@ -447,11 +407,48 @@ $resultTurmas = $conexao->query($sqlTurmas);
                 .catch(() => alert("Erro ao excluir usuário."));
         }
     </script>
-
-
-
-
-
+    
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="footer-logo">
+                <img src="../Images/logoFaVote.png" width="70">
+            </div>
+            <div class="footer-links">
+                <div>
+                    <h4>PÁGINAS</h4>
+                    <ul>
+                        <li><a href="home.php">Home</a></li>
+                        <li><a href="eleAtive.php">Eleições Ativas</a></li>
+                        <li><a href="news.php">Notícias</a></li>
+                        <li><a href="elePassa.php">Eleições Passadas</a></li>
+                        <li><a href="termos.php">Termos de Contrato</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>REDES</h4>
+                    <ul>
+                        <li><a href="https://www.instagram.com/fatecdeitapira" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                        <li><a href="https://www.facebook.com/share/16Y3jKo71m/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+                        <li><a href="https://www.youtube.com/@fatecdeitapiraogaridecastr2131" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+                        <li><a href="https://www.linkedin.com/school/faculdade-estadual-de-tecnologia-de-itapira-ogari-de-castro-pacheco/about/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                        <li><a href="https://fatecitapira.cps.sp.gov.br/" target="_blank" rel="noopener noreferrer">Site Fatec</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>INTEGRANTES</h4>
+                    <ul>
+                        <li>João Paulo Gomes</li>
+                        <li>João Pedro Baradeli Pavan</li>
+                        <li>Pedro Henrique Cavenaghi dos Santos</li>
+                        <li>Samuel Santos Oliveira</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            FaVote - Todos os direitos reservados | 2025
+        </div>
+    </footer>
 
 </body>
 
