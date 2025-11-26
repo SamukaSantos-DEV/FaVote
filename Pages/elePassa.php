@@ -63,15 +63,17 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'fetch') {
         // SQL para buscar os 2 mais votados (Lógica de Vencedores)
         $sqlVencedores = "
             SELECT a.nome AS candidato,
-                   MAX(v.data_voto) AS data_voto,
-                   COUNT(*) AS total
-            FROM votos v
-            INNER JOIN candidatos c ON c.id = v.candidato_id
-            INNER JOIN alunos a ON a.ra = c.aluno_ra
-            WHERE v.eleicao_id = ?
-            GROUP BY v.candidato_id, a.nome
-            ORDER BY total DESC
-            LIMIT 2
+       MAX(v.data_voto) AS data_voto,
+       COUNT(*) AS total
+FROM votos v
+INNER JOIN candidatos c ON c.id = v.candidato_id
+INNER JOIN alunos a ON a.ra = c.aluno_ra
+WHERE v.eleicao_id = ?
+  AND c.id <> 1 
+GROUP BY v.candidato_id, a.nome
+ORDER BY total DESC
+LIMIT 2;
+
         ";
 
         $stmtVencedores = $conexao->prepare($sqlVencedores);
@@ -85,7 +87,7 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'fetch') {
         }
 
         $stmtVencedores->close();
-        ?>
+?>
         <div class="eleicao-card">
             <div class="info-eleicao">
                 <h3>
@@ -126,10 +128,10 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'fetch') {
     $stmtEleicoes->close();
 
     if (!$temEleicoesPassadas):
-        ?>
+    ?>
         <p class="nenhuma-eleicao">Não há eleições passadas registradas no
             momento<?php echo $temFiltro ? " para o ano de " . htmlspecialchars($ano) . "." : "."; ?></p>
-    <?php endif;
+<?php endif;
 
     $conexao->close();
 
@@ -158,7 +160,7 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'fetch') {
 
         <nav class="nav">
             <a href="home.php">Home</a>
-            <a href="eleAtive.php" >Eleições Ativas</a>
+            <a href="eleAtive.php">Eleições Ativas</a>
             <a href="news.php">Notícias</a>
             <a href="elePassa.php" class="active">Eleições Passadas</a>
             <?php
@@ -273,7 +275,7 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'fetch') {
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const filtroSelect = document.getElementById('filtro');
             const listaDiv = document.getElementById('eleicoes-lista');
 
@@ -304,7 +306,7 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'fetch') {
             }
 
             // 1. Event Listener: Recarrega a lista quando o filtro muda
-            filtroSelect.addEventListener('change', function () {
+            filtroSelect.addEventListener('change', function() {
                 const anoSelecionado = this.value;
                 carregarEleicoes(anoSelecionado);
             });

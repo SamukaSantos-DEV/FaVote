@@ -62,12 +62,12 @@ if ($turma_id) {
         // =========================================================================
         // Cria um objeto DateTime para a data de início
         $data_inicio = new DateTime($eleicao['data_inicio']);
-        
+
         // Cria um novo objeto DateTime para o limite (Data Início + 7 dias)
         // Usamos uma nova instância para não modificar $data_inicio
-        $data_limite_candidatura = (new DateTime($eleicao['data_inicio']))->modify('+7 days'); 
+        $data_limite_candidatura = (new DateTime($eleicao['data_inicio']))->modify('+7 days');
         $agora = new DateTime();
-        
+
         // Verifica se a data/hora atual é anterior à data limite de candidatura
         if ($agora < $data_limite_candidatura) {
             $periodo_candidatura_aberto = true;
@@ -110,7 +110,7 @@ $sql_ultimas_eleicoes = "
     FROM eleicoes e
     INNER JOIN turmas t ON t.id = e.turma_id
     INNER JOIN cursos c ON c.id = t.curso_id
-    INNER JOIN semestres s ON s.id = t.semestre_id
+    INNER JOIN semestres s ON s.id = t.semestre_id    
     WHERE e.ativa = 0
     ORDER BY e.data_fim DESC
     LIMIT 3
@@ -129,7 +129,8 @@ if ($result_eleicoes) {
             FROM votos v
             INNER JOIN candidatos c ON c.id = v.candidato_id
             INNER JOIN alunos a ON a.ra = c.aluno_ra
-            WHERE v.eleicao_id = ?
+            WHERE v.eleicao_id = ? 
+            AND c.id <> 1 
             GROUP BY v.candidato_id, a.nome
             ORDER BY total DESC
             LIMIT 2
@@ -206,7 +207,7 @@ $conexao->close(); // Fecha a conexão após todas as operações de banco
     </header>
 
     <main class="main-content">
-        
+
         <?php if (!$periodo_candidatura_aberto && $eleicao): ?>
             <a href="eleAtive.php" style="text-decoration: none;">
                 <section class="main-vote">
@@ -234,36 +235,36 @@ $conexao->close(); // Fecha a conexão após todas as operações de banco
                     <a href="news.php">Ver mais ➜</a>
                 </div>
 
-                <?php 
+                <?php
                 if ($eleicao) {
                     if (!$jaCandidato && $periodo_candidatura_aberto):
                 ?>
-                    <div class="news-card special-card"
-                        onclick="window.location.href='querocandidatar.php?id=<?php echo urlencode($eleicao['id']); ?>'">
-                        <h3>Quero me candidatar!</h3>
-                        <p>Participe da eleição ativa da sua turma. Mostre suas ideias e concorra como representante!</p>
-                        <p style="color: crimson;">O período de candidatura é de 7 dias após o início da eleição.</p>
-                        <p style="text-decoration: underline dotted black 2px;"><strong>Clique aqui para se inscrever</strong></p>
-                    </div>
+                        <div class="news-card special-card"
+                            onclick="window.location.href='querocandidatar.php?id=<?php echo urlencode($eleicao['id']); ?>'">
+                            <h3>Quero me candidatar!</h3>
+                            <p>Participe da eleição ativa da sua turma. Mostre suas ideias e concorra como representante!</p>
+                            <p style="color: crimson;">O período de candidatura é de 7 dias após o início da eleição.</p>
+                            <p style="text-decoration: underline dotted black 2px;"><strong>Clique aqui para se inscrever</strong></p>
+                        </div>
 
-                <?php 
+                    <?php
                     elseif (!$jaCandidato && !$periodo_candidatura_aberto):
-                ?>
-                    <div class="news-card special-card">
-                        <h3>Período de Candidatura Encerrado</h3>
-                        <p>O prazo de 7 dias para se candidatar à eleição <?php echo htmlspecialchars($eleicao['titulo']); ?> já se encerrou.</p>
-                        <p><strong>Aguarde a próxima eleição.</strong></p>
-                    </div>
+                    ?>
+                        <div class="news-card special-card">
+                            <h3>Período de Candidatura Encerrado</h3>
+                            <p>O prazo de 7 dias para se candidatar à eleição <?php echo htmlspecialchars($eleicao['titulo']); ?> já se encerrou.</p>
+                            <p><strong>Aguarde a próxima eleição.</strong></p>
+                        </div>
 
-                <?php 
-                    elseif ($jaCandidato): 
-                ?>
-                    <div class="news-card special-card">
-                        <h3>Você já se candidatou!</h3>
-                        <p>Boa sorte! Aguarde o início da votação da sua turma.</p>
-                        <small><strong>Eleição:</strong> <?php echo htmlspecialchars($eleicao['titulo']); ?></small>
-                    </div>
-                <?php 
+                    <?php
+                    elseif ($jaCandidato):
+                    ?>
+                        <div class="news-card special-card">
+                            <h3>Você já se candidatou!</h3>
+                            <p>Boa sorte! Aguarde o início da votação da sua turma.</p>
+                            <small><strong>Eleição:</strong> <?php echo htmlspecialchars($eleicao['titulo']); ?></small>
+                        </div>
+                <?php
                     endif;
                 }
                 // Se não houver eleição ativa, não exibe o card de candidatura.
@@ -289,11 +290,11 @@ $conexao->close(); // Fecha a conexão após todas as operações de banco
                     <a href="elePassa.php">Ver mais ➜</a>
                 </div>
 
-                
+
                 <?php if (!empty($ultimas_eleicoes_com_vencedores)): ?>
                     <?php foreach ($ultimas_eleicoes_com_vencedores as $eleicao_result): ?>
                         <?php
-                        
+
                         $turma_nome = htmlspecialchars($eleicao_result['curso_nome']) . ' - ' . htmlspecialchars($eleicao_result['semestre_nome']);
                         $data_fim = date('d/m/Y', strtotime($eleicao_result['data_fim']));
                         $vencedores = $eleicao_result['vencedores'];

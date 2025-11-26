@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.2
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 26/11/2025 às 01:20
--- Versão do servidor: 10.4.32-MariaDB
--- Versão do PHP: 8.2.12
+-- Tempo de geração: 26/11/2025 às 21:49
+-- Versão do servidor: 11.8.3-MariaDB-log
+-- Versão do PHP: 7.2.34
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,8 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Banco de dados: `favotedb`
 --
-CREATE DATABASE IF NOT EXISTS `favotedb` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `favotedb`;
+CREATE DATABASE IF NOT EXISTS `u180877424_favotedb` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `u180877424_favotedb`;
 
 -- --------------------------------------------------------
 
@@ -70,12 +70,59 @@ CREATE TABLE `alunos` (
 --
 
 INSERT INTO `alunos` (`id`, `ra`, `nome`, `email_institucional`, `senha`, `turma_id`, `criado_data`, `atualizado_data`) VALUES
-(10, '2781392513007', 'Pedro Henrique Cavenaghi', 'pedro.cavenaghi@fatec.sp.gov.br', '$2y$10$2XMjlBhCZxipHX.zcUBJIe8KpnY4k.9114Wjpzn5jSk8U5UqVanfC', 3, '2025-11-11 23:17:30', '2025-11-18 23:43:26'),
-(11, '2781392323007', 'teste aluno', 'admin2@fatec.sp.gov.br', '$2y$10$CszZaDm4AIvzQLsJMkzcL.xpDxwQpwbkYmV8IhrfZ2OoYKQIR5dcS', 5, '2025-11-11 23:18:28', '2025-11-13 19:26:56'),
-(12, '2780642323004', 'Pedro Mantoan', 'pedro.mantoan@fatec.sp.gov.br', '$2y$10$QrDpWnYHWnHTDOFna5pQhOmzVt3mT3RMJbsge60Gwz7HpaFFGjN3G', 11, '2025-11-11 23:19:17', '2025-11-11 23:19:17'),
-(13, '2781392513014', 'João Pedro Baradelli Pavan', 'joao.pavan@fatec.sp.gov.br', '$2y$10$F2./y1Ph/j6NLSYB08uZeuLloqRMdeC.vsgHPTpL1Al1GCX9E8Zkq', 2, '2025-11-18 23:10:20', '2025-11-18 23:10:20'),
-(17, '2781392513013', 'João Pedro Baradelli Pavan', 'joao.pavan0@fatec.sp.gov.br', '$2y$10$qqm5MGqSxdsA3zIrimKYCewfecXDsEEmwkiLSLvndNjt54B4TJ45a', 2, '2025-11-19 23:36:24', '2025-11-19 23:36:24'),
-(19, '2025342343243', 'João Pedro', 'joao.pavan01@fatec.sp.gov.br', 'escolaestadual10', 2, '2025-11-19 23:58:13', '2025-11-19 23:58:51');
+(1, '1111111111111', 'Branco', 'branco@fatec.sp.gov.br', '1234', NULL, '2025-11-26 01:05:55', '2025-11-26 01:06:39'),
+(14, '2781392513023', 'Samuel Santos Oliveira', 'samuel.santos@fatec.sp.gov.br', '$2y$10$22AJJ7uRtoDYNsYyB8tGjulIz15D1Oggge0S8x7IvdD9K2dOgTcGm', 2, '2025-11-25 23:50:06', '2025-11-25 23:50:06'),
+(15, '2781392513007', 'Pedro esta testando desempenho', 'pedro.santos@fatec.sp.gov.br', '$2y$10$KcicdnmVfV7zy9uKZLUDAeMyZsNH8mqYptEb8fm6QEnuKDwaKy2Xm', 2, '2025-11-25 23:51:24', '2025-11-26 00:14:39'),
+(16, '2781392523001', 'João Paulo Gomes', 'joao.gomes@fatec.sp.gov.br', '$2y$10$Z83zN1Ld6ljFP4pEeOhnj.pu1GxP9F5gc/.oFixTVlzC85Po/Geqq', 1, '2025-11-25 23:51:59', '2025-11-25 23:51:59'),
+(17, '2780642323004', 'Pedro Mantoan', 'pedro.mantoan@fatec.sp.gov.br', '$2y$10$7oWXvahbeYsXRpl49PX7/uE5J4Z4Ye6SAr4bu91aHCKujAU9oe6Cm', 11, '2025-11-25 23:52:44', '2025-11-25 23:52:44'),
+(18, '2781392513014', 'João Pedro Baradelli Pavan', 'joao.pavan01@fatec.sp.gov.br', '$2y$10$g27LgO9dbrpzWHNMNLMT/O99EISE7WhHtLym7Dl9.Xs0BjM0fWbWO', 2, '2025-11-25 23:53:41', '2025-11-25 23:53:41'),
+(19, '2781392513019', 'João Lázaro Tavares Vieira', 'joao.vieira@fatec.sp.gov.br', '$2y$10$d.647Iy3FPAyosz30/pGB.1waMb2nXPuXlliOMtS9P5/uwJplYySS', 2, '2025-11-25 23:55:02', '2025-11-25 23:55:02'),
+(22, '2781392513001', 'teste1', 'teste1@fatec.sp.gov.br', '$2y$10$0eBVDV2Lqu1DCkcfJa2wtuP9AMPTG6lurHWgkx99tBUhomxWs81OW', 2, '2025-11-26 01:55:54', '2025-11-26 01:55:54'),
+(23, '2781392513002', 'teste2', 'teste2@fatec.sp.gov.br', '$2y$10$6t8Wr3lNqZl.Gps6mkM6ReE4Z98mCAsGQLSdATULm.iQcyqw8ZC5W', 2, '2025-11-26 01:55:54', '2025-11-26 01:55:54'),
+(24, '2781392513003', 'teste3', 'teste3@fatec.sp.gov.br', '$2y$10$WZ8YMT77MI/QoCS8PL6s/eS.V2efvke2AtvUlZ2u4UXJxNYCX6YUS', 2, '2025-11-26 01:55:55', '2025-11-26 01:55:55'),
+(25, '2781392513004', 'teste4', 'teste4@fatec.sp.gov.br', '$2y$10$fLaIbxx7y5XquxbnF4Vb3OzGTQz31qRBR9h3HPQvzTBZkV/MhagSe', 2, '2025-11-26 01:55:55', '2025-11-26 01:55:55'),
+(26, '2781392513005', 'teste5', 'teste5@fatec.sp.gov.br', '$2y$10$vr5Wokn.ct4JcTrwidSDFu/neu.W86SsK2AscMp6feGAmkhUDkz.6', 2, '2025-11-26 01:55:55', '2025-11-26 01:55:55'),
+(27, '2781392513006', 'teste6', 'teste6@fatec.sp.gov.br', '$2y$10$cPA8TwZXS6vNMqbNhh7VduNDzl5cE4FMsQ27XyB1uTKW14lm/NAFq', 2, '2025-11-26 01:55:56', '2025-11-26 01:55:56'),
+(29, '2781392513008', 'teste8', 'teste8@fatec.sp.gov.br', '$2y$10$46cfm4kZtPBSGc7bDMEh2OoqF25KY.trZJ18i8x.DtpYtQFwTKub.', 2, '2025-11-26 01:55:57', '2025-11-26 01:55:57'),
+(30, '2781392513009', 'teste9', 'teste9@fatec.sp.gov.br', '$2y$10$JXcInMy/mQNU.dLYAWDLN..0ozJv41O.4IjqAu1wuxevvvgZs18oa', 2, '2025-11-26 01:55:57', '2025-11-26 01:55:57'),
+(31, '2781392513010', 'teste10', 'teste10@fatec.sp.gov.br', '$2y$10$.COyMqfCkd72.clmg9t0k.ufX4u0hSfKj45J2qlqyNwpx2LFG9vH2', 2, '2025-11-26 01:55:57', '2025-11-26 01:55:57'),
+(32, '2781392513011', 'teste11', 'teste11@fatec.sp.gov.br', '$2y$10$NAk4eiqMre5M2d2JE8mg6OTKRffGal5L7DZX5QeQvgtW2VbTNxV1K', 2, '2025-11-26 01:55:58', '2025-11-26 01:55:58'),
+(33, '2781392513012', 'teste12', 'teste12@fatec.sp.gov.br', '$2y$10$GrAOrw.GLDA4s2.iVoP/y..v6F2wuMnnPEA1BoLXyuZ73v1k/KM8K', 2, '2025-11-26 01:55:58', '2025-11-26 01:55:58'),
+(34, '2781392513013', 'teste13', 'teste13@fatec.sp.gov.br', '$2y$10$B5rWnAsZwajsDdimbXhP0es9gxbD1v5gVEGzgMv.tmu03jrR2DaL6', 2, '2025-11-26 01:55:59', '2025-11-26 01:55:59'),
+(36, '2781392513015', 'teste15', 'teste15@fatec.sp.gov.br', '$2y$10$ZtkeuSuxEGxf87tbtRN03eN.W00QmbneUzRn7GLeHA./gkhgLDnaa', 2, '2025-11-26 01:56:00', '2025-11-26 01:56:00'),
+(37, '2781392513016', 'teste16', 'teste16@fatec.sp.gov.br', '$2y$10$pOJ98c292.QPsYRBbl5PYuu8CJKDTEv6D2CDcn38NO/QWn0cgQEcS', 2, '2025-11-26 01:56:00', '2025-11-26 01:56:00'),
+(38, '2781392513017', 'teste17', 'teste17@fatec.sp.gov.br', '$2y$10$53PBLgO9MdiITFE9W5Jn2O12P4gv42HlVHbzgT4DrGDZFURQg4DQW', 2, '2025-11-26 01:56:00', '2025-11-26 01:56:00'),
+(39, '2781392513018', 'teste18', 'teste18@fatec.sp.gov.br', '$2y$10$PuAyA2U9KVFSyTzMZOvire3Z4RchmzuZRAGUCr98HzEcwALNLMPF.', 2, '2025-11-26 01:56:01', '2025-11-26 01:56:01'),
+(41, '2781392513020', 'teste20', 'teste20@fatec.sp.gov.br', '$2y$10$Kbu1Qm2eYcmZmKmxvLlDB.3W36m6SR49s5XSD0adySw3y8YN94YR.', 2, '2025-11-26 01:56:02', '2025-11-26 01:56:02'),
+(42, '2781392513021', 'teste21', 'teste21@fatec.sp.gov.br', '$2y$10$HBREeUPY5lWe0REFYxqMNOEm92Qvuh6CDC4AFcD4THcLgg7/HwDne', 2, '2025-11-26 01:56:02', '2025-11-26 01:56:02'),
+(43, '2781392513022', 'teste22', 'teste22@fatec.sp.gov.br', '$2y$10$8yylZD5rdY5wP4K.wd9B9ehCa4ejPgYY3zBst7BbkogyssFbeJJLG', 2, '2025-11-26 01:56:02', '2025-11-26 01:56:02'),
+(45, '2781392513024', 'teste24', 'teste24@fatec.sp.gov.br', '$2y$10$RqZm.9l8R.rEvpvPnNsfkuaTPWFqE9Y70YvTn1kZgnTqC849K5FgG', 2, '2025-11-26 01:56:03', '2025-11-26 01:56:03'),
+(46, '2781392513025', 'teste25', 'teste25@fatec.sp.gov.br', '$2y$10$DJwdeydzo6Ej4.oTV6ia6OSaVwWXvgpQjB6kZUzF2OH90YpbzI0cW', 2, '2025-11-26 01:56:04', '2025-11-26 01:56:04'),
+(47, '2781392513026', 'teste26', 'teste26@fatec.sp.gov.br', '$2y$10$CjCDJy9k9QhMHmlBqPopaeMGp1yptak4vJwE/X3ZttBcdGEwaySHi', 2, '2025-11-26 01:56:04', '2025-11-26 01:56:04'),
+(48, '2781392513027', 'teste27', 'teste27@fatec.sp.gov.br', '$2y$10$1fMdTj5lNlDD4cuAyLFhMu7jxpnVLy/bnOY0tlkxuayPB7W5ocgX2', 2, '2025-11-26 01:56:04', '2025-11-26 01:56:04'),
+(49, '2781392513028', 'teste28', 'teste28@fatec.sp.gov.br', '$2y$10$W3zR6m7Ii3zHC2kJjwfFzertSYNCVuuNxSjqUChitLkY9A7/.NDdi', 2, '2025-11-26 01:56:05', '2025-11-26 01:56:05'),
+(50, '2781392513029', 'teste29', 'teste29@fatec.sp.gov.br', '$2y$10$j57/2ep1shBC16PnXsmgtu37KIc9h4ENgOWJcFm6p57DQTJzlB52m', 2, '2025-11-26 01:56:05', '2025-11-26 01:56:05'),
+(51, '2781392513030', 'teste30', 'teste30@fatec.sp.gov.br', '$2y$10$nvLMQ4zDmXL4Uz8c387BAuxKcf5SiGAwDfGBRJRbpzSSOQX9IcqhK', 2, '2025-11-26 01:56:06', '2025-11-26 01:56:06'),
+(52, '2781392513031', 'teste31', 'teste31@fatec.sp.gov.br', '$2y$10$LIw.qpVdlM4UKzqw2/ONMehq4RU7bXN7THffmwyrNhVK32udkQiIa', 2, '2025-11-26 01:56:06', '2025-11-26 01:56:06'),
+(53, '2781392513032', 'teste32', 'teste32@fatec.sp.gov.br', '$2y$10$MKhzW/ErZ/5hAd2Df0LpEeYtVf1VJQcjb42MGM3wlSjhCUrIpfWZ2', 2, '2025-11-26 01:56:06', '2025-11-26 01:56:06'),
+(54, '2781392513033', 'teste33', 'teste33@fatec.sp.gov.br', '$2y$10$aGIfhkw118h/RnS84DWTTum5I.I4WcAVe8yBbidYJMzg4YSk4RIk2', 2, '2025-11-26 01:56:07', '2025-11-26 01:56:07'),
+(55, '2781392513034', 'teste34', 'teste34@fatec.sp.gov.br', '$2y$10$ykJ/dBBwICTGxa3wRm3U8eOCM7Y3zQ4B.XnYrApa1o4CD8SSzuEri', 2, '2025-11-26 01:56:07', '2025-11-26 01:56:07'),
+(56, '2781392513035', 'teste35', 'teste35@fatec.sp.gov.br', '$2y$10$/bSQQ7yBhVDzMaGLd7HtsOow2vUsmcFJFr8fzvPnV4Xek2GIuU.3y', 2, '2025-11-26 01:56:08', '2025-11-26 01:56:08'),
+(57, '2781392513036', 'teste36', 'teste36@fatec.sp.gov.br', '$2y$10$ELMUvvRigCxCeGnjesXGz.Rt1olyooMNMxLUc/noFfWsHKquWqXfW', 2, '2025-11-26 01:56:08', '2025-11-26 01:56:08'),
+(58, '2781392513037', 'teste37', 'teste37@fatec.sp.gov.br', '$2y$10$ORThSVoTFQsjyQ63U6sk2ON58SOhPWH4wiNYR8ViSJHgqVav9A/E.', 2, '2025-11-26 01:56:09', '2025-11-26 01:56:09'),
+(59, '2781392513038', 'teste38', 'teste38@fatec.sp.gov.br', '$2y$10$Kf96KqbjV8a009dPQteqqe26.v/UFkZjGjYuVgU7LWIm8VlqwIxrm', 2, '2025-11-26 01:56:09', '2025-11-26 01:56:09'),
+(60, '2781392513039', 'teste39', 'teste39@fatec.sp.gov.br', '$2y$10$x1P6em8LWydGm7X83MI4ouIOyYpk/cELJgeXF3JDwmZCWIlhB2vFO', 2, '2025-11-26 01:56:09', '2025-11-26 01:56:09'),
+(61, '2781392513040', 'teste40', 'teste40@fatec.sp.gov.br', '$2y$10$gENOl4y08xlgr4ADHoZ7rOBC6n7LiMxlLEU6LZAsgyOKvnTgUnp.C', 2, '2025-11-26 01:56:10', '2025-11-26 01:56:10'),
+(62, '2781392513041', 'teste41', 'teste41@fatec.sp.gov.br', '$2y$10$JybcF2h3XqVmp55ESc/GcuoK9pzfifPOsJpkpPmgFg/QV4AK0j2y.', 2, '2025-11-26 01:56:10', '2025-11-26 01:56:10'),
+(63, '2781392513042', 'teste42', 'teste42@fatec.sp.gov.br', '$2y$10$sGTKNR/8x.HWZeL3LtxMteEoDTBxIcmeZyHCI/NrYR7Ov9P5I6kYS', 2, '2025-11-26 01:56:11', '2025-11-26 01:56:11'),
+(64, '2781392513043', 'teste43', 'teste43@fatec.sp.gov.br', '$2y$10$k2sO7XCAW.SNjMdDxyZBOOG9xmWB6uWe0gy9jFnd4t8/ycIq/ZEDe', 2, '2025-11-26 01:56:11', '2025-11-26 01:56:11'),
+(65, '2781392513044', 'teste44', 'teste44@fatec.sp.gov.br', '$2y$10$gKjZq03otN668R3RMeS5NudkpNrd.KiXacVddeuskGvQXsB4ZfFUC', 2, '2025-11-26 01:56:11', '2025-11-26 01:56:11'),
+(66, '2781392513045', 'teste45', 'teste45@fatec.sp.gov.br', '$2y$10$hYZYgN9XNBE1N1T8wKpWVecanrXi00p7WOcvWwC3scVSwiLFySPci', 2, '2025-11-26 01:56:12', '2025-11-26 01:56:12'),
+(67, '2781392513046', 'teste46', 'teste46@fatec.sp.gov.br', '$2y$10$bAXUvrhoJQFeH/a7OPXJsetp.fZ1eBmzBqvgipClgcUJ4PAPucirS', 2, '2025-11-26 01:56:12', '2025-11-26 01:56:12'),
+(68, '2781392513047', 'teste47', 'teste47@fatec.sp.gov.br', '$2y$10$lWUAI0PuKXFSIo9gdOHCyO.mj/.idr1bcvbTC8AzPZU4PtijI7qAS', 2, '2025-11-26 01:56:13', '2025-11-26 01:56:13'),
+(69, '2781392513048', 'teste48', 'teste48@fatec.sp.gov.br', '$2y$10$w4lktU7/NYBlMOcnZdUl/OCnsm1mPhtQx2/PvendO3lTYF0mTLTb6', 2, '2025-11-26 01:56:13', '2025-11-26 01:56:13'),
+(70, '2781392513049', 'teste49', 'teste49@fatec.sp.gov.br', '$2y$10$5sq.jZrQbAlG3kSg2wJpbOmi9DkQpg8ZElRHcS.gmT2bReYLdYik6', 2, '2025-11-26 01:56:13', '2025-11-26 01:56:13'),
+(71, '2781392513050', 'teste50', 'teste50@fatec.sp.gov.br', '$2y$10$F7rLFzbOdFwquzzxW3jNneTpHXtsE/QF07iklataUys79jrR0PVTK', 2, '2025-11-26 01:56:14', '2025-11-26 01:56:14');
 
 -- --------------------------------------------------------
 
@@ -95,12 +142,9 @@ CREATE TABLE `candidatos` (
 --
 
 INSERT INTO `candidatos` (`id`, `eleicao_id`, `aluno_ra`, `proposta`) VALUES
-(10, 19, '2781392513007', 'as'),
-(11, 19, '2781392513014', 'Proposta'),
-(13, 17, '2781392513007', 'as'),
-(14, 17, '2781392513014', 'Proposta'),
-(15, 17, '2781392513007', 'as'),
-(16, 17, '2781392513014', 'Proposta');
+(1, 1, '1111111111111', 'Voto em Branco'),
+(10, 9, '2781392523001', 'Quero ser representante'),
+(11, 8, '2781392513014', 'Quero ser representante');
 
 -- --------------------------------------------------------
 
@@ -144,8 +188,9 @@ CREATE TABLE `eleicoes` (
 --
 
 INSERT INTO `eleicoes` (`id`, `titulo`, `descricao`, `dataPostagem`, `data_inicio`, `data_fim`, `ativa`, `turma_id`) VALUES
-(17, 'teste turma 2', 'teste', '2025-11-16 14:21:35', '2025-11-12 14:23:00', '2025-11-27 18:22:00', 1, 2),
-(19, 'teste turma 1 passada', 'asas', '2025-11-19 20:46:16', '2025-11-12 20:48:00', '2025-11-12 20:49:00', 0, 1);
+(1, 'branco', 'branco', '2025-11-26 01:08:28', '2025-11-26 01:08:03', '2025-11-26 01:08:03', 2, 2),
+(8, 'ELEIÇÃO DE REPRESENTANTE 2º DSM (N)', 'Votação para eleição de representante e vice-representante.', '2025-11-17 00:00:00', '2025-11-17 00:00:00', '2025-11-24 23:59:00', 0, 2),
+(9, 'ELEIÇÃO DE REPRESENTANTE 1º DSM (N)', 'Votação para eleição de representante e vice-representante.', '2025-11-26 00:09:00', '2025-11-20 00:00:00', '2025-12-03 23:59:00', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -165,7 +210,8 @@ CREATE TABLE `noticias` (
 --
 
 INSERT INTO `noticias` (`id`, `titulo`, `descricao`, `dataPublicacao`) VALUES
-(10, 'asas', 'asas', '2025-11-20 08:36:04');
+(11, 'ELEIÇÃO DE REPRESENTANTE 1º DSM (N)', 'ELEIÇÕES ABERTAS! DIVULGUE!', '2025-11-26 00:09:58'),
+(12, 'ELEIÇÃO DE REPRESENTANTE 2º DSM (N)', 'ELEIÇÕES ABERTAS! DIVULGUE!', '2025-11-26 00:10:56');
 
 -- --------------------------------------------------------
 
@@ -245,9 +291,7 @@ CREATE TABLE `votos` (
 --
 
 INSERT INTO `votos` (`id`, `eleicao_id`, `aluno_ra`, `candidato_id`, `data_voto`) VALUES
-(5, 19, '2780642323004', 10, '2025-11-20 08:14:51'),
-(6, 19, '2781392323007', 11, '2025-11-20 08:14:51'),
-(8, 19, '2781392513007', 11, '2025-11-20 08:14:51');
+(8, 8, '2781392513023', 1, '2025-11-26 01:11:02');
 
 --
 -- Índices para tabelas despejadas
@@ -337,13 +381,13 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT de tabela `alunos`
 --
 ALTER TABLE `alunos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
 -- AUTO_INCREMENT de tabela `candidatos`
 --
 ALTER TABLE `candidatos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de tabela `cursos`
@@ -355,13 +399,13 @@ ALTER TABLE `cursos`
 -- AUTO_INCREMENT de tabela `eleicoes`
 --
 ALTER TABLE `eleicoes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de tabela `noticias`
 --
 ALTER TABLE `noticias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de tabela `semestres`
