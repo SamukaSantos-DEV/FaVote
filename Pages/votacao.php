@@ -36,6 +36,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['candidato_id'])) {
     $candidato_id = (int) $_POST['candidato_id'];
     $aluno_ra = $_SESSION['user_ra'];
     $data_voto = date('Y-m-d H:i:s');
+    
+    if ($candidato_id == 0) {
+        $candidato_id = 1; // <-- coloque AQUI o ID de um candidato real existente
+    }
 
     // Verifica se já votou
     $check = $conexao->prepare("SELECT id FROM votos WHERE eleicao_id = ? AND aluno_ra = ?");
@@ -105,6 +109,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['candidato_id'])) {
                                     <input type="radio" name="candidato_id" value="<?= $cand['candidato_id'] ?>" required>
                                 </label>
                             <?php endwhile; ?>
+                                <label>
+                                    <img src="../Images/user.png" width="20" alt="user" />
+                                    Voto em Branco
+                                    <input type="radio" name="candidato_id" value="0" required>
+                                </label>
                         <?php else: ?>
                             <p>Nenhum candidato cadastrado nesta eleição.</p>
                         <?php endif; ?>

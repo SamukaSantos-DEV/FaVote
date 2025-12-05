@@ -2,29 +2,19 @@
 require '../php/session_auth.php';
 require '../php/config.php';
 
-// Conecta ao banco de dados usando o método do seu objeto $db
-// Assumindo que $db->conecta_mysql() retorna um objeto mysqli connection
 $conexao = $db->conecta_mysql();
 
-// =========================================================================
-// 1. LÓGICA DE FINALIZAÇÃO AUTOMÁTICA DE ELEIÇÕES VENCIDAS ⏳ (CORRIGIDA)
-//    Usa a função NOW() do MySQL para garantir consistência de data/hora.
-// =========================================================================
 $query_finalizar = $conexao->prepare("UPDATE eleicoes SET ativa = 0 WHERE ativa = 1 AND data_fim <= NOW()");
 $query_finalizar->execute();
 $query_finalizar->close();
 $query_finalizar = $conexao->prepare("UPDATE eleicoes SET ativa = 1 WHERE ativa = 0 AND data_fim >= NOW()");
 $query_finalizar->execute();
 $query_finalizar->close();
-// =========================================================================
 
-// Pegando RA do usuário logado
 $ra_usuario = $_SESSION['user_ra'] ?? null;
 
-// Pega turma_id e dados da turma do aluno
 $turma_id = null;
 if ($ra_usuario) {
-    // Busca os dados da turma para o aluno logado
     $query_turma = $conexao->prepare("
         SELECT a.turma_id, c.nome AS curso_nome, s.nome AS semestre_nome
         FROM alunos a
@@ -39,16 +29,14 @@ if ($ra_usuario) {
     if ($resultado->num_rows > 0) {
         $dados_turma = $resultado->fetch_assoc();
         $turma_id = $dados_turma['turma_id'];
-        // Atualiza as variáveis de sessão para exibição no header
         $_SESSION['curso_nome'] = $dados_turma['curso_nome'];
         $_SESSION['semestre_nome'] = $dados_turma['semestre_nome'];
     }
     $query_turma->close();
 }
 
-// Busca a eleição ativa da turma do aluno
 $eleicao = null;
-$periodo_candidatura_aberto = false; // Flag para a regra de 7 dias
+$periodo_candidatura_aberto = false;
 if ($turma_id) {
     $query_eleicao = $conexao->prepare("SELECT * FROM eleicoes WHERE turma_id = ? AND ativa = 1 ORDER BY data_inicio DESC LIMIT 1");
     $query_eleicao->bind_param("i", $turma_id);

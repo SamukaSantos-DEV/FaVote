@@ -1,16 +1,19 @@
-<?php require '../php/session_auth.php'; ?>
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
+require '../php/session_auth.php';
 include '../php/config.php';
 
 $query_finalizar = $conexao->prepare("UPDATE eleicoes SET ativa = 0 WHERE ativa = 1 AND data_fim <= NOW()");
 $query_finalizar->execute();
 $query_finalizar->close();
+
 $query_finalizar = $conexao->prepare("UPDATE eleicoes SET ativa = 1 WHERE ativa = 0 AND data_fim >= NOW()");
 $query_finalizar->execute();
 $query_finalizar->close();
 
-// Eleições ativas com informações de curso e semestre
 $sqlEleicoesAtivas = "
     SELECT 
         e.*,
@@ -21,12 +24,11 @@ $sqlEleicoesAtivas = "
     LEFT JOIN turmas t ON e.turma_id = t.id
     LEFT JOIN cursos c ON t.curso_id = c.id
     LEFT JOIN semestres s ON t.semestre_id = s.id
-    WHERE e.ativa != 0
+    WHERE e.ativa = 1
     ORDER BY e.dataPostagem DESC
 ";
 $resultAtivas = $conexao->query($sqlEleicoesAtivas);
 
-// Eleições passadas com informações de curso e semestre
 $sqlEleicoesPassadas = "
     SELECT 
         e.*,
@@ -42,7 +44,6 @@ $sqlEleicoesPassadas = "
 ";
 $resultPassadas = $conexao->query($sqlEleicoesPassadas);
 
-
 $sqlNoticias = "SELECT * FROM noticias ORDER BY dataPublicacao DESC";
 $resultNoticias = $conexao->query($sqlNoticias);
 
@@ -57,10 +58,9 @@ $sqlUsuarios = "
     FROM alunos a
     LEFT JOIN turmas t ON a.turma_id = t.id
     LEFT JOIN cursos c ON t.curso_id = c.id
-    LEFT JOIN semestres s ON t.semestre_id = s.id
+    LEFT JOIN semestres s ON t.semestre_id = s.id WHERE a.id <> 1
     LIMIT 15
 ";
-
 $resultUsuarios = $conexao->query($sqlUsuarios);
 
 $sqlTurmas = "
@@ -77,28 +77,30 @@ $sqlTurmas = "
     GROUP BY t.id
     LIMIT 7
 ";
-
 $resultTurmas = $conexao->query($sqlTurmas);
 
-// EXCLUIR ELEIÇÃO (quando vem com ?id=)
 if (isset($_GET['id'])) {
-    $id = intval($_GET['id']);
 
-    $stmt = $conexao->prepare("
-        DELETE FROM votos 
-        WHERE candidato_id IN (SELECT id FROM candidatos WHERE eleicao_id = ?)
-    ");
-    $stmt->bind_param("i", $id);
+    $eleicao_id = intval($_GET['id']);
+
+    // 1. Excluir votos da eleição
+    $sqlDeleteVotos = "DELETE FROM votos WHERE eleicao_id = ?";
+    $stmt = $conexao->prepare($sqlDeleteVotos);
+    $stmt->bind_param("i", $eleicao_id);
     $stmt->execute();
     $stmt->close();
 
-    $stmt = $conexao->prepare("DELETE FROM candidatos WHERE eleicao_id = ?");
-    $stmt->bind_param("i", $id);
+    // 2. Excluir candidatos da eleição
+    $sqlDeleteCandidatos = "DELETE FROM candidatos WHERE eleicao_id = ?";
+    $stmt = $conexao->prepare($sqlDeleteCandidatos);
+    $stmt->bind_param("i", $eleicao_id);
     $stmt->execute();
     $stmt->close();
 
-    $stmt = $conexao->prepare("DELETE FROM eleicoes WHERE id = ?");
-    $stmt->bind_param("i", $id);
+    // 3. Excluir eleição
+    $sqlDeleteEleicao = "DELETE FROM eleicoes WHERE id = ?";
+    $stmt = $conexao->prepare($sqlDeleteEleicao);
+    $stmt->bind_param("i", $eleicao_id);
     $ok = $stmt->execute();
     $stmt->close();
 
@@ -106,58 +108,45 @@ if (isset($_GET['id'])) {
         echo "<script>alert('Eleição excluída com sucesso!'); window.location.href='dashboard.php';</script>";
         exit;
     } else {
-        echo "<script>alert('Erro ao excluir eleição.'); window.location.href='dashboard.php';</script>";
+        echo "<script>alert('Erro ao excluir eleição!'); window.location.href='dashboard.php';</script>";
         exit;
     }
 }
 
-// BUSCA CURSOS
-$cursos = $conexao->query("SELECT * FROM cursos ORDER BY nome")->fetch_all(MYSQLI_ASSOC);
-
-// BUSCA SEMESTRES
+$cursos    = $conexao->query("SELECT * FROM cursos ORDER BY nome")->fetch_all(MYSQLI_ASSOC);
 $semestres = $conexao->query("SELECT * FROM semestres ORDER BY id")->fetch_all(MYSQLI_ASSOC);
-
-// BUSCA TURMAS
-$turmas = $conexao->query("SELECT * FROM turmas")->fetch_all(MYSQLI_ASSOC);
-
-// BUSCA ALUNOS
-$alunos = $conexao->query("SELECT ra, nome, turma_id FROM alunos ORDER BY nome")->fetch_all(MYSQLI_ASSOC);
-
+$turmas    = $conexao->query("SELECT * FROM turmas")->fetch_all(MYSQLI_ASSOC);
+$alunos    = $conexao->query("SELECT ra, nome, turma_id FROM alunos ORDER BY nome")->fetch_all(MYSQLI_ASSOC);
 
 if (isset($_POST['criar_eleicao'])) {
 
     $titulo = $_POST['titulo'];
     $descricao = $_POST['descricao'];
 
-    // COMBINAR DATA + HORA
-    $data_inicio = $_POST['data_inicio_data'] . " " . $_POST['data_inicio_hora'];
-    $data_fim = $_POST['data_fim_data'] . " " . $_POST['data_fim_hora'];
+    $data_inicio = $_POST['data_inicio_data']." ".$_POST['data_inicio_hora'];
+    $data_fim    = $_POST['data_fim_data']." ".$_POST['data_fim_hora'];
 
     $curso_id = $_POST['curso_id'];
     $semestre_id = $_POST['semestre_id'];
 
-    // ENCONTRAR TURMA
     $sqlTurma = $conexao->prepare("SELECT id FROM turmas WHERE curso_id = ? AND semestre_id = ?");
     $sqlTurma->bind_param("ii", $curso_id, $semestre_id);
     $sqlTurma->execute();
     $turma = $sqlTurma->get_result()->fetch_assoc();
 
     if (!$turma) {
-        echo "<script>alert('Nenhuma turma encontrada para este curso e semestre');</script>";
+        echo "<script>alert('Nenhuma turma encontrada para esse curso e semestre.');</script>";
         exit;
     }
 
     $turma_id = $turma['id'];
 
-    // CRIAR ELEIÇÃO
     $sql = $conexao->prepare("
         INSERT INTO eleicoes (titulo, descricao, data_inicio, data_fim, turma_id)
         VALUES (?, ?, ?, ?, ?)
     ");
     $sql->bind_param("ssssi", $titulo, $descricao, $data_inicio, $data_fim, $turma_id);
     $sql->execute();
-
-    $eleicao_id = $conexao->insert_id;
 
     header("Location: dashboard.php?success=eleicao_criada");
     exit;
@@ -173,8 +162,8 @@ if (isset($_POST['editar_eleicao'])) {
 
     $sql = $conexao->prepare("
         UPDATE eleicoes 
-        SET titulo = ?, descricao = ?, data_inicio = ?, data_fim = ?
-        WHERE id = ?
+        SET titulo=?, descricao=?, data_inicio=?, data_fim=?
+        WHERE id=?
     ");
     $sql->bind_param("ssssi", $titulo, $descricao, $data_inicio, $data_fim, $id);
 
@@ -186,75 +175,58 @@ if (isset($_POST['editar_eleicao'])) {
     }
 }
 
-// ==========================
-// RETORNAR DADOS + CANDIDATOS
-// ==========================
 if (isset($_GET['get_eleicao'])) {
 
     $id = intval($_GET['get_eleicao']);
 
-    // BUSCA DA ELEIÇÃO + TURMA + CURSO + SEMESTRE
     $sql = $conexao->prepare("
-        SELECT 
-            e.*, 
-            c.nome AS curso_nome,
-            s.nome AS semestre_nome
+        SELECT e.*, c.nome AS curso_nome, s.nome AS semestre_nome
         FROM eleicoes e
-        LEFT JOIN turmas t ON e.turma_id = t.id
-        LEFT JOIN cursos c ON t.curso_id = c.id
-        LEFT JOIN semestres s ON t.semestre_id = s.id
-        WHERE e.id = ?
+        LEFT JOIN turmas t ON e.turma_id=t.id
+        LEFT JOIN cursos c ON t.curso_id=c.id
+        LEFT JOIN semestres s ON t.semestre_id=s.id
+        WHERE e.id=?
     ");
     $sql->bind_param("i", $id);
     $sql->execute();
     $eleicao = $sql->get_result()->fetch_assoc();
 
     if (!$eleicao) {
-        echo json_encode(["erro" => "Eleição não encontrada"]);
+        echo json_encode(["erro"=>"Eleição não encontrada"]);
         exit;
     }
 
-    // BUSCA DOS CANDIDATOS
     $sqlCand = $conexao->prepare("
-        SELECT 
-            c.id AS candidato_id,
-            a.nome,
-            a.ra
+        SELECT c.id AS candidato_id, a.nome, a.ra
         FROM candidatos c
-        LEFT JOIN alunos a ON a.ra = c.aluno_ra
-        WHERE c.eleicao_id = ?
+        LEFT JOIN alunos a ON a.ra=c.aluno_ra
+        WHERE c.eleicao_id=?
     ");
     $sqlCand->bind_param("i", $id);
     $sqlCand->execute();
-    $candResult = $sqlCand->get_result();
+    $resultCand = $sqlCand->get_result();
 
     $candidatos = [];
-    while ($c = $candResult->fetch_assoc()) {
+    while ($c = $resultCand->fetch_assoc()) {
         $candidatos[] = $c;
     }
 
-    // RETORNO FINAL
     echo json_encode([
         "eleicao" => $eleicao,
         "candidatos" => $candidatos
     ]);
-
     exit;
 }
 
-
-
 ?>
 <?php if (isset($_GET['success']) && $_GET['success'] === 'eleicao_criada'): ?>
-    <script>
-        alert("Eleição criada com sucesso!");
-
-        // Remove o parâmetro da URL sem recarregar a página
-        if (history.pushState) {
-            const novaURL = window.location.href.split("?")[0];
-            window.history.replaceState({}, document.title, novaURL);
-        }
-    </script>
+<script>
+    alert("Eleição criada com sucesso!");
+    if (history.pushState) {
+        const novaURL = window.location.href.split("?")[0];
+        window.history.replaceState({}, document.title, novaURL);
+    }
+</script>
 <?php endif; ?>
 
 <?php
@@ -266,6 +238,7 @@ if (isset($_GET['error'])) {
     echo "<script>alert('Erro ao excluir a notícia.');</script>";
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-br">

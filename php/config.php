@@ -1,9 +1,9 @@
 <?php
 class db {
     private $hostname = 'localhost';
-    private $bancodedados = 'favotedb';
-    private $usuario = 'root';
-    private $senha = '';
+    private $bancodedados = 'u180877424_favotedb';
+    private $usuario = 'u180877424_favotedb';
+    private $senha = 'FaVoteDB2025';
     private $mysqli = null;
 
     public function conecta_mysql() {

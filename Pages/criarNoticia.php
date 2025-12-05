@@ -2,17 +2,14 @@
 require '../php/session_auth.php';
 require '../php/config.php';
 
-// Verifica se o formulário foi enviado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $titulo = trim($_POST['titulo']);
     $descricao = trim($_POST['descricao']);
 
-    // Verifica se os campos foram preenchidos
     if (!empty($titulo) && !empty($descricao)) {
         $db = new db();
         $conexao = $db->conecta_mysql();
 
-        // Insere somente nas colunas existentes
         $sql = "INSERT INTO noticias (titulo, descricao, dataPublicacao) VALUES (?, ?, NOW())";
         $stmt = $conexao->prepare($sql);
         $stmt->bind_param("ss", $titulo, $descricao);

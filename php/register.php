@@ -9,36 +9,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $ra = $_POST['ra_cadastro'];
     $senha = $_POST['senha_cadastro'];
 
-    // Verificações básicas
     if (empty($nome) || empty($email) || empty($ra) || empty($senha)) {
         header("Location: ../login.php?error=empty_fields");
         exit();
     }
 
-    // Validação do e-mail institucional
     if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !preg_match('/@fatec\.sp\.gov\.br$/', $email)) {
         header("Location: ../login.php?error=invalid_email");
         exit();
     }
 
-    // RA precisa ter 13 dígitos
     if (!preg_match('/^\d{13}$/', $ra)) {
         header("Location: ../login.php?error=invalid_ra");
         exit();
     }
 
-    // ===================================================================
-    // INTERPRETAÇÃO DO RA
-    // ===================================================================
     $codigoCurso = substr($ra, 3, 3);
     $anoIngresso = (int) substr($ra, 6, 2);
     $semestreIngresso = (int) substr($ra, 8, 1);
 
-    // MAPEAMENTO CURSO_ID
     $cursos = [
-        '139' => 1, // Desenvolvimento de Software Multiplataforma
-        '064' => 2, // Gestão Empresarial
-        '077' => 3, // Gestão de Produção Industrial
+        '139' => 1,
+        '064' => 2,
+        '077' => 3,
     ];
 
     if (!isset($cursos[$codigoCurso])) {
@@ -48,7 +41,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $curso_id = $cursos[$codigoCurso];
 
-    // CALCULAR SEMESTRE ATUAL
     $anoAtual = (int) date("y");
     $semestreAtual = (date("n") <= 6) ? 1 : 2;
 
@@ -56,7 +48,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $semestresPassados = ($anosPassados * 2) + ($semestreAtual - $semestreIngresso);
     $semestreCurso = min(6, max(1, $semestresPassados + 1));
 
-    // BUSCAR TURMA_ID CORRESPONDENTE
     $sql_turma = "SELECT id FROM turmas WHERE curso_id = ? AND semestre_id = ?";
     $stmt_turma = $conexao->prepare($sql_turma);
     $stmt_turma->bind_param("ii", $curso_id, $semestreCurso);
@@ -72,7 +63,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $turma_id = $turma['id'];
     $stmt_turma->close();
 
-    // INSERÇÃO DO ALUNO
     $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
 
     try {
@@ -80,10 +70,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt = $conexao->prepare($sql);
         $stmt->bind_param("ssssi", $ra, $nome, $email, $senha_hash, $turma_id);
         $stmt->execute();
-        $novo_id = $stmt->insert_id; // pega o ID do aluno recém-cadastrado
+        $novo_id = $stmt->insert_id;
         $stmt->close();
 
-        // 🔹 Buscar dados completos do aluno (curso, semestre, turma)
         $sql_info = "
             SELECT 
                 a.*, 
@@ -103,7 +92,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $aluno = $stmt_info->get_result()->fetch_assoc();
         $stmt_info->close();
 
-        // 🔹 Login automático
         $_SESSION['logged_in'] = true;
         $_SESSION['user_id'] = $aluno['id'];
         $_SESSION['user_type'] = 'aluno';
@@ -116,7 +104,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $conexao->close();
 
-        // 🔹 Redirecionar direto para a home
         header("Location: ../Pages/home.php");
         exit();
 

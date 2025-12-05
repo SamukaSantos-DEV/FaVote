@@ -2,7 +2,6 @@
 require '../php/session_auth.php';
 include '../php/config.php';
 
-// === CONSULTA SEMESTRES ===
 $sqlSemestres = "SELECT id, nome FROM semestres";
 $resultSemestres = $conexao->query($sqlSemestres);
 
@@ -13,14 +12,9 @@ if ($resultSemestres->num_rows > 0) {
         $listaSemestres[] = $s;
     }
 }
-
-// ==========================================================
-// === LÓGICA DE BUSCA DINÂMICA (AJAX) ===
-// Esta parte retorna JSON e encerra o script.
-// ==========================================================
 if (isset($_GET['termo_busca'])) {
-    // Escapa o termo para ser usado no LIKE e adiciona os curingas %
-    // Usamos str_contains para verificar se o termo não é totalmente vazio
+    header('Content-Type: application/json; charset=utf-8');
+
     $termoBusca = $_GET['termo_busca'] ?? '';
     $termo = "%" . $termoBusca . "%";
 
@@ -36,46 +30,83 @@ if (isset($_GET['termo_busca'])) {
         LEFT JOIN turmas t ON a.turma_id = t.id
         LEFT JOIN cursos c ON t.curso_id = c.id
         LEFT JOIN semestres s ON t.semestre_id = s.id
-        WHERE a.ra LIKE ? 
-           OR a.nome LIKE ? 
-           OR a.email_institucional LIKE ?
-           OR c.nome LIKE ?
-           OR s.nome LIKE ?
+        WHERE 
+            (
+                a.ra LIKE ? 
+                OR a.nome LIKE ? 
+                OR a.email_institucional LIKE ?
+                OR c.nome LIKE ?
+                OR s.nome LIKE ?
+            )
+            AND a.id <> 1
     ";
-    
+
+    // Preparar statement
     $stmt = $conexao->prepare($sqlBusca);
-    
-    // Bind dos parâmetros
-    $stmt->bind_param("sssss", $termo, $termo, $termo, $termo, $termo);
-    $stmt->execute();
-    $resultBusca = $stmt->get_result();
+    if (!$stmt) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Falha ao preparar query: ' . $conexao->error]);
+        exit;
+    }
+
+    // Bind e execute
+    if (!$stmt->bind_param("sssss", $termo, $termo, $termo, $termo, $termo)) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Falha no bind_param: ' . $stmt->error]);
+        $stmt->close();
+        exit;
+    }
+
+    if (!$stmt->execute()) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Falha ao executar query: ' . $stmt->error]);
+        $stmt->close();
+        exit;
+    }
 
     $usuariosFiltrados = [];
-    while ($usuario = $resultBusca->fetch_assoc()) {
-        $usuariosFiltrados[] = $usuario;
+
+    // Se get_result existir (mysqlnd), usa-o. Senão, usa bind_result como fallback.
+    if (method_exists($stmt, 'get_result')) {
+        $resultBusca = $stmt->get_result();
+        while ($usuario = $resultBusca->fetch_assoc()) {
+            $usuariosFiltrados[] = $usuario;
+        }
+    } else {
+        // fallback: bind_result
+        $stmt->store_result();
+        $stmt->bind_result($aluno_id, $ra, $nome, $email_institucional, $curso_nome, $semestre_nome);
+        while ($stmt->fetch()) {
+            $usuariosFiltrados[] = [
+                'aluno_id' => $aluno_id,
+                'ra' => $ra,
+                'nome' => $nome,
+                'email_institucional' => $email_institucional,
+                'curso_nome' => $curso_nome,
+                'semestre_nome' => $semestre_nome
+            ];
+        }
     }
-    
-    header('Content-Type: application/json');
-    echo json_encode($usuariosFiltrados);
-    exit; // Importante: termina a execução para não imprimir o HTML
+
+    $stmt->close();
+
+    // Retorna JSON (sempre)
+    echo json_encode($usuariosFiltrados, JSON_UNESCAPED_UNICODE);
+    exit;
 }
 
 
-// === AÇÕES PHP DE EDIÇÃO OU EXCLUSÃO ===
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['acao'])) {
 
-    // === EDITAR USUÁRIO ===
     if ($_POST['acao'] === 'editar') {
 
         $id = $_POST['id'] ?? null;
         $nome = $_POST['nome'] ?? null;
         $email = $_POST['email'] ?? null;
-        $semestreId = $_POST['semestre'] ?? null; // ← ADICIONADO
+        $semestreId = $_POST['semestre'] ?? null;
 
-        // Verificar campos obrigatórios
         if ($id && $nome && $email && $semestreId) {
 
-            // 1️⃣ Buscar a turma correspondente ao semestre
             $sqlTurma = $conexao->prepare("
                 SELECT id 
                 FROM turmas 
@@ -93,7 +124,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['acao'])) {
 
             $turmaId = $result->fetch_assoc()['id'];
 
-            // 2️⃣ Atualizar aluno com nome, email e turma
             $stmt = $conexao->prepare("
                 UPDATE alunos 
                 SET nome = ?, email_institucional = ?, turma_id = ?
@@ -113,7 +143,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['acao'])) {
         exit;
     }
 
-    // === EXCLUIR USUÁRIO ===
     if ($_POST['acao'] === 'excluir') {
         $id = $_POST['id'] ?? null;
 
@@ -121,7 +150,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['acao'])) {
 
             $raAluno = null;
 
-            // Buscar o RA do aluno
             $res = $conexao->prepare("SELECT ra FROM alunos WHERE id = ?");
             $res->bind_param("i", $id);
             $res->execute();
@@ -131,13 +159,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['acao'])) {
 
             if ($raAluno) {
 
-                // Excluir votos onde o aluno votou
                 $stmt = $conexao->prepare("DELETE FROM votos WHERE aluno_ra = ?");
                 $stmt->bind_param("s", $raAluno);
                 $stmt->execute();
                 $stmt->close();
 
-                // Excluir votos que foram feitos em candidatos ligados ao aluno
                 $stmt = $conexao->prepare("DELETE FROM votos 
                                              WHERE candidato_id IN (
                                                  SELECT id FROM candidatos WHERE aluno_ra = ?
@@ -176,7 +202,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['acao'])) {
 
 
 
-// === CONSULTA USUÁRIOS (Para o carregamento inicial da página) ===
 $sqlUsuarios = "
     SELECT 
         a.id AS aluno_id,
@@ -188,7 +213,7 @@ $sqlUsuarios = "
     FROM alunos a
     LEFT JOIN turmas t ON a.turma_id = t.id
     LEFT JOIN cursos c ON t.curso_id = c.id
-    LEFT JOIN semestres s ON t.semestre_id = s.id
+    LEFT JOIN semestres s ON t.semestre_id = s.id WHERE a.id <> 1
 ";
 $resultUsuarios = $conexao->query($sqlUsuarios);
 
