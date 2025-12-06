@@ -1,12 +1,14 @@
 <?php
-class db {
-    private $hostname = 'localhost';
-    private $bancodedados = 'u180877424_favotedb';
-    private $usuario = 'u180877424_favotedb';
-    private $senha = 'FaVoteDB2025';
+class db
+{
+    private $hostname = 'localhost'; // ou 'localhost'
+    private $bancodedados = 'favotedb'; // nome do banco local
+    private $usuario = 'root'; // padrão do XAMPP
+    private $senha = ''; // XAMPP NÃO usa senha por padrão
     private $mysqli = null;
 
-    public function conecta_mysql() {
+    public function conecta_mysql()
+    {
         mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
         $this->mysqli = new mysqli($this->hostname, $this->usuario, $this->senha, $this->bancodedados);

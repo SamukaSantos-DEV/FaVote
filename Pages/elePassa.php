@@ -87,13 +87,14 @@ LIMIT 2;
         }
 
         $stmtVencedores->close();
-?>
+        ?>
         <div class="eleicao-card">
             <div class="info-eleicao">
-                <h3>
-                    <?= htmlspecialchars(strtoupper($eleicao['titulo'])) ?><br>
+                <h1>
+                    <?= htmlspecialchars(mb_strtoupper($eleicao['titulo'], 'UTF-8')) ?><br>
+
                     <?= $turmaFormatada ?>
-                </h3>
+                </h1>
                 <p><?= htmlspecialchars($eleicao['descricao']) ?></p>
                 <div class="datas">
                     <p>
@@ -128,10 +129,10 @@ LIMIT 2;
     $stmtEleicoes->close();
 
     if (!$temEleicoesPassadas):
-    ?>
+        ?>
         <p class="nenhuma-eleicao">Não há eleições passadas registradas no
             momento<?php echo $temFiltro ? " para o ano de " . htmlspecialchars($ano) . "." : "."; ?></p>
-<?php endif;
+    <?php endif;
 
     $conexao->close();
 
@@ -189,7 +190,6 @@ LIMIT 2;
                 $emailLogado = $_SESSION['user_email'] ?? null;
                 ?>
 
-                <!-- ... resto do seu HTML ... -->
 
                 <?php if ($emailLogado !== 'admin@fatec.sp.gov.br'): ?>
                     <strong>
@@ -275,7 +275,7 @@ LIMIT 2;
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const filtroSelect = document.getElementById('filtro');
             const listaDiv = document.getElementById('eleicoes-lista');
 
@@ -306,7 +306,7 @@ LIMIT 2;
             }
 
             // 1. Event Listener: Recarrega a lista quando o filtro muda
-            filtroSelect.addEventListener('change', function() {
+            filtroSelect.addEventListener('change', function () {
                 const anoSelecionado = this.value;
                 carregarEleicoes(anoSelecionado);
             });

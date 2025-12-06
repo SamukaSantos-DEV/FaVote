@@ -149,7 +149,7 @@ if ($error) {
                     title="Digite exatamente 13 números" />
 
                 <label>Senha:</label>
-                <input type="password" name="senha_cadastro" placeholder="Crie uma senha" />
+                <input type="password" name="senha_cadastro" minlength="6" placeholder="Crie uma senha" required/>
 
                 <label for="terms" style="font-size: 12px">Ao fazer cadastro, os <a href="Pages/termos.php"
                         style="text-decoration: none; margin-top:20px;color: rgb(112, 0, 0);">Termos de

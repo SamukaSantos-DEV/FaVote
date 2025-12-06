@@ -289,7 +289,6 @@ if (isset($_GET['error'])) {
                 $emailLogado = $_SESSION['user_email'] ?? null;
                 ?>
 
-                <!-- ... resto do seu HTML ... -->
 
                 <?php if ($emailLogado !== 'admin@fatec.sp.gov.br'): ?>
                     <strong>

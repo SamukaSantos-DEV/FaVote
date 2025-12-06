@@ -128,22 +128,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="modal-content">
             <span onclick="history.back()" class="close-btn">✖</span>
             <h2>Criar Notícia</h2>
-
             <form method="POST" action="">
                 <div class="form-group">
                     <label for="titulo">Título:</label>
                     <input type="text" id="titulo" name="titulo" required>
                 </div>
-
                 <div class="form-group">
                     <label for="descricao">Descrição:</label>
-                    <textarea id="descricao" name="descricao" class="form-control" rows="3" maxlength="150" required></textarea>
+                    <textarea id="descricao" name="descricao" class="form-control" rows="3" maxlength="150"
+                        required></textarea>
                 </div>
-
-            
-
-
-
                 <div class="atention-card">
                     <p>⚠️ A notícia será visível para todos os usuários da instituição.</p>
                 </div>

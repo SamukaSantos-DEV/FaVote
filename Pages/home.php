@@ -101,7 +101,7 @@ $sql_ultimas_eleicoes = "
     INNER JOIN semestres s ON s.id = t.semestre_id    
     WHERE e.ativa = 0
     ORDER BY e.data_fim DESC
-    LIMIT 3
+    LIMIT 2
 ";
 $result_eleicoes = $conexao->query($sql_ultimas_eleicoes);
 
@@ -135,13 +135,12 @@ if ($result_eleicoes) {
             $stmt_vencedores->close();
         }
 
-        // Armazena a eleição e seus vencedores (pode ser 1 ou 2)
         $e['vencedores'] = $vencedores;
         $ultimas_eleicoes_com_vencedores[] = $e;
     }
 }
 
-$conexao->close(); // Fecha a conexão após todas as operações de banco
+$conexao->close();
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -274,7 +273,7 @@ $conexao->close(); // Fecha a conexão após todas as operações de banco
 
             <div class="votes">
                 <div class="section-header">
-                    <h2>Últimas votações</h2>
+                    <h2>Últimas Eleições</h2>
                     <a href="elePassa.php">Ver mais ➜</a>
                 </div>
 
@@ -287,7 +286,6 @@ $conexao->close(); // Fecha a conexão após todas as operações de banco
                         $data_fim = date('d/m/Y', strtotime($eleicao_result['data_fim']));
                         $vencedores = $eleicao_result['vencedores'];
 
-                        // Define o nome do vencedor principal ou mensagem de empate/vazio
                         $primeiro_colocado = "Nenhum Vencedor";
                         if (isset($vencedores[0])) {
                             $primeiro_colocado = htmlspecialchars(strtoupper($vencedores[0]['candidato']));
@@ -296,7 +294,8 @@ $conexao->close(); // Fecha a conexão após todas as operações de banco
 
                         <div class="vote-result">
                             <h3 class="titulo-eleicao-recente">
-                                <?= htmlspecialchars(strtoupper($eleicao_result['titulo'])) ?>
+                                <?= htmlspecialchars(mb_strtoupper($eleicao_result['titulo'], 'UTF-8')) ?>
+
                             </h3>
 
                             <small class="turma-nome"><?= $turma_nome ?></small>

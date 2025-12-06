@@ -250,7 +250,7 @@ body {
 }
 
 .election-past {
-    background-color: #a0a0a0;
+    background-color: #4b4b4b;
 }
 
 .election-id {
@@ -442,6 +442,9 @@ body {
     border-radius: 20px;
     overflow: hidden;
     display: flex;
+    background-color: #eeeeee;
+    min-height: 250px;
+    max-height: 400px;
     flex-direction: column;
     transition: transform 0.2s ease;
     box-shadow: 0px 0px 6px rgba(121, 120, 120, 0.7);
@@ -453,7 +456,6 @@ body {
 
 
 .card-content {
-    background-color: #ddd;
     color: rgb(59, 59, 59);
     padding: 20px;
 }
@@ -477,10 +479,11 @@ body {
 }
 
 .card-actions {
-    background-color: #efefef;
+    background-color: #d1d1d1;
     padding: 20px;
     display: flex;
     justify-content: center;
+    margin-top: auto;
 }
 
 .delete-btn {
@@ -531,7 +534,7 @@ body {
 .containerAlunos{
     background: white;
     border-radius: 15px;
-    height: 299px;
+    height: 500px;
     box-shadow: 0 0px 6px rgba(0, 0, 0, 0.2);
     overflow: hidden;
     max-width: 1200px;

@@ -133,7 +133,8 @@ $resultBloqueadas = $stmtBloqueadas->get_result();
                     <a href="votacao.php?id=<?php echo $eleicao['id']; ?>" style="text-decoration: none;">
                         <section class="main-vote">
                             <div class="vote-box">
-                                <h1><?php echo strtoupper($eleicao['titulo']); ?></h1><br>
+                                <h1><?= mb_strtoupper($eleicao['titulo'], 'UTF-8'); ?></h1><br>
+
                                 <h2 style="border-bottom: none; margin-top: -35px; margin-bottom: 12px; font-size: 24px;">
                                     <?php echo $eleicao['curso_nome'] . " (" . $eleicao['semestre_nome'] . ")"; ?>
                                 </h2>
@@ -173,7 +174,8 @@ $resultBloqueadas = $stmtBloqueadas->get_result();
             <?php while ($eleicao = $resultBloqueadas->fetch_assoc()): ?>
                 <section class="main-vote2">
                     <div class="vote-box">
-                        <h1><?php echo strtoupper($eleicao['titulo']); ?></h1><br>
+                        <h1><?= mb_strtoupper($eleicao['titulo'], 'UTF-8') ?></h1><br>
+
                         <h4 style="margin-top: -35px; margin-bottom: 12px; font-size: 24px;">
                             <?php echo $eleicao['curso_nome'] . " (" . $eleicao['semestre_nome'] . ")"; ?></h3>
                             <p><?php echo htmlspecialchars($eleicao['descricao']); ?></p><br>

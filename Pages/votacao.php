@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['candidato_id'])) {
     $candidato_id = (int) $_POST['candidato_id'];
     $aluno_ra = $_SESSION['user_ra'];
     $data_voto = date('Y-m-d H:i:s');
-    
+
     if ($candidato_id == 0) {
         $candidato_id = 1; // <-- coloque AQUI o ID de um candidato real existente
     }
@@ -60,6 +60,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['candidato_id'])) {
     echo "<script>alert('Voto registrado com sucesso!'); window.location='home.php';</script>";
     exit();
 }
+
+function gerarAvatar($nome) {
+    $seed = md5($nome);
+    return "https://api.dicebear.com/9.x/lorelei/svg?seed=$seed";
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -94,7 +101,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['candidato_id'])) {
             Término: <?= date("d/m/Y H:i", strtotime($eleicao['data_fim'])) ?>
         </p>
 
-        <h2 class="titulo-cargo">CANDIDATOS</h2>
+        <h1 class="titulo-cargo">CANDIDATOS:</h1>
 
         <!-- 🔹 Formulário de votação -->
         <form method="POST">
@@ -104,16 +111,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['candidato_id'])) {
                         <?php if ($resultCandidatos->num_rows > 0): ?>
                             <?php while ($cand = $resultCandidatos->fetch_assoc()): ?>
                                 <label>
-                                    <img src="../Images/user.png" width="20" alt="user" />
+                                    <img src="<?= gerarAvatar($cand['candidato_nome']) ?>"  alt="avatar" />
+
                                     <?= htmlspecialchars($cand['candidato_nome']) ?>
                                     <input type="radio" name="candidato_id" value="<?= $cand['candidato_id'] ?>" required>
                                 </label>
                             <?php endwhile; ?>
-                                <label>
-                                    <img src="../Images/user.png" width="20" alt="user" />
-                                    Voto em Branco
-                                    <input type="radio" name="candidato_id" value="0" required>
-                                </label>
+                            <label>
+                                <img src="../Images/user.png" width="16" alt="user" />
+                                Voto em Branco
+                                <input type="radio" name="candidato_id" value="0" required>
+                            </label>
                         <?php else: ?>
                             <p>Nenhum candidato cadastrado nesta eleição.</p>
                         <?php endif; ?>
@@ -131,7 +139,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['candidato_id'])) {
 
 
             <div class="finalizar-container">
-                <button type="submit" class="botao-finalizar">FINALIZAR</button>
+                <button type="submit" class="botao-finalizar">VOTAR</button>
             </div>
         </form>
 

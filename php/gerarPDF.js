@@ -180,7 +180,8 @@ async function gerarAtaPDF(eleicaoId) {
 
             doc.setFont("times", "normal");
             const parts = dados.participantes || [];
-            const linhas = Math.max(parts.length, 15);
+            const linhas = parts.length;
+
 
             for (let i = 0; i < linhas; i++) {
                 if (y > 275) { doc.addPage(); y = margin; doc.line(margin, y, margin + 170, y); }

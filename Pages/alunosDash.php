@@ -305,63 +305,63 @@ $resultTurmas = $conexao->query($sqlTurmas);
             }
         });
     </script>
-    
+
     <div class="main-content">
 
-    <button class="btn-close" onclick="history.back()">➜</button>
+        <button class="btn-close" onclick="history.back()">➜</button>
 
-<div class="headerTabela">
+        <div class="headerTabela">
             <h2>Alunos</h2>
             <input type="text" name="pesquisar" id="input-pesquisa" placeholder="Pesquisar...">
             <div class="containerLupa">
-            <img src="../Images/lupa.png">
+                <img src="../Images/lupa.png">
             </div>
-</div>
-    <div class="containerAlunos" style="margin-top: 50px; width: 100%;">
-        
+        </div>
+        <div class="containerAlunos" style="margin-top: 50px; width: 100%;">
 
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>RA</th>
-                        <th>Nome</th>
-                        <th>E-Mail</th>
-                        <th>Curso</th>
-                        <th>Período</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="usuarios-tbody">
-                    <?php if ($resultUsuarios->num_rows > 0): ?>
-                        <?php foreach ($resultUsuarios as $usuario): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($usuario['ra']); ?></td>
-                                <td><?php echo htmlspecialchars($usuario['nome']); ?></td>
-                                <td><?php echo htmlspecialchars($usuario['email_institucional']); ?></td>
-                                <td><?php echo htmlspecialchars($usuario['curso_nome']); ?></td>
-                                <td><?php echo htmlspecialchars($usuario['semestre_nome']); ?></td>
-                                <td>
-                                    <div class="actions">
-                                        <button class="action-btn tableEdit-btn" title="Editar"
-                                            onclick="editarUsuario('<?php echo $usuario['aluno_id']; ?>')">✎</button>
-                                        <button class="action-btn tabledelete-btn" title="Excluir"
-                                            onclick="excluirUsuario('<?php echo $usuario['aluno_id']; ?>')">🗑</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
+
+            <div class="table-container">
+                <table>
+                    <thead>
                         <tr>
-                            <td colspan="7">Nenhum usuário encontrado.</td>
+                            <th>RA</th>
+                            <th>Nome</th>
+                            <th>E-Mail</th>
+                            <th>Curso</th>
+                            <th>Período</th>
+                            <th>Ações</th>
                         </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody id="usuarios-tbody">
+                        <?php if ($resultUsuarios->num_rows > 0): ?>
+                            <?php foreach ($resultUsuarios as $usuario): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($usuario['ra']); ?></td>
+                                    <td><?php echo htmlspecialchars($usuario['nome']); ?></td>
+                                    <td><?php echo htmlspecialchars($usuario['email_institucional']); ?></td>
+                                    <td><?php echo htmlspecialchars($usuario['curso_nome']); ?></td>
+                                    <td><?php echo htmlspecialchars($usuario['semestre_nome']); ?></td>
+                                    <td>
+                                        <div class="actions">
+                                            <button class="action-btn tableEdit-btn" title="Editar"
+                                                onclick="editarUsuario('<?php echo $usuario['aluno_id']; ?>')">✎</button>
+                                            <button class="action-btn tabledelete-btn" title="Excluir"
+                                                onclick="excluirUsuario('<?php echo $usuario['aluno_id']; ?>')">🗑</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="7">Nenhum usuário encontrado.</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
-    
+
     <script defer>
         const turmas = [
             // Você precisa popular esta variável 'turmas' no seu PHP/JS para que esta função funcione.
@@ -390,7 +390,7 @@ $resultTurmas = $conexao->query($sqlTurmas);
             }
         }
     </script>
-    
+
     <script>
         // Função utilitária para criar a linha da tabela a partir de um objeto usuário
         function criarLinhaTabela(usuario) {
@@ -412,7 +412,7 @@ $resultTurmas = $conexao->query($sqlTurmas);
                 </tr>
             `;
         }
-        
+
         // ==========================================================
         // === LÓGICA DE BUSCA DINÂMICA (AJAX) ===
         // ==========================================================
@@ -422,13 +422,13 @@ $resultTurmas = $conexao->query($sqlTurmas);
         function buscarUsuarios() {
             const termo = inputPesquisa.value.trim();
             // Envia o termo via GET para o próprio script PHP
-            const url = `?termo_busca=${encodeURIComponent(termo)}`; 
+            const url = `?termo_busca=${encodeURIComponent(termo)}`;
 
             fetch(url)
                 .then(res => res.json())
                 .then(data => {
                     // Limpa a tabela atual
-                    usuariosTbody.innerHTML = ''; 
+                    usuariosTbody.innerHTML = '';
 
                     if (data.length > 0) {
                         // Adiciona as novas linhas filtradas
@@ -445,15 +445,15 @@ $resultTurmas = $conexao->query($sqlTurmas);
                     usuariosTbody.innerHTML = `<tr><td colspan="7">Falha ao buscar dados. Tente novamente.</td></tr>`;
                 });
         }
-        
+
         // Adiciona o event listener para o evento 'input' (disparado a cada tecla digitada)
         document.addEventListener('DOMContentLoaded', () => {
             if (inputPesquisa) {
                 inputPesquisa.addEventListener('input', buscarUsuarios);
             }
         });
-        
-        
+
+
         // ==========================================================
         // === LÓGICA DE EDIÇÃO E EXCLUSÃO ===
         // ==========================================================
@@ -465,7 +465,7 @@ $resultTurmas = $conexao->query($sqlTurmas);
             const nome = cells[1].innerText;
             const email = cells[2].innerText;
             const curso = cells[3].innerText;
-            const semestre = cells[4].innerText; 
+            const semestre = cells[4].innerText;
 
             // CRIAR <select> do semestre
             let selectSemestre = `<select id="edit-semestre-${id}" style="padding:4px;">`;
@@ -540,7 +540,7 @@ $resultTurmas = $conexao->query($sqlTurmas);
                 .catch(() => alert("Erro ao excluir usuário."));
         }
     </script>
-    
+
     <footer class="footer">
         <div class="footer-top">
             <div class="footer-logo">
@@ -560,11 +560,16 @@ $resultTurmas = $conexao->query($sqlTurmas);
                 <div>
                     <h4>REDES</h4>
                     <ul>
-                        <li><a href="https://www.instagram.com/fatecdeitapira" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-                        <li><a href="https://www.facebook.com/share/16Y3jKo71m/" target="_blank" rel="noopener noreferrer">Facebook</a></li>
-                        <li><a href="https://www.youtube.com/@fatecdeitapiraogaridecastr2131" target="_blank" rel="noopener noreferrer">YouTube</a></li>
-                        <li><a href="https://www.linkedin.com/school/faculdade-estadual-de-tecnologia-de-itapira-ogari-de-castro-pacheco/about/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
-                        <li><a href="https://fatecitapira.cps.sp.gov.br/" target="_blank" rel="noopener noreferrer">Site Fatec</a></li>
+                        <li><a href="https://www.instagram.com/fatecdeitapira" target="_blank"
+                                rel="noopener noreferrer">Instagram</a></li>
+                        <li><a href="https://www.facebook.com/share/16Y3jKo71m/" target="_blank"
+                                rel="noopener noreferrer">Facebook</a></li>
+                        <li><a href="https://www.youtube.com/@fatecdeitapiraogaridecastr2131" target="_blank"
+                                rel="noopener noreferrer">YouTube</a></li>
+                        <li><a href="https://www.linkedin.com/school/faculdade-estadual-de-tecnologia-de-itapira-ogari-de-castro-pacheco/about/"
+                                target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                        <li><a href="https://fatecitapira.cps.sp.gov.br/" target="_blank" rel="noopener noreferrer">Site
+                                Fatec</a></li>
                     </ul>
                 </div>
                 <div>
@@ -582,7 +587,7 @@ $resultTurmas = $conexao->query($sqlTurmas);
             FaVote - Todos os direitos reservados | 2025
         </div>
     </footer>
-    
+
 </body>
 
 </html>
