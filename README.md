@@ -1,63 +1,66 @@
-# 🗳️ FaVote – Plataforma de Votação Escolar Online
+🗳️ FaVote – Plataforma de Votação Escolar Online
 
-O **FaVote** é um site **moderno e responsivo**, desenvolvido com **HTML5** e **CSS3**, que tem como objetivo facilitar e organizar **processos eleitorais escolares** de forma totalmente digital. Ideal para instituições acadêmicas que buscam eficiência, inclusão e centralização nas eleições de seus representantes.
+O FaVote é um sistema moderno, responsivo e dinâmico, desenvolvido com PHP, HTML5 e CSS3, com o objetivo de facilitar e organizar processos eleitorais escolares de forma totalmente digital.
+Ideal para instituições acadêmicas que buscam eficiência, segurança e centralização nas eleições de seus representantes.
 
----
+🌐 Acesse
 
-## 🌐 Acesse
+Por enquanto, clone o repositório e execute o projeto localmente em um ambiente com suporte a PHP (como XAMPP, WAMP, Laragon ou servidor próprio).
+A versão online será disponibilizada em breve.
 
-> Por enquanto, clone o repositório e visualize o projeto localmente. A versão online será disponibilizada em breve.
-
----
-
-## 📱 Compatibilidade
+📱 Compatibilidade
 
 A plataforma é compatível com:
 
-- 💻 Notebooks  
-- 🖥️ Computadores de mesa  
+💻 Notebooks
+
+🖥️ Computadores de mesa
 
 (Responsivo para diferentes resoluções de tela)
 
----
+🎯 Objetivo
 
-## 🎯 Objetivo
+O FaVote busca centralizar as eleições escolares em um único ambiente digital. Entre as funcionalidades esperadas, estão:
 
-O FaVote busca **centralizar as eleições escolares** em um único ambiente digital. Entre as funcionalidades esperadas, estão:
+🧑‍🏫 Criação de contas com e-mail institucional
 
-- 🧑‍🏫 Criação de contas com e-mail institucional  
-- 🗳️ Votação segura em processos eleitorais específicos  
-- 📊 Painel Administrativo com as seguintes funções:
-  - Criar e editar processos de votação  
-  - Acompanhar resultados e andamento das eleições  
-  - Gerenciar dados dos usuários  
+🗳️ Votação segura em processos eleitorais específicos
 
----
+📊 Painel Administrativo com as seguintes funções:
 
-## 🛠️ Tecnologias Utilizadas
+Criar e editar processos de votação
 
-- ✅ **HTML5**
-- 🎨 **CSS3**
-  - Uso de **media queries** para garantir a responsividade
+Acompanhar resultados e andamento das eleições
 
----
+Gerenciar dados dos usuários
 
-## 🚀 Como Visualizar Localmente
+🛠️ Tecnologias Utilizadas
 
+🐘 PHP
 
-1. **Clone o repositório:**
-   
-````markdown
-   git clone https://github.com/SamukaSantos-DEV/FaVote
-````
+✅ HTML5
 
-2. **Acesse a pasta do projeto:**
+🎨 CSS3
 
-   ```bash
-   cd favote
-   ```
+Incluindo uso de media queries para garantir a responsividade
 
-3. **Abra o arquivo `login.php` no seu navegador.**
+🚀 Como Visualizar Localmente
+
+Clone o repositório:
+
+git clone https://github.com/SamukaSantos-DEV/FaVote
 
 
+Acesse a pasta do projeto:
 
+cd favote
+
+
+Inicie um servidor PHP (caso não use XAMPP/WAMP/Laragon):
+
+php -S localhost:8000
+
+
+Abra o arquivo login.php no navegador ou acesse:
+
+http://localhost:8000/login.php
