@@ -117,19 +117,3 @@ Sugestões, issues e pull requests podem ser enviados pelo GitHub.
 
 ---
 
-## 📜 Licença
-
-Este projeto pode utilizar **MIT License** (posso gerar para você caso queira).
-
----
-
-Se quiser, posso deixar o README **ainda mais completo**, adicionando:
-
-✔ Badges (PHP, GitHub, Status do projeto)
-✔ Banner com logo
-✔ Screenshots do sistema
-✔ Roadmap
-✔ Créditos
-✔ GIF demonstrativo
-
-Só pedir!
